@@ -1,0 +1,11 @@
+# run: conda env create --file environment.yml
+name: spartann
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - gdal
+  - python=3.12
+  - pip
+  - pip:
+    - -r requirements.txt

@@ -1,0 +1,5 @@
+__pycache__
+spartann/__pycache__
+*.pyc
+*.egg-info/
+builddocs

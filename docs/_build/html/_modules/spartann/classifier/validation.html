@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spartann.classifier.validation &mdash; SpartANN 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Instalation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">spartann.classifier.validation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for spartann.classifier.validation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+
+<div class="viewcode-block" id="cohenkappa">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.validation.cohenkappa">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">cohenkappa</span><span class="p">(</span><span class="n">real</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">pred</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cohen&#39;s Kappa</span>
+
+<span class="sd">    Calculates Cohen&#39;s Kappa from a list of real and predicted values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        real: a list of zeros and ones referring to binary targets.</span>
+<span class="sd">        pred: a list of same size of real with predicted binary values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TP</span> <span class="o">=</span> <span class="n">TN</span> <span class="o">=</span> <span class="n">FP</span> <span class="o">=</span> <span class="n">FN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">real</span><span class="p">)):</span>
+        <span class="n">TP</span> <span class="o">+=</span> <span class="p">(</span><span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="n">TN</span> <span class="o">+=</span> <span class="p">(</span><span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">FP</span> <span class="o">+=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="n">FN</span> <span class="o">+=</span> <span class="p">(</span><span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">TP</span> <span class="o">*</span> <span class="n">TN</span> <span class="o">-</span> <span class="n">FN</span> <span class="o">*</span> <span class="n">FP</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">TP</span> <span class="o">+</span> <span class="n">FP</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">FP</span> <span class="o">+</span> <span class="n">TN</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">TP</span> <span class="o">+</span> <span class="n">FN</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">FN</span> <span class="o">+</span> <span class="n">TN</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">k</span></div>
+
+
+
+<div class="viewcode-block" id="pearsonscorr">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.validation.pearsonscorr">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pearsonscorr</span><span class="p">(</span><span class="n">real</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">pred</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pearson&#39;s correlation</span>
+
+<span class="sd">    Calculates Pearson&#39;s correlation from two list of continuous values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        real: the target values.</span>
+<span class="sd">        pred: the predicted values by the model.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">real</span><span class="p">)</span>
+    <span class="n">r_bar</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">p_bar</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="n">sums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">sums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_bar</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">p_bar</span><span class="p">)</span>
+        <span class="n">sums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">real</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_bar</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">sums</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">p_bar</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">sums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">sums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sums</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="Validation">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.validation.Validation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Validation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;General class for providing validation metric to classifier.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise validation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func: a function that returns a validation metric from two list arguments for the calibration data and predicted data</span>
+<span class="sd">            name: the name of the validation metric</span>
+<span class="sd">            threshold: either &#39;None&#39; for continuous metrics or a float for thresholding predictive values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+
+<div class="viewcode-block" id="Validation.calc">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.validation.Validation.calc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">],</span> <span class="n">pred</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate metric. Used by classifier.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">pred</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">pred</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+        <span class="n">real</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">real</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the name of the valitation metric.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+
+
+
+<span class="n">CohensKappa_Validation</span> <span class="o">=</span> <span class="n">Validation</span><span class="p">(</span><span class="n">cohenkappa</span><span class="p">,</span> <span class="s2">&quot;Cohen&#39;s Kappa&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Assess the performance of a binary classification model using Cohen&#39;s Kappa.</span>
+
+<span class="sd">This instantiation of the &quot;Validation&quot; class simplifies the evaluation process</span>
+<span class="sd">for the user. It is specifically designed for binary datasets and uses Cohen&#39;s</span>
+<span class="sd">Kappa metric to measure agreement between predictions and calibration data.</span>
+
+<span class="sd">Note:</span>
+<span class="sd">- The default threshold for classification is set to 0.5, meaning values</span>
+<span class="sd">  greater than or equal to 0.5 are classified as positive, and values</span>
+<span class="sd">  below 0.5 are classified as negative.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">PearsonsCorr_Validation</span> <span class="o">=</span> <span class="n">Validation</span><span class="p">(</span><span class="n">pearsonscorr</span><span class="p">,</span> <span class="s2">&quot;Pearson&#39;s Correlation&quot;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Assess the performance of a continuous data using Pearson&#39;s Correlation Score.</span>
+
+<span class="sd">This instantiation of the &quot;Validation&quot; class simplifies the evaluation process</span>
+<span class="sd">for the user. It is specifically designed for continuous datasets and uses Pearson&#39;s</span>
+<span class="sd">Correlation Score to measure agreement between predictions and calibration data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+from osgeo import gdal_array
+from typing import Callable
+from time import ctime
+from spartann.datatable.datatable import DataTable
+from spartann.engine.nnEngine import NN
+from spartann.spatial import progressbar, Raster
+from .validation import CohensKappa_Validation
+from .model import Model, ModelContainer
+from spartann.version import __version__
+import numpy as np
+
+
+class AnnClassifier:
+    """The AnnClassifier provides methods for training a Artificial Neural Network with different parameters and optimizers for supervised classification."""
+
+    def __init__(
+        self,
+        modelcontainer: ModelContainer,
+        validation: Callable = CohensKappa_Validation,
+    ):
+        """Initiallise the classifier with a model container
+
+        Args:
+            modelcontainer: an initialised ModelContainer with model parameters.
+            validation: an instance of Validation with a proper validation metric (default:Cohen's Kappa)
+
+        """
+        self.container = modelcontainer
+        self.validation = validation
+        self._data = None
+
+    @classmethod
+    def from_options(
+        cls,
+        inputs: list,
+        outputs: list = ["Output1"],
+        repetitions: int = 20,
+        testpercent: int = 20,
+        hl_schemes: list | list[list] = [8, 4],
+        LR: float = 0.01,
+        momentum: float = 0.01,
+        optim: str = "Adam",
+        validation: Callable = CohensKappa_Validation,
+    ):
+        """Initiallise the classifier with options with defaults.
+
+        Args:
+            n_inputs: Number of inputs neurons.
+            n_outputs: Number of ouput neurons (default is 1)
+            repetitions: Number of repetitions performed per network scheme.
+            testpercent: percentage of points reserved for independent testing the training of the network (overfitting control).
+            hl_schemes: list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].
+            LR: Learning rate. Depending on the optimizer, might have different importance.
+            momentum: Decay factor for the optimizer. Note: the "Adam" optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.
+            optim: Optimization method. Available methods are "SGD" (stochastic gradient descend), "SimpleMomentum", "Momentum", "Adagrad", "RMSProp" and "Adam".
+            validation: Validation metric to be used, depending on the data. An instance of Validatio class.
+        """
+        if not isinstance(hl_schemes[0], list):
+            hl_schemes = [hl_schemes]
+        container = ModelContainer(
+            inputs,
+            outputs,
+            hl_schemes,
+            LR,
+            momentum,
+            repetitions,
+            optim,
+            testpercent,
+            str(validation),
+        )
+        return cls(container, validation)
+
+    @classmethod
+    def from_datatable(
+        cls,
+        dt: DataTable,
+        repetitions: int = 20,
+        testpercent: int = 20,
+        hl_schemes: list | list[list] = [8, 4],
+        LR: float = 0.01,
+        momentum: float = 0.01,
+        optim: str = "Adam",
+        validation: Callable = CohensKappa_Validation,
+    ):
+        """Initiallise the classifier with a DataTable.
+
+        Args:
+            dt: A DataTable instance with data to train model.
+            repetitions: Number of repetitions performed per network scheme.
+            testpercent: percentage of points reserved for independent testing the training of the network (overfitting control).
+            hl_schemes: list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].
+            LR: Learning rate. Depending on the optimizer, might have different importance.
+            momentum: Decay factor for the optimizer. Note: the "Adam" optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.
+            optim: Optimization method. Available methods are "SGD" (stochastic gradient descend), "SimpleMomentum", "Momentum", "Adagrad", "RMSProp" and "Adam".
+            validation: Validation metric to be used, depending on the data. An instance of Validatio class.
+        """
+        if not isinstance(hl_schemes[0], list):
+            hl_schemes = [hl_schemes]
+        container = ModelContainer(
+            dt.datacolnames,
+            dt.class_names,
+            hl_schemes,
+            LR,
+            momentum,
+            repetitions,
+            optim,
+            testpercent,
+            str(validation),
+        )
+        anncl = cls(container, validation)
+        anncl._data = dt
+        return anncl
+
+    def __len__(self):
+        """Returns the length of stored best networks of the classifier."""
+        return len(self.container)
+
+    def __str__(self):
+        """String representation providing a summary of the classifier parameters and trained networks."""
+        return str(self.container)
+
+    @property
+    def getmodels(self):
+        """Returns a ModelContainer with trained models."""
+        return self.container
+
+    def trainModel(
+        self,
+        datatable: DataTable|None = None,
+        maxiter: int = 10000,
+        stable: int = 250,
+        stable_val: float = 0.001,
+    ):
+        """Trains a model ensemble.
+
+        Uses information (data and classification) in a DataTable to train ANN with the user defined parameters.
+
+        Args:
+            datatable: A DataTable instance with points for supervised learning.
+            maxiter: Maximum number of iterations to train.
+            stable: number if iterations with error diference bellow stable_val to stop training early.
+            stable_val: value for the network error difference between to consider stable.
+
+        """
+        if datatable:
+            if isinstance(datatable, DataTable):
+                self._data = datatable
+            else:
+                raise TypeError("Provided data must be an instance of DataTable.")
+        else:
+            if not self._data:
+                raise ValueError("Provide data in a datatable to train the models.")
+
+        targets = self._data.getClasses
+        patterns = self._data.getData
+
+        n_input = patterns.shape[1]
+        n_output = targets.shape[1]
+
+        if n_input != self.container.n_inputs or n_output != self.container.n_outputs:
+            raise ValueError(
+                f"Data must have {self.container.n_inputs} inputs and {self.container.n_outputs} targets."
+            )
+
+        net_counter = 0
+
+        for hl_scheme in self.container.hl_schemes:
+            print(
+                f"Training networks with scheme i:[{n_input}] | hl:{hl_scheme} | o:[{n_output}]."
+            )
+            scheme = [n_input] + hl_scheme + [n_output]
+
+            n_test = int(len(self._data) * self.container.testpercent / 100.0)
+            n_train = len(self._data) - n_test
+
+            mask = np.array([True] * n_train + [False] * n_test)
+
+            for rep in range(self.container.repetitions):
+                print(f"Repetition: {rep+1} from {self.container.repetitions}")
+
+                # Prepare train and test data
+                np.random.shuffle(mask)
+                tgt_train = targets[mask].reshape(n_train, n_output).tolist()
+                tgt_test = targets[np.invert(mask)].reshape(n_test, n_output).tolist()
+                pat_train = patterns[mask,].tolist()
+                pat_test = patterns[np.invert(mask),].tolist()
+
+                # Start a ANN based on provided scheme
+                nn = NN(
+                    scheme,
+                    iterations=1,
+                    LR=self.container.lr,
+                    momentum=self.container.momentum,
+                    optim=self.container.optimizer,
+                )
+
+                scale = self._data.is_scaled
+
+                if scale:
+                    nn.means = self._data.scale_means.tolist()
+                    nn.sdevs = self._data.scale_sdevs.tolist()
+
+                nn.initWeights()
+
+                best = [0, 0, ""]
+                tracker = []
+                err_dif = -1
+
+                print("| Iteration |   Error   | Train |  Test | Product |  ErrDiff |")
+
+                for i in range(maxiter):
+                    nn.trainnet(pat_train, tgt_train, scale=not scale, verbose=0)
+                    pred_train = nn.testnet(pat_train, scale=not scale, verbose=0)
+                    pred_test = nn.testnet(pat_test, scale=not scale, verbose=0)
+                    k_train = self.validation.calc(tgt_train, pred_train)
+                    k_test = self.validation.calc(tgt_test, pred_test)
+                    k_prod = k_train * k_test
+                    err = nn.netTrainError[0]
+                    if k_prod > best[0]:
+                        best = [k_prod, i, str(nn)]
+
+                    if i > 1:
+                        err_dif = tracker[-1][0] - err
+                    tracker.append([err, k_train, k_test, k_prod, err_dif])
+
+                    tt = sum(
+                        [x[4] <= stable_val and x[4] > 0 for x in tracker[-stable:]]
+                    )
+                    print(
+                        f"| {i:9d} | {err:9.5f} | {k_train:5.3f} | {k_test:5.3f} |  {k_prod:5.3f}  | {err_dif:8.5f} |",
+                        end="\r",
+                    )
+                    if tt >= stable:
+                        break
+
+                self.container.add_model(Model(best[2], rep, scheme, tracker, best[1]))
+                print(
+                    "\nBest net:"
+                    + f"\n\tIteration {best[1]}"
+                    + f"\n\tError: {tracker[best[1]][0]:.3f}"
+                    + f"\n\tValidation train: {tracker[best[1]][1]:.3f}"
+                    + f"\n\tValidation test: {tracker[best[1]][2]:.3f}"
+                    + f"\n\tValidation product: {tracker[best[1]][3]:.3f}"
+                )
+
+                net_counter += 1
+
+    def writeModel(self, filename: str):
+        """Writes the trained models to a file.
+
+        Args:
+            filename: the file name to be written, usually with .obj extension.
+
+        """
+        self.container.save(filename)
+
+
+class AnnPredict:
+    """Class for predicting based on trained models."""
+
+    def __init__(self, modelcontainer):
+        """Initialise class
+
+        Args:
+            modelcontainer: an instance of ModelContainer with the best trained model with ANNClassifier.
+        """
+        self.container = modelcontainer
+
+    @classmethod
+    def from_annclassifier(cls, ann: AnnClassifier):
+        """Open models and predict from a AnnClassifier instance with trained networks.
+
+        Args:
+            ann: instace of AnnClassifier with trained models.
+
+        """
+        if isinstance(ann, AnnClassifier):
+            return cls(ann.getmodels())
+        else:
+            raise TypeError("Provide an instance of AnnClassifier")
+
+    @classmethod
+    def from_modelsfile(cls, filename: str):
+        """Open models from file for prediction.
+
+        Args:
+            filename: the models file saved from an AnnClassifier instance. Usually .obj file.
+
+        """
+        container = ModelContainer.load(filename)
+        return cls(container)
+
+    def __str__(self):
+        return str(self.container)
+
+    def predict(self, patterns: list, scale: bool = True) -> list:
+        """Predict output of model to a list of patterns.
+
+        Args:
+            patterns: a list with patterns to be tested with trained models. Patterns must follow the same order as in training.
+            scale: if patterns should be scaled with network stored means and standard deviations.
+
+        Returns:
+            a list of predictions with the format [[[output_1], [output_2]]] for all models trained.
+
+        """
+        predictions = []
+        for net in self.container.get_best_nets():
+            nn = NN.loadnet(net)
+            predictions.append(nn.testnet(patterns, scale=scale, verbose=0))
+        return predictions
+
+    def predictFromDataTable(self, datatable: DataTable, scale: bool = True) -> DataTable:
+        """Predict values with data from a DataTable instance.
+
+        Uses the data slot of a DataTable to get values to predict.
+
+        Args:
+            datatable: a DataTable instance with data to test and predict. Must follow the same order as original data used to train models.
+            scale: If true, use network stored mean and standard deviations to scale data.
+
+        """
+        if datatable.datacolnames != self.container.inputs:
+            print("Warning: The data column names do not match the model's input names. Predictions are still being made, but please ensure that the order of the data columns is correct.")
+
+        patterns = datatable.getData.tolist()
+        predtable = DataTable(
+            datatable.getPoints.tolist(), datatable.getClasses.tolist()
+        )
+        pred = self.predict(patterns, scale)
+        for i in range(len(pred)):
+            predtable.add_datacolumns(pred[i], datatable.colnames[i])
+        return predtable
+
+    def predictFromRaster(
+        self,
+        raster: Raster,
+        scale: bool = True,
+        multiplier: int = 1000,
+        blocksize: int = 250,
+        nodata: int | float = -9999,
+        dtype: str = "int16",
+    ) -> Raster:
+        """Predicts from a raster object used trained models.
+
+        The bands of the raster object are used as patterns and must be provided in the same order as original data used for training.
+
+        Args:
+            raster: an instance of a Raster object.
+            scale: If True, use means and standard deviation stored with the netowrk to scale data.
+            multiplier: a multiplication factor for the predictions values
+            blocksize: the size of the blocks to predict (instead of using the whole raster array at once).
+            nodata: nodata value to be used in the new raster
+            dtype: the data type of the raster to be created
+
+        Returns:
+            A Raster object with predictions, where each band represents a trained network (repetitions and schemes). Check metadata.
+
+        """
+
+        if raster.bandnames != self.container.inputs:
+            print("Warning: The raster band names do not match the model's input names. Predictions are still being made, but please ensure that the order of the bands is correct.")
+
+        n = len(self.container)
+        n_outputs = self.container.n_outputs
+
+        pred_rst = Raster.from_scratch(
+            raster.size,
+            raster.res,
+            raster.origin,
+            bands=n * n_outputs,
+            nodata=nodata,
+            projwkt=raster.proj,
+            dtype=gdal_array.NumericTypeCodeToGDALTypeCode(np.dtype(dtype)),
+        )
+
+        # Set Metadata
+        md = {
+            "Created_with": f"SpartANN, version {__version__}",
+            "Creation_date": ctime(),
+            "Number_of_predictions": f"{n*n_outputs} from {n} models with {n_outputs} outputs",
+            "Multiplier": 1 / multiplier,
+        }
+        pred_rst.addMetadata(md)
+
+        r_iter = raster.block_iter(blocksize=blocksize)
+
+        progressbar(0, 1)
+        for pos, arr in r_iter:
+            b, r, c = arr.shape
+            # to table format (pixels, bands)
+            arr = arr.transpose(1, 2, 0).reshape(r * c, b)
+            pred = np.array(self.predict(arr.tolist(), scale=scale))
+            pred = pred.transpose(2, 0, 1).reshape(n * n_outputs, r, c) * multiplier
+            pred[np.isnan(pred)] = nodata
+            pred = pred.astype(dtype)
+            pred_rst.set_array(pred, rc=pos[:2])
+            progressbar(pos[2], pos[3])
+
+        # Sets bands specific metadata
+        for o in range(n_outputs):
+            for i in range(n):
+                md = {
+                    "Scheme": self.container.models[i].scheme,
+                    "Repetition": self.container.models[i].repetition,
+                    "Output": self.container.outputs[o],
+                }
+                descr = f'Prediction for {self.container.outputs[o]}, with scheme {md["Scheme"]}, repetition {md["Repetition"]}'
+                pred_rst.addMetadata(md, i + (n * o) + 1)
+                pred_rst.addDescription(descr, i + (n * o) + 1)
+
+        return pred_rst

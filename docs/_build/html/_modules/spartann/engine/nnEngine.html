@@ -1,0 +1,1032 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spartann.engine.nnEngine &mdash; SpartANN 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Instalation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">spartann.engine.nnEngine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for spartann.engine.nnEngine</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">FeedForward Backpropagation Neural Networks</span>
+<span class="sd">Version 3.00</span>
+<span class="sd">Copyright (C) 2010-2024  Pedro Tarroso</span>
+
+<span class="sd">Originally published in</span>
+<span class="sd">&quot;Tarroso, P., Carvalho, S. &amp; Brito, J.C. (2012) Simapse - Simulation</span>
+<span class="sd">Maps for Ecological Niche Modelling. Methods in Ecology and Evolution</span>
+<span class="sd">doi: 10.1111/j.2041-210X.2012.00210.x&quot;</span>
+
+<span class="sd">This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">it under the terms of the GNU General Public License as published by</span>
+<span class="sd">the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">(at your option) any later version.</span>
+
+<span class="sd">This program is distributed in the hope that it will be useful,</span>
+<span class="sd">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">GNU General Public License for more details.</span>
+
+<span class="sd">You should have received a copy of the GNU General Public License</span>
+<span class="sd">along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">uniform</span><span class="p">,</span> <span class="n">normalvariate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">exp</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;NN&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="NN">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NN</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="p">[],</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">LR</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">optim</span><span class="o">=</span><span class="s2">&quot;RMSProp&quot;</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-18</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialise ANN.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            scheme: a list with layers and neurons where length indicate number of layers (input and output included) and integers number of neurons per layer. A structure with 5 inputs, 2 hidden layers with 5 neurons in the first layer and 3 neurons in the second layer, plus a single output layer is [5,5,3,1].</span>
+<span class="sd">            iterations: integer indicating the maximum number of iterations to train</span>
+<span class="sd">            LR: float indicating learning rate.</span>
+<span class="sd">            momentum: a float or list indicating momentum value.</span>
+<span class="sd">            optim: a string indicating the optimizer to use. Available options are &quot;SGD&quot;, &quot;SimpleMomentum&quot;, &quot;Momentum&quot;, &quot;AdaGrad&quot;, &quot;RMSProp&quot; or &quot;Adam&quot;.</span>
+<span class="sd">            verbosity: verbosity level of the training process</span>
+<span class="sd">            eps: a small value for avoiding division by zero (no need to change)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span> <span class="o">=</span> <span class="n">scheme</span>
+
+        <span class="c1"># Create network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span> <span class="o">=</span> <span class="n">LR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">=</span> <span class="n">momentum</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">varNames</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errPat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">netTrainError</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Scaling parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sdevs</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">sigm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span> <span class="o">=</span> <span class="n">dsigm</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">verbosity</span>
+        <span class="n">avail_optimizers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sgd&quot;</span><span class="p">,</span> <span class="s2">&quot;simplemomentum&quot;</span><span class="p">,</span> <span class="s2">&quot;momentum&quot;</span><span class="p">,</span> <span class="s2">&quot;adagrad&quot;</span><span class="p">,</span> <span class="s2">&quot;rmsprop&quot;</span><span class="p">,</span> <span class="s2">&quot;adam&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">optim</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">avail_optimizers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">optim</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;adam&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">momentum</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Adam optimizer needs two parameters. Set momentum as a list with [B1, B2].&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimizer </span><span class="si">{</span><span class="n">optim</span><span class="si">}</span><span class="s2"> not available.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+
+
+<div class="viewcode-block" id="NN.loadnet">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.loadnet">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadnet</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">netstr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inits object with a string.</span>
+
+<span class="sd">        The net string is the string representation of the NN trained network.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            NN: a trained network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">netvars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">netstr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span>
+                <span class="n">netvars</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">netvars</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">net</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">netvars</span><span class="p">[</span><span class="s2">&quot;scheme&quot;</span><span class="p">])</span>
+        <span class="n">net</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">netvars</span>
+        <span class="k">return</span> <span class="n">net</span></div>
+
+
+<div class="viewcode-block" id="NN.loadnet_fromfile">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.loadnet_fromfile">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadnet_fromfile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">netfile</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inits object with a network in a file</span>
+
+<span class="sd">        It opens a file containing the NN trained network details resulting from using</span>
+<span class="sd">        NN.savenet().</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            NN: a trained network</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">netfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">netstr</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">loadnet</span><span class="p">(</span><span class="n">netstr</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of the current network state.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                string: a network representation in text format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">netvars</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">nl</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">netvars</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">netvars</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__call__&quot;</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nl</span><span class="si">}{</span><span class="n">var</span><span class="si">}</span><span class="s2">;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">nl</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+<div class="viewcode-block" id="NN.savenet">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.savenet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">savenet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">netfile</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves the trained network to a file.</span>
+
+<span class="sd">        It saves the current state of the network to a file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">netfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="NN.setFunc">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.setFunc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setFunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">dfun</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sets activation function and derivative function</span>
+
+<span class="sd">        Allows to change the neuron activation function and derivative. The default initialization</span>
+<span class="sd">        sets the sigmoid and respective derivative function for activation. This funtion allows to</span>
+<span class="sd">        change the activation with the pair of functions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fun: A function accepting a float and return other based on desired activation response</span>
+<span class="sd">            dfun: The respective derivative function of fun that accepts and returns a float.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">fun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span> <span class="o">=</span> <span class="n">dfun</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">means</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the vector of means used for scaling inputs.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_means</span>
+
+    <span class="nd">@means</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">means</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the vector of means used for scaling inputs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_means</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_means</span> <span class="o">=</span> <span class="n">values</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;List length does not match the number of input neurons.&quot;</span>
+                <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sdevs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the vector of standard deviations used for scaling inputs.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdevs</span>
+
+    <span class="nd">@sdevs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sdevs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the vector of standard deviations used for scaling inputs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sdevs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sdevs</span> <span class="o">=</span> <span class="n">values</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;List length does not match the number of input neurons.&quot;</span>
+                <span class="p">)</span>
+
+<div class="viewcode-block" id="NN.trainnet">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.trainnet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">trainnet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains the network with loaded inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns (list[list]): a list of n training data with a list of p input (i) values to classify</span>
+<span class="sd">            [[i_1_1, i_2_1, ..., i_p_1], [i_1_2, i_2_2, ...,i_p_2], ..., [i_1_n, i_2_n, ..., i_p_n]]</span>
+<span class="sd">            targets (list[list]): a list of n classification targets for training with a list of o outputs</span>
+<span class="sd">            [[O_1_1, O_2_1, ..., O_o_1], [O_1_2, O_2_2, ...,O_o_2], ..., [O_1_n, O_2_n, ..., O_o_n]]</span>
+<span class="sd">            varnames (list): a list of variable names for each input</span>
+<span class="sd">            scale (bool): if True scales the inputs to z-scores (x-mean(X))/sdev(X))</span>
+<span class="sd">            verbose (bool): Control the verbosity of training.</span>
+
+<span class="sd">        Verbose level</span>
+<span class="sd">            0 - Nothing is printed</span>
+<span class="sd">            1 - Prints Iteration number | Network error</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span>
+
+        <span class="c1"># Scaling</span>
+        <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdevs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="ne">Warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Means and Standard deviations are already set. Using for scaling input patterns&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__calcstats</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">varnames</span> <span class="o">=</span> <span class="n">varnames</span>
+
+        <span class="c1"># train with patterns and targets</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur_iter</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)):</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="n">p</span><span class="p">][:]</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+                <span class="c1"># Calculates the current network output</span>
+                <span class="c1"># and error for this pattern</span>
+                <span class="c1"># FEED FORWARD</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">feedforward</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="c1"># Calculate net error</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calcTargetError</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+                <span class="c1"># Change weights on network</span>
+                <span class="c1"># BACK PROPAGATION</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backpropag</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+
+            <span class="n">err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neterror</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="s2">&quot;SSerror&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">netTrainError</span> <span class="o">=</span> <span class="n">err</span>
+            <span class="c1"># Print error for this iteration</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;iteration = </span><span class="si">{}</span><span class="s2"> | RMS error = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_iter</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="NN.checkVarNames">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.checkVarNames">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkVarNames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varnames</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tests if varnames are the same an in the same order as trained&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">varNames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># No variable names provided: the user must control the order.</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">varNames</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">varnames</span><span class="p">):</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">varNames</span><span class="p">,</span> <span class="n">varnames</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+                <span class="c1"># Variable names match</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># some variables do not match</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># diferent number of variables</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__calcstats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate statistics about inputs.</span>
+
+<span class="sd">        Calculates and retains the vector of means and standard deviation of the inputs used for traning.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+
+        <span class="c1"># Variable average</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nvar</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">means</span> <span class="o">=</span> <span class="p">[</span><span class="n">means</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">patterns</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvar</span><span class="p">)]</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[</span><span class="n">means</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">/</span> <span class="n">n</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvar</span><span class="p">)]</span>
+
+        <span class="c1"># Variable standard deviation</span>
+        <span class="n">stdevs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nvar</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">stdevs</span> <span class="o">=</span> <span class="p">[</span><span class="n">stdevs</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">-</span> <span class="n">means</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvar</span><span class="p">)]</span>
+        <span class="n">stdevs</span> <span class="o">=</span> <span class="p">[</span><span class="n">stdevs</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">/</span> <span class="n">n</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvar</span><span class="p">)]</span>
+
+        <span class="c1"># Assign self variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="n">means</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sdevs</span> <span class="o">=</span> <span class="n">stdevs</span>
+
+<div class="viewcode-block" id="NN.scale">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.scale">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scale given patterns with stored means and standard deviations</span>
+
+<span class="sd">        This function scales a set of patterns with stored means and standard deviations.</span>
+<span class="sd">        It is useful for predicting using the same scaling values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns (list([list]): a list of input patterns similar to training or testing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: a list of scaled values with same dimensions as patterns.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nvar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[(</span><span class="n">patterns</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdevs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvar</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">scaled</span></div>
+
+
+<div class="viewcode-block" id="NN.testnet">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.testnet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">testnet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tests the network with a sequence of patterns and returns</span>
+<span class="sd">        the predicted output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns (list[list]): a list of n testing data with a list of p input (i) values to classify</span>
+<span class="sd">            [[i_1_1, i_2_1, ..., i_p_1], [i_1_2, i_2_2, ...,i_p_2], ..., [i_1_n, i_2_n, ..., i_p_n]]</span>
+<span class="sd">            varnames (list): a list of variable names for each input</span>
+<span class="sd">            scale (bool): if True scales the inputs to z-scores (x-mean(X))/sdev(X))</span>
+<span class="sd">            verbose (bool): Control the verbosity for testing.</span>
+
+<span class="sd">        Verbose level</span>
+<span class="sd">            0 - nothing is printed</span>
+<span class="sd">            1 - prints \&#39;pattern number | network output\&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[list]: a list of same length as patterns with the required number of output predictions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkVarNames</span><span class="p">(</span><span class="n">varnames</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Variable names do not match variables used for training.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span>
+        <span class="c1"># Accepts a single list of inputs or a list of sequence of inputs</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+
+        <span class="n">nPat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+        <span class="n">finalresults</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nPat</span><span class="p">):</span>
+            <span class="n">curPat</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feedforward</span><span class="p">(</span><span class="n">curPat</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:]</span>
+            <span class="n">finalresults</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pattern = </span><span class="si">{}</span><span class="s2"> | predicted = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">finalresults</span></div>
+
+
+<div class="viewcode-block" id="NN.neterror">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.neterror">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">neterror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">errorType</span><span class="o">=</span><span class="s2">&quot;SSerror&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the overall error of the network.</span>
+
+<span class="sd">        The error of the network based on a set of patterns and targets,</span>
+<span class="sd">        usually the training data or for some independent evaluation of the</span>
+<span class="sd">        fit.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns (list[list]): a list of n training data with a list of p input (i) values to classify</span>
+<span class="sd">            [[i_1_1, i_2_1, ..., i_p_1], [i_1_2, i_2_2, ...,i_p_2], ..., [i_1_n, i_2_n, ..., i_p_n]]</span>
+<span class="sd">            targets (list[list]): a list of n classification targets for training with a list of o outputs</span>
+<span class="sd">            [[O_1_1, O_2_1, ..., O_o_1], [O_1_2, O_2_2, ...,O_o_2], ..., [O_1_n, O_2_n, ..., O_o_n]]</span>
+<span class="sd">            errorType (string) :  Options for error type are:</span>
+<span class="sd">                - RMSerror - Root Mean Square error (default)</span>
+<span class="sd">                - SSerror  - Sum of Squared error</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): the net error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">errorType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;RMSerror&quot;</span><span class="p">,</span> <span class="s2">&quot;SSerror&quot;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Error type must be &#39;RMSerror&#39; or &#39;SSerror&#39;!&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">errorType</span> <span class="o">==</span> <span class="s2">&quot;RMSerror&quot;</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__RMSerror</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">errorType</span> <span class="o">==</span> <span class="s2">&quot;SSerror&quot;</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__SSerror</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">error</span>
+
+        <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__RMSerror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the Root Mean Square Error os the network.&quot;&quot;&quot;</span>
+        <span class="n">nOutputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nOutputs</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feedforward</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calcTargetError</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errPat</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nOutputs</span><span class="p">)]</span>
+        <span class="n">RMSerror</span> <span class="o">=</span> <span class="p">[(</span><span class="n">temp</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nPatterns</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nOutputs</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">RMSerror</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__SSerror</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the Sum of Squared Errors of the network.&quot;&quot;&quot;</span>
+        <span class="n">nOutputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nOutputs</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feedforward</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calcTargetError</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errPat</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nOutputs</span><span class="p">)]</span>
+        <span class="n">SSerror</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nOutputs</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">SSerror</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_optimSGD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of Simple Gradient Descent optimizer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span> <span class="o">*</span> <span class="n">grad</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_optimSimpleMomentum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of SGD with simple momentum optimizer&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_optimMomentum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of SGD with momentum optimizer&quot;&quot;&quot;</span>
+        <span class="n">prevG</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">momentum</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">*</span> <span class="n">prevG</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_optimAdagrad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of Adaptive Gradient Optimization (AdaGRAD) optimizer&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">+=</span> <span class="n">grad</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span><span class="o">/</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_optimRMSProp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of Root Mean Squared Propagation (RMSProp) optimizer&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">momentum</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">grad</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span><span class="o">/</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_optimAdam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of Adaptive Moment Estimation (Adam) optimizer&quot;&quot;&quot;</span>
+        <span class="n">B1</span><span class="p">,</span><span class="n">B2</span><span class="p">,</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span>
+        <span class="c1"># Needs to track two values, so, it modifies G in the first iteration</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">B1</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">B1</span><span class="p">)</span><span class="o">*</span><span class="n">grad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">B2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">B2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">grad</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">grad_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">B1</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_iter</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">gradsq_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">B2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_iter</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">LearningRate</span><span class="o">/</span><span class="p">((</span><span class="n">gradsq_bias</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">grad_bias</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Available optimizers</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a dictionary with implemented optimizers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">optimizers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sgd&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimSGD</span><span class="p">,</span>
+                      <span class="s2">&quot;simplemomentum&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimSimpleMomentum</span><span class="p">,</span>
+                      <span class="s2">&quot;momentum&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimMomentum</span><span class="p">,</span>
+                      <span class="s2">&quot;adagrad&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimAdagrad</span><span class="p">,</span>
+                      <span class="s2">&quot;rmsprop&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimRMSProp</span><span class="p">,</span>
+                      <span class="s2">&quot;adam&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimAdam</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">optimizers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">]</span>
+
+<div class="viewcode-block" id="NN.backpropag">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.backpropag">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">backpropag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Backpropagation</span>
+
+<span class="sd">        Backpropagates error calculation on neural network structure and updates weights.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns (list[list]): a list of n training data with a list of p input (i) values to classify</span>
+<span class="sd">            [[i_1_1, i_2_1, ..., i_p_1], [i_1_2, i_2_2, ...,i_p_2], ..., [i_1_n, i_2_n, ..., i_p_n]]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nlayers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># Without input layer</span>
+        <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span>
+        <span class="n">dfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span>
+        <span class="n">nlayers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span>
+        <span class="n">out_errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">errPat</span><span class="p">[:]</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOptimizer</span><span class="p">()</span>
+
+        <span class="c1"># Calculate error at output level</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="n">dfunc</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">derivative</span> <span class="o">*</span> <span class="n">out_errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]):</span>
+                <span class="n">grad</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+                <span class="n">errors</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">*</span> <span class="n">out_errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="n">optimizer</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+                <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">-</span> <span class="n">changes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+            <span class="c1"># Bias</span>
+            <span class="n">errors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">out_errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">optimizer</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">changes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Calculate error for hidden layers (except first)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlayers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">prevL_errors</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="p">]):</span>
+                <span class="n">derivative</span> <span class="o">=</span> <span class="n">dfunc</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">derivative</span> <span class="o">*</span> <span class="n">errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">grad</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">values</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">2</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+                    <span class="n">prevL_errors</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">*</span> <span class="n">errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                    <span class="n">optimizer</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+                    <span class="n">weights</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">-</span> <span class="n">changes</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+                <span class="c1"># Bias</span>
+                <span class="n">prevL_errors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+                <span class="n">optimizer</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">weights</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">changes</span><span class="p">[</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="n">prevL_errors</span><span class="p">[:]</span>
+
+        <span class="c1"># Calculate error for the first hidden layer</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="n">dfunc</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">derivative</span> <span class="o">*</span> <span class="n">errors</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">grad</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">patterns</span><span class="p">[</span><span class="n">w</span><span class="p">]</span>
+                <span class="n">optimizer</span><span class="p">(</span><span class="n">grad</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+                <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">-</span> <span class="n">changes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+            <span class="c1"># Bias</span>
+            <span class="n">optimizer</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">changes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="NN.feedforward">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.feedforward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">feedforward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Feedforward stage</span>
+
+<span class="sd">        Calculates output values from a set of input patterns.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns (list[list]): a list of n training data with a list of p input (i) values to classify</span>
+<span class="sd">            [[i_1_1, i_2_1, ..., i_p_1], [i_1_2, i_2_2, ...,i_p_2], ..., [i_1_n, i_2_n, ..., i_p_n]]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span>
+        <span class="n">hValues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="n">nlayers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hValues</span><span class="p">)</span>
+        <span class="c1"># Add bias node</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">derivatives</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span>
+        <span class="n">dfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span>
+
+        <span class="c1"># FeedForward - Input patterns</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">hValues</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">hValues</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">pattern</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+            <span class="n">hValues</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">hValues</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">hValues</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+            <span class="n">derivatives</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfunc</span><span class="p">(</span><span class="n">hValues</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+
+        <span class="c1"># FeedForward - Hidden Layers and Output</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nlayers</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]):</span>
+                <span class="n">hValues</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="p">]):</span>
+                    <span class="n">hValues</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">hValues</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">w</span><span class="p">]</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="n">w</span><span class="p">]</span>
+                <span class="n">hValues</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weights</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">hValues</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">hValues</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+                <span class="n">derivatives</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfunc</span><span class="p">(</span><span class="n">hValues</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">hValues</span></div>
+
+
+<div class="viewcode-block" id="NN.calcTargetError">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.calcTargetError">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calcTargetError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the error in relation to each output target.&quot;&quot;&quot;</span>
+        <span class="n">hValues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">nOutputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">errPat</span> <span class="o">=</span> <span class="p">[</span><span class="n">hValues</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">o</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nOutputs</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errPat</span> <span class="o">=</span> <span class="n">errPat</span></div>
+
+
+<div class="viewcode-block" id="NN.pderiv">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.pderiv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pderiv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patterns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes the partial derivatives of the output vs. input</span>
+<span class="sd">        Input patterns must be [[i1],[i2],[i3],...], or [patterns]&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">pderiv</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+                <span class="n">pderiv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pderiv</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">pderiv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pderiv</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input patterns must be [[i1],[i2],[i3],...] or [patterns]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pderiv</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_weight_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">rep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">remove_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the weights of the layer sorted by the sequence of the</span>
+<span class="sd">        neurons in the previous layer neurons. It repeats the sequence &#39;rep&#39;</span>
+<span class="sd">        number of times and it optionally removes the BIAS weight&quot;&quot;&quot;</span>
+        <span class="n">bias</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">remove_bias</span><span class="p">))</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="n">new_weights</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rep</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">n_previous</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">bias</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">n_next</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)):</span>
+                    <span class="n">new_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">n_next</span><span class="p">][</span><span class="n">n_previous</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">new_weights</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__pderiv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the partial derivatives of the network output with respect</span>
+<span class="sd">        to the input. This function only processes one sequence of input</span>
+<span class="sd">        patterns by sprawling the network.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedforward</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+
+        <span class="n">deriv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="n">scheme</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">nlayers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+        <span class="n">noutputs</span> <span class="o">=</span> <span class="n">scheme</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">pderiv</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">))]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">deriv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">)):</span>
+            <span class="c1"># variable product has all the weights connected to input node i</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="p">[</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">x</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlayers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># output layer removed</span>
+                <span class="c1"># n is the number of connections available to between current layers</span>
+                <span class="c1"># m is number of nodes with derivatives in layer l</span>
+                <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">product</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">deriv</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+                <span class="c1"># each deriv node value for layer l is repeated</span>
+                <span class="c1"># by the number of connections it has (the same as the number of</span>
+                <span class="c1"># neurons of previous layer)</span>
+                <span class="n">new_deriv</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span>
+                <span class="c1"># the products are multiplied by the derivatives sequentially</span>
+                <span class="n">product</span> <span class="o">=</span> <span class="p">[</span><span class="n">product</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">new_deriv</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+                <span class="c1"># w has all the weights from next layer sorted by the neurons of</span>
+                <span class="c1"># the previous layer and repeated for the number of connections</span>
+                <span class="c1"># of the current calculation</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_gen</span><span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+                <span class="c1"># new product is created by repeating each value by the number of</span>
+                <span class="c1"># neuron in the next layer</span>
+                <span class="n">sprawl_product</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">deriv</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+                <span class="c1"># sprawled product is multiplied by the sequence of weights between</span>
+                <span class="c1"># current and next layer</span>
+                <span class="n">product</span> <span class="o">=</span> <span class="p">[</span><span class="n">sprawl_product</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sprawl_product</span><span class="p">))]</span>
+
+            <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">product</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">deriv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">new_deriv</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="p">[</span><span class="n">product</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">new_deriv</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+
+            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">noutputs</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">noutputs</span><span class="p">):</span>
+                    <span class="n">pderiv</span><span class="p">[</span><span class="n">o</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">product</span><span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">o</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pderiv</span>
+
+<div class="viewcode-block" id="NN.structure">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.structure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the structure of the network</span>
+
+<span class="sd">        Builds the network structure based on user definitions and sets all</span>
+<span class="sd">        weights between neurons plus a BIAS neuron in each layer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            network (list): a network structure defining the number of layers</span>
+<span class="sd">            and neurons in each layer. Number of layers is given by the length</span>
+<span class="sd">            of the list and number of neurons is given by eacg integer item in</span>
+<span class="sd">            the list. For instance [2, 4, 3, 1] creates a network with a input</span>
+<span class="sd">            layer with two neurons, two hidden layers with 4 and 3 neurons each,</span>
+<span class="sd">            and an output layer with a single output.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="p">[]:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Network scheme cannot be empty!&quot;</span><span class="p">)</span>
+
+            <span class="n">nlayers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+            <span class="n">values</span><span class="p">,</span> <span class="n">derivatives</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">changes</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nlayers</span><span class="p">):</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">derivatives</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">changes</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">G</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">nneurons</span><span class="p">,</span> <span class="n">p_nneurons</span> <span class="o">=</span> <span class="n">network</span><span class="p">[</span><span class="n">layer</span><span class="p">],</span> <span class="n">network</span><span class="p">[</span><span class="n">layer</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">layer</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nneurons</span><span class="p">):</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">derivatives</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_nneurons</span><span class="p">))</span>
+                    <span class="n">changes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_nneurons</span><span class="p">))</span>
+                    <span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">p_nneurons</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span> <span class="o">=</span> <span class="n">derivatives</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">changes</span> <span class="o">=</span> <span class="n">changes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+
+        <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NN.initWeights">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.initWeights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="n">distrib</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Network weigh initialization</span>
+
+<span class="sd">        General function for weight initialization with a available methods:</span>
+<span class="sd">            - Random: (method = &quot;random&quot;) Recommende for small networks</span>
+<span class="sd">            - Glorot/Xavier: (method = &quot;glorot&quot;) Recommended for sigmoid or tanh activation</span>
+<span class="sd">            - He: (method = &quot;he&quot;) Recommended for ReLU activation (no dead neurons)</span>
+<span class="sd">            - LeCun: (method = &quot;lecun&quot; ) Recommended for sigmoid functions and ReLU</span>
+
+<span class="sd">        based on &quot;normal&quot; or &quot;uniform&quot; random numbers.</span>
+<span class="sd">        (Note: for LeCun, distrib is always normal.)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method (string): One of the available methods.</span>
+<span class="sd">            distrib (string): A distribution to be used.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="s2">&quot;glorot&quot;</span><span class="p">,</span> <span class="s2">&quot;he&quot;</span><span class="p">,</span> <span class="s2">&quot;lecun&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Method has to be one of </span><span class="si">{</span><span class="n">methods</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">methods</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rndWeights</span><span class="p">(</span><span class="n">distrib</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">glorotWeights</span><span class="p">(</span><span class="n">distrib</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">heWeights</span><span class="p">(</span><span class="n">distrib</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lecunWeights</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="NN.rndWeights">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.rndWeights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rndWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distrib</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiates all network weights with random numbers between [-1/sqrt(n_input), 1/sqrt(n_input)]</span>
+<span class="sd">        based on uniform or normal distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">distrib</span> <span class="o">=</span> <span class="n">distrib</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">distrib</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution must be either &#39;uniform&#39; or &#39;normal&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)):</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="n">distrib</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">rng</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+                <span class="k">elif</span> <span class="n">distrib</span> <span class="o">==</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">normalvariate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="NN.glorotWeights">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.glorotWeights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">glorotWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distrib</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiates all network weights with random numbers between</span>
+<span class="sd">        [-sqrt(6/(n_input+n_output)), sqrt(6/(n_input+n_output))] if uniform</span>
+<span class="sd">        mu=0, sigma=2/(n_input+n_output), if normal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">distrib</span> <span class="o">=</span> <span class="n">distrib</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">distrib</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution must be either &#39;uniform&#39; or &#39;normal&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)):</span>
+            <span class="n">nneur</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="n">distrib</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+                    <span class="n">rng</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="o">/</span><span class="n">nneur</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">rng</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+                <span class="k">elif</span> <span class="n">distrib</span> <span class="o">==</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+                    <span class="n">rng</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="n">nneur</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">normalvariate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="NN.heWeights">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.heWeights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">heWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distrib</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiates all network weights with random numbers between</span>
+<span class="sd">        [-sqrt(6/(n_input), sqrt(6/(n_input))] if uniform</span>
+<span class="sd">        mu=0, sigma=2/(n_input), if normal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">distrib</span> <span class="o">=</span> <span class="n">distrib</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">distrib</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution must be either &#39;uniform&#39; or &#39;normal&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)):</span>
+            <span class="n">nneur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="n">distrib</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+                    <span class="n">rng</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="o">/</span><span class="n">nneur</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">rng</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+                <span class="k">elif</span> <span class="n">distrib</span> <span class="o">==</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span>
+                    <span class="n">rng</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="n">nneur</span>
+                    <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">normalvariate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="NN.lecunWeights">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.NN.lecunWeights">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lecunWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiates all network weights with random normal numbers between</span>
+<span class="sd">        mu=0, sigma=1/(n_input), if normal</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)):</span>
+            <span class="n">nneur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">])):</span>
+                <span class="n">rng</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">nneur</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">normalvariate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">w</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">n</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">w</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">XORexample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Example network data with XOR&quot;&quot;&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading XOR example...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">Patterns</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+            <span class="n">Targets</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initWeights</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainnet</span><span class="p">(</span><span class="n">Patterns</span><span class="p">,</span> <span class="n">Targets</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Patterns</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">feedforward</span><span class="p">(</span><span class="n">Patterns</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calcTargetError</span><span class="p">(</span><span class="n">Targets</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pattern = </span><span class="si">{</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> | real = </span><span class="si">{</span><span class="n">Targets</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="si">}</span><span class="s2"> | predicted = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">derivs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pderiv</span><span class="p">(</span><span class="n">Patterns</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Patterns</span><span class="p">)):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input: </span><span class="si">{}</span><span class="s2"> | Partial derivative: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Patterns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">derivs</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">repeat</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">rep</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a new list where each item is repeated &#39;rep&#39;</span>
+<span class="sd">    number of times, mantaining the original order:</span>
+<span class="sd">    repeat([1,2,3], 2) = [1,1,2,2,3,3]&quot;&quot;&quot;</span>
+    <span class="n">new_lst</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rep</span><span class="p">):</span>
+            <span class="n">new_lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_lst</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">20</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dtanh</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="sigm">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.sigm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sigm</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="mf">2.7182818284590451</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">700</span><span class="p">:</span>  <span class="c1"># avoid overflow on large networks</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span><span class="o">**</span><span class="mi">700</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="dsigm">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.dsigm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dsigm</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="relu">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.relu">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">relu</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="drelu">
+<a class="viewcode-back" href="../../../spartann.engine.html#spartann.engine.nnEngine.drelu">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">drelu</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">nn</span> <span class="o">=</span> <span class="n">NN</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">LR</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">XORexample</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
