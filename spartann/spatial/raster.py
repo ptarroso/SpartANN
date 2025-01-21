@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 from osgeo import gdal, gdal_array
+from time import sleep
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import numbers
 from math import ceil
@@ -428,3 +430,96 @@ class Raster(object):
             self.dts.WriteArray(arr, rc[1], rc[0])
         else:
             self.dts.GetRasterBand(band).WriteArray(arr, rc[1], rc[0])
+
+    def aggregate_bands(self, bands, fun=np.median, blocksize=250, ncores=1):
+        """
+        Aggregate raster bands based on a user-defined function and return a
+        new single-band raster.
+
+        This function aggregates the bands of a raster into a single band by
+        applying a user-defined aggregation function (e.g., mean, max, min,
+        median, standard deviation). It supports multi-core processing, which
+        is especially useful for handling large rasters.
+
+        Args:
+            bands: List of band indices to aggregate (1-based indexing as per
+            GDAL convention). If None, all bands will be aggregated.
+            fun: A numpy-style function used to aggregate the bands. The
+            function must accept the argument 'axis' (e.g., np.mean, np.max,
+            np.min, np.median, np.std).
+            blocksize (int): The side length of the blocks to process during
+            raster aggregation.
+            ncores (int): The number of CPU cores to use for processing each
+            block. This requires the raster to have a source file (loaded from or previously written to a file).
+
+        Returns:
+            Raster: A new raster object with the same spatial properties as the
+            source raster, but with a single aggregated band.
+        """
+        nodata = self.dts.GetRasterBand(1).GetNoDataValue()
+        dtype = self.dts.GetRasterBand(1).DataType
+
+        rst = Raster.from_scratch(
+            size=self.size,
+            res=self.res,
+            crd=self.origin,
+            bands = 1,
+            nodata=nodata,
+            projwkt=self.proj,
+            dtype=dtype)
+
+        if bands is None:
+            bands = [x for x in range(self.nbands)]
+        else:
+            #GDAL bands start at 1 but here must be numpy indices (from 0)
+            bands = [x-1 for x in bands]
+
+        progressbar(0, 1)
+
+        if ncores == 1:
+            r_iter = self.block_iter(blocksize=blocksize)
+            for pos, arr in r_iter:
+                arr = fun(arr[bands,:,:], axis=0)
+                rst.set_array(arr, pos[:2], 1)
+                progressbar(pos[2], pos[3])
+        else:
+            if not self.hasSource:
+                msg = "The raster must be associated with a file (either " +\
+                      "loaded from or written to one) to enable multicore " +\
+                      "processing."
+                raise ValueError(msg)
+            file = self.source
+            r_iter = self.block_iter(blocksize=blocksize, read_arr=False)
+
+            progress = []
+
+            with ProcessPoolExecutor(max_workers=ncores) as exec:
+                futures = [
+                    exec.submit(_worker, pos, bands, fun, file, blocksize)
+                    for pos, _ in r_iter
+                ]
+
+                for future in as_completed(futures):
+                    pos, arr = future.result()
+                    progress.append(pos[2])
+                    rst.set_array(arr, pos[:2], 1)
+                    progressbar(max(progress), pos[3])
+
+        return rst
+
+def _worker(
+        pos: Tuple[int, int, int, int],
+        bands: list[int],
+        fun: Callable,
+        file: str,
+        blocksize: int):
+    """
+    Internal worker function for multi-core raster band aggregation.
+
+    The function is not intended to be used directly outside the context of the
+    multi-core processing setup.
+    """
+    rst = Raster.from_file(file)
+    arr = rst.get_subarray(pos[:2], blocksize)
+    arr = fun(arr[bands,:,:], axis=0)
+    return (pos, arr)
