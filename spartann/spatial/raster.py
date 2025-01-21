@@ -6,6 +6,7 @@ import numbers
 from math import ceil
 from typing import Iterator, Callable, Tuple, Optional
 
+
 gdal.UseExceptions()
 
 
@@ -34,7 +35,7 @@ class Raster(object):
             dts: a gdal Dataset object
         """
         self.dts = dts
-
+        self.source = ""
     """ Size is [row, cols] which translates to [RasterY, RasterX]"""
 
     @classmethod
@@ -83,7 +84,9 @@ class Raster(object):
 
         """
         ds = gdal.Open(filename)
-        return cls(ds)
+        rst = cls(ds)
+        rst.source = filename
+        return rst
 
     @classmethod
     def from_array(
@@ -153,6 +156,14 @@ class Raster(object):
             b = self.dts.GetRasterBand(i+1)
             names.append(b.GetDescription())
         return(names)
+
+    @property
+    def hasSource(self) -> bool:
+        """ Indicates if the raster has a source file.
+
+        If raster has source, it was read from or written to file.
+        """
+        return self.source != ""
 
     def addNewBand(self, data: np.ndarray, name: Optional[str] = None) -> None:
         """ Adds a new band to the raster datset and fill with data.
@@ -267,6 +278,7 @@ class Raster(object):
             opt.append("BIGTIFF=YES")
         out_dt.CreateCopy(filename, self.dts, 1, options=opt)
         out_dt = None
+        self.source = filename
 
     def get_array(self,
         band: Optional[int] = None,
@@ -289,6 +301,45 @@ class Raster(object):
             if not issubclass(arr.dtype.type, np.floating):
                 arr = arr.astype("float")
             arr[arr == na] = np.nan
+        return arr
+
+    def get_subarray(self,
+        rc: Tuple[int, int] = (0,0),
+        blocksize: int = 250,
+        band: Optional[int] = None,
+        convNA: bool = True) -> np.ndarray:
+        """Returns the full array of the raster.
+
+        Args:
+            rc: Corner position of the sub array to retrieve
+            blocksize: side length of the subarray to retrieve.
+            band: integer defining a band to get or None for all bands
+            convNA: attempts to convert NA values to np.nan (fails for non float rasters)
+
+        NOTE:
+            Conversion to np.nan forces an attempt to convert array to float, so use with caution.
+        """
+        row = rc[0]
+        col = rc[1]
+        ys, xs = self.size
+        xoff = blocksize
+        if col + xoff > xs:
+            xoff = xs - col
+        yoff = blocksize
+        if row + yoff > ys:
+            yoff = ys - row
+
+        na = self.dts.GetRasterBand(1).GetNoDataValue()
+        if band is None:
+            arr = self.dts.ReadAsArray(col, row, xoff, yoff)
+        else:
+            arr = self.dts.GetRasterBand(band).ReadAsArray(col, row, xoff, yoff)
+
+        if convNA:
+            if not issubclass(arr.dtype.type, np.floating):
+                arr = arr.astype("float")
+            arr[arr == na] = np.nan
+
         return arr
 
     def get_nodata_mask(self,
@@ -315,13 +366,16 @@ class Raster(object):
     def block_iter(
         self,
         blocksize: int = 250,
-        band: Optional[int] = None
-    ) -> Iterator[Tuple[Tuple[int, int, int, int], np.ndarray]]:
+        band: Optional[int] = None,
+        read_arr: bool = True
+    ) -> Iterator[Tuple[Tuple[int, int, int, int], Optional[np.ndarray]]]:
         """Generator of array with raster values with specified size.
 
         Args:
             blocksize: the square size of the block, defining the shape of the yielded array (default is 250).
             band: Either 'None' for all bands or a specific raster band.
+            read_arr: It allows to return the array (default) or just the
+            position for each iterator block without attempt to read data.
 
         Yields:
             a list with location elements and the nnumpy array with data.
@@ -333,6 +387,7 @@ class Raster(object):
         na = self.dts.GetRasterBand(1).GetNoDataValue()
         total = ceil(xs / blocksize) * ceil(ys / blocksize)
         i = 0
+        arr = None
         for col in range(0, xs, blocksize):
             xoff = blocksize
             if col + xoff > xs:
@@ -342,13 +397,14 @@ class Raster(object):
                 if row + yoff > ys:
                     yoff = ys - row
 
-                if band is None:
-                    arr = self.dts.ReadAsArray(col, row, xoff, yoff)
-                else:
-                    arr = self.dts.GetRasterBand(band).ReadAsArray(col, row, xoff, yoff)
-                # Arrays are sent as float to accept np.nan
-                arr = arr.astype("float")
-                arr[arr == na] = np.nan
+                if read_arr:
+                    if band is None:
+                        arr = self.dts.ReadAsArray(col, row, xoff, yoff)
+                    else:
+                        arr = self.dts.GetRasterBand(band).ReadAsArray(col, row, xoff, yoff)
+                    # Arrays are sent as float to accept np.nan
+                    arr = arr.astype("float")
+                    arr[arr == na] = np.nan
                 i += 1
                 yield ((row, col, i, total), arr)
 
@@ -372,52 +428,3 @@ class Raster(object):
             self.dts.WriteArray(arr, rc[1], rc[0])
         else:
             self.dts.GetRasterBand(band).WriteArray(arr, rc[1], rc[0])
-
-    def summarise_bands(self,
-        bands: list[int],
-        fun: Callable[[np.ndarray, int], np.ndarray] = np.median,
-        blocksize: int = 2500) -> Raster:
-        """
-        Summarizes raster bands into a single band raster.
-
-        This method summarizes raster data along the band axis using a specified function.
-        It returns a raster with a single band, retaining the same definitions as the original,
-        containing the result of the summarization.
-
-        Args:
-            bandd: A list of integers representing the bands to summarize. This
-                follows GDAL's band indexing convention, which starts at 1 (not
-                0).
-            fun: A function used to summarize the band data. Typically, this is
-                a NumPy function that accepts the `axis` argument, such as
-                `median` (default), `mean`, `max`, or others.
-            blocksize: The size of the block to process in order to avoid large
-                memory usage.
-
-        Returns:
-            Raster: A new raster with a single band, retaining the same
-            definitions as the base raster.
-        """
-        rst = Raster.from_scratch(
-            size = self.size,
-            res = self.res,
-            crd = self.origin,
-            bands = 1,
-            nodata = self.dts.GetRasterBand(1).GetNoDataValue(),
-            projwkt = self.proj,
-            dtype = self.dts.GetRasterBand(1).DataType)
-
-        data_iter = self.block_iter(blocksize=blocksize)
-
-        # From 1 based to zero based index
-        bands = [x-1 for x in bands]
-
-        progressbar(0, 1)
-        for pos, arr in data_iter:
-            arr = arr[bands,::]
-            b, r, c = arr.shape
-            arr = fun(arr, axis = 0)
-            rst.set_array(arr, rc=pos[:2])
-            progressbar(pos[2], pos[3])
-
-        return rst
