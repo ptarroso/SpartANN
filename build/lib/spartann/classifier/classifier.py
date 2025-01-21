@@ -1,6 +1,7 @@
 from osgeo import gdal_array
 from typing import Callable
-from time import ctime
+from time import ctime, sleep
+from multiprocessing import Process, Queue
 from spartann.datatable.datatable import DataTable
 from spartann.engine.nnEngine import NN
 from spartann.spatial import progressbar, Raster
@@ -8,7 +9,7 @@ from .validation import CohensKappa_Validation
 from .model import Model, ModelContainer
 from spartann.version import __version__
 import numpy as np
-
+from queue import Empty
 
 class AnnClassifier:
     """The AnnClassifier provides methods for training a Artificial Neural Network with different parameters and optimizers for supervised classification."""
@@ -293,7 +294,9 @@ class AnnPredict:
     def __str__(self):
         return str(self.container)
 
-    def predict(self, patterns: list, scale: bool = True) -> list:
+    def predict(self,
+        patterns: list,
+        scale: bool = True) -> list:
         """Predict output of model to a list of patterns.
 
         Args:
@@ -309,6 +312,7 @@ class AnnPredict:
             nn = NN.loadnet(net)
             predictions.append(nn.testnet(patterns, scale=scale, verbose=0))
         return predictions
+
 
     def predictFromDataTable(self, datatable: DataTable, scale: bool = True) -> DataTable:
         """Predict values with data from a DataTable instance.
@@ -340,18 +344,22 @@ class AnnPredict:
         blocksize: int = 250,
         nodata: int | float = -9999,
         dtype: str = "int16",
+        ncores: int = 1
     ) -> Raster:
         """Predicts from a raster object used trained models.
 
         The bands of the raster object are used as patterns and must be provided in the same order as original data used for training.
+        Multicore processing is usefull for large rasters. It requires that the
+        raster exists as a file (either loaded form file or written to one).
 
         Args:
             raster: an instance of a Raster object.
-            scale: If True, use means and standard deviation stored with the netowrk to scale data.
+            scale: If True, use means and standard deviation stored with the network to scale data.
             multiplier: a multiplication factor for the predictions values
             blocksize: the size of the blocks to predict (instead of using the whole raster array at once).
             nodata: nodata value to be used in the new raster
             dtype: the data type of the raster to be created
+            ncores: Number of cores/processes to be used for processing a raster
 
         Returns:
             A Raster object with predictions, where each band represents a trained network (repetitions and schemes). Check metadata.
@@ -383,19 +391,12 @@ class AnnPredict:
         }
         pred_rst.addMetadata(md)
 
-        r_iter = raster.block_iter(blocksize=blocksize)
-
-        progressbar(0, 1)
-        for pos, arr in r_iter:
-            b, r, c = arr.shape
-            # to table format (pixels, bands)
-            arr = arr.transpose(1, 2, 0).reshape(r * c, b)
-            pred = np.array(self.predict(arr.tolist(), scale=scale))
-            pred = pred.transpose(2, 0, 1).reshape(n * n_outputs, r, c) * multiplier
-            pred[np.isnan(pred)] = nodata
-            pred = pred.astype(dtype)
-            pred_rst.set_array(pred, rc=pos[:2])
-            progressbar(pos[2], pos[3])
+        if ncores == 1:
+            self._singlecore_raster_predict(raster, pred_rst, blocksize, scale,
+                                multiplier, nodata, dtype)
+        else:
+            self._multicore_raster_predict(raster, pred_rst, blocksize, scale,
+                                multiplier, nodata, dtype, ncores)
 
         # Sets bands specific metadata
         for o in range(n_outputs):
@@ -410,3 +411,149 @@ class AnnPredict:
                 pred_rst.addDescription(descr, i + (n * o) + 1)
 
         return pred_rst
+
+    def _singlecore_raster_predict(self,
+        raster: Raster,
+        pred_rst: Raster,
+        blocksize: int,
+        scale: bool,
+        multiplier: int,
+        nodata: int | float,
+        dtype: str):
+        """
+        Internal function for raster prediction using a single-core
+        implementation.
+
+        This function avoids the overhead of creating additional processes and
+        directly provides predictions for the raster.
+        """
+
+        n_outputs = self.container.n_outputs
+        n = len(self.container)
+
+        progressbar(0, 1)
+
+        r_iter = raster.block_iter(blocksize=blocksize, read_arr=True)
+
+        for block in r_iter:
+            pos, arr = block
+            b, r, c = arr.shape
+
+            ## to table format (pixels, bands)
+            arr = arr.transpose(1, 2, 0).reshape(r * c, b)
+            pred = np.array(self.predict(arr.tolist(), scale=scale))
+            pred = pred.transpose(2, 0, 1).reshape(n * n_outputs, r, c)
+            pred = pred * multiplier
+            pred[np.isnan(pred)] = nodata
+            pred = pred.astype(dtype)
+            pred_rst.set_array(pred, rc=pos[:2])
+
+            progressbar(pos[2], pos[3])
+
+    def _multicore_raster_predict(self,
+        raster: Raster,
+        pred_rst: Raster,
+        blocksize: int,
+        scale: bool,
+        multiplier: int,
+        nodata: int | float,
+        dtype: str,
+        ncores: int):
+        """
+        Internal function for raster prediction using a multi-core
+        implementation.
+
+        This function spawns a set of workers to process the raster with
+        minimal memory usage. The raster is divided into blocks for efficient
+        processing. To circumvent the single-process raster access limitation,
+        each process reads the raster file directly. Therefore, the raster must
+        either be written to or loaded from a file.
+
+        It utilizes task and result queues to provide data to and retrieve
+        results from the worker functions. Results are processed as they become
+        available in the queue, ensuring continuous and efficient data
+        processing.
+        """
+        progressbar(0, 1)
+
+        tasks = Queue()
+        results = Queue()
+
+        if not raster.hasSource:
+            msg = "The raster must be associated with a file (either loaded " +\
+                  "from or written to one) to enable multicore processing."
+            raise ValueError(msg)
+
+        file = raster.source
+
+        r_iter = raster.block_iter(blocksize=blocksize, read_arr=False)
+
+        for block in r_iter:
+            tasks.put(block)
+
+        processes = []
+
+        for wid in range(ncores):
+            p = Process(target=self._worker,
+                        args=(tasks, scale, file, blocksize, results))
+            processes.append(p)
+            p.start()
+
+        progress = []
+        while any(p.is_alive() for p in processes) or not results.empty():
+            try:
+                # Try to get a result from the result queue (non-blocking)
+                pos, pred = results.get_nowait()
+                progress.append(pos[2])
+                pred = pred * multiplier
+                pred[np.isnan(pred)] = nodata
+                pred = pred.astype(dtype)
+                pred_rst.set_array(pred, rc=pos[:2])
+                progressbar(max(progress), pos[3])
+            except Empty:
+                # To result retrieve, wait for next one
+                pass
+            except Exception as e:
+                print(f"{type(e).__name__} - {e}")
+                break
+            # Allow a small sleep to avoid tight polling loop
+            sleep(0.1)
+
+        for p in processes:
+            p.join()
+
+    def _worker(self,
+            tasks: Queue,
+            scale: bool,
+            file: str,
+            blocksize: int,
+            results: Queue):
+        """
+        Internal worker function for multi-core raster processing.
+
+        This function predicts raster values for a specific block of data. It
+        reads the required subset of data directly from the file and applies
+        all trained models found in the model container. A queue-based strategy
+        is used for retrieving data and sending results, ensuring minimal
+        memory usage.
+        """
+        while True:
+            try:
+                pos = tasks.get_nowait()
+                rst = Raster.from_file(file)
+                arr = rst.get_subarray(pos[0][:2], blocksize)
+                b, r, c = arr.shape
+                n_outputs = self.container.n_outputs
+                n = len(self.container)
+                ## to table format (pixels, bands)
+                arr = arr.transpose(1, 2, 0).reshape(r * c, b)
+                pred = np.array(self.predict(arr.tolist(), scale=scale))
+                pred = pred.transpose(2, 0, 1).reshape(n * n_outputs, r, c)
+                results.put((pos[0], pred))
+            except Empty:
+                # No tasks to process
+                break
+            except Exception as e:
+                # Handle unexpected exceptions
+                print(f"{type(e).__name__} - {e}")
+                break
