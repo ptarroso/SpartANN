@@ -9,16 +9,14 @@ HELP_OUT_FILE = "Path and filename for the raster with predictions."
 HELP_BLOCKSIZE = "Block size for dividing raster processing (default = 250 units)."
 HELP_NCORES = "How many CPU core to use for predicting."
 TITLE = "SpartANN - Spectral Pattern Analysis and Remote-sensing Tool with Artificial Neural Networks"
-CITATION = "Citation will be soon availble."
+CITATION = "Citation will be soon available."
 
-
-startGUI = False
 
 parser = argparse.ArgumentParser(description=TITLE, epilog=CITATION)
 parser.add_argument("raster_file", nargs="?", help=HELP_RASTER_FILE)
 parser.add_argument("models_file", nargs="?", help=HELP_MODELS_FILE)
 parser.add_argument("out_file", nargs="?", help=HELP_OUT_FILE)
-parser.add_argument("-b", "--blocksize", type=int, default=250, help=HELP_BLOCKSIZE)
+parser.add_argument("-s", "--blocksize", type=int, default=250, help=HELP_BLOCKSIZE)
 parser.add_argument("-c", "--ncores", type=int, default=1, help=HELP_NCORES)
 args = parser.parse_args()
 
