@@ -15,10 +15,8 @@ HELP_LRATE = "Learning rate value (default 0.01)."
 HELP_MOMENTUM = "Momentum (default 0.01)."
 HELP_HIDDENLYRS = "The default structure consists of 3 hidden layers connecting the input to output layers. You can specify the hidden layers by providing the number of neurons in each layer, separated by commas (e.g., '4,3' for 2 hidden layers, with the first having 4 neurons and the second having 3 neurons)."
 TITLE = "SpartANN - Spectral Pattern Analysis and Remote-sensing Tool with Artificial Neural Networks"
-CITATION = "Citation will be soon availble."
+CITATION = "Citation will be soon available."
 
-
-startGUI = False
 
 parser = argparse.ArgumentParser(description=TITLE, epilog=CITATION)
 parser.add_argument("data_file", nargs="?", help=HELP_DATA_FILE)
