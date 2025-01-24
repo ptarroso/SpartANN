@@ -3,3 +3,4 @@ spartann/__pycache__
 *.pyc
 *.egg-info/
 builddocs
+buildrelease
