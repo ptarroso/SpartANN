@@ -23,7 +23,7 @@ The `documentation <https://ptarroso.github.io/SpartANN/>`_ provides step-by-ste
 .. figure:: docs/examples/assets/raster_with_points.png
     :align: center
 
-    Original image (True Color) with classification points
+    Original image (True Color) with cloud presence classification points
 
 .. figure:: docs/examples/assets/predicted_clouds.png
     :align: center
