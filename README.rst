@@ -10,7 +10,7 @@ Additionally, it offers an easy way to produce multiple models under an ensembli
 Installation
 ------------
 
-The easiest way to install SpartANN is through a conda environment using the `environment.yml` file provided. Refer to the`SpartANN documentation <https://ptarroso.github.io/SpartANN/>`_ for more details.
+The easiest way to install SpartANN is through a conda environment using the `environment.yml` file provided. Refer to the `SpartANN documentation <https://ptarroso.github.io/SpartANN/>`_ for more details.
 
 
 
