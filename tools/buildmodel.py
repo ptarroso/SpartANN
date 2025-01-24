@@ -52,6 +52,7 @@ if __name__ == "__main__":
         hl_schemes=scheme,
         LR=args.lrate,
         momentum=args.momentum,
+        optim = "RMSProp"
     )
 
     ann.trainModel(
