@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced &mdash; SpartANN 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="spartann package" href="../spartann.html" />
+    <link rel="prev" title="A First Model" href="simple.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="simple.html">A First Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#read-data">Read data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#training-the-models">Training the models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#predicting-with-model">Predicting with model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../spartann.html">spartann package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Advanced</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/advanced.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced">
+<h1>Advanced<a class="headerlink" href="#advanced" title="Link to this heading"></a></h1>
+<p>In this advanced example, we interact with SpartANN in Python as a module. This approach provides more flexibility to adapt to different user cases and allows better configuration of the model definitions.</p>
+<p>If SpartANN was installed via conda, the environment needs to be activated beforehand. Refer to the <a class="reference internal" href="../install.html#installation"><span class="std std-ref">Installation</span></a> section for further details.</p>
+<p>To begin, we need to import the module into a Python session:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">spartann</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sa</span>
+</pre></div>
+</div>
+<section id="read-data">
+<h2>Read data<a class="headerlink" href="#read-data" title="Link to this heading"></a></h2>
+<p>SpartANN provides functions to read tabular data in text format (e.g., CSV) and raster data, and it allows the intersection of both to extract and prepare training data.</p>
+<p>The point location data is read as a <cite>DataTable</cite>:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pnt</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">DataTable</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;examples/data/train_data.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pnt</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>X|Y|Clouds
+561109.6|4495044.6|0
+565530.8|4496869.0|1
+561844.0|4494916.3|0
+562007.2|4499194.7|0
+562642.6|4498192.1|1
+566504.2|4496580.5|1
+567055.0|4494047.8|0
+564507.8|4497198.3|1
+562593.0|4497836.6|1
+...
+</pre></div>
+</div>
+<p>The <cite>DataTable</cite> is very flexible. You can easily add or remove locations and classes for the training dataset. While this is outside the scope of this example, you can explore the methods available in the <a class="reference internal" href="../spartann.datatable.html#spartann-datatable-package"><span class="std std-ref">spartann.datatable package</span></a> to understand its full functionality.</p>
+<p>Reading raster data is just as straightforward:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rst</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Raster</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;examples/data/Sentinel2_clouds.tif&quot;</span><span class="p">)</span>
+<span class="n">rst</span><span class="o">.</span><span class="n">bandnames</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;B4, central wavelength 665 nm&#39;, &#39;B3, central wavelength 560 nm&#39;, &#39;B2, central wavelength 490 nm&#39;, &#39;B8, central wavelength 842 nm&#39;, &#39;B5, central wavelength 705 nm&#39;, &#39;B6, central wavelength 740 nm&#39;, &#39;B7, central wavelength 783 nm&#39;, &#39;B8A, central wavelength 865 nm&#39;, &#39;B11, central wavelength 1610 nm&#39;, &#39;B12, central wavelength 2190 nm&#39;, &#39;B1, central wavelength 443 nm&#39;, &#39;B9, central wavelength 945 nm&#39;, &#39;B10, central wavelength 1375 nm&#39;]
+</pre></div>
+</div>
+<p>The <cite>Raster</cite> object uses the <cite>osgeo/GDAL</cite> library to open the dataset. It provides an intuitive set of methods to work with rasters interacting with the library. One key advantage is its integration with the <cite>DataTable</cite> for data extraction.</p>
+<p>We can extract data from the raster at coordinate locations. Note that there is no coordinate reference system check, so all data must share the same reference system. Otherwise, the <cite>DataTable</cite> will only return nodata values.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pnt</span><span class="o">.</span><span class="n">getDataFromRaster</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pnt</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>X|Y|Clouds|B4, central wavelength 665 nm|B3, central wavelength 560 nm|B2, central wavelength 490 nm|B8, central wavelength 842 nm|B5, central wavelength 705 nm|B6, central wavelength 740 nm|B7, central wavelength 783 nm|B8A, central wavelength 865 nm|B11, central wavelength 1610 nm|B12, central wavelength 2190 nm|B1, central wavelength 443 nm|B9, central wavelength 945 nm|B10, central wavelength 1375 nm
+561109.6|4495044.6|0|1422.0|1629.0|1941.0|2147.0|1449.0|1875.0|2022.0|1962.0|1423.0|1190.0|2304.0|1354.0|1013.0
+565530.8|4496869.0|1|3609.0|3367.0|3545.0|4493.0|4020.0|4612.0|4984.0|5245.0|4727.0|4670.0|3674.0|2256.0|1027.0
+561844.0|4494916.3|0|1455.0|1669.0|1946.0|2632.0|1510.0|1991.0|2143.0|2305.0|1608.0|1294.0|2306.0|1417.0|1012.0
+562007.2|4499194.7|0|1330.0|1527.0|1854.0|1519.0|1332.0|1494.0|1571.0|1580.0|1184.0|1079.0|2264.0|1211.0|1012.0
+</pre></div>
+</div>
+<p>Now the points include the associated data with respective band names found in the raster.</p>
+<p>For training the network, it is better to scale the data:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pnt</span><span class="o">.</span><span class="n">scaleData</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This centers and scales every variable in the <cite>DataTable</cite> for optimal training performance. The scale values used (means and standard deviations) are retained for transforming values during prediction.</p>
+<p>The dataset is now ready for training.</p>
+</section>
+<section id="training-the-models">
+<h2>Training the models<a class="headerlink" href="#training-the-models" title="Link to this heading"></a></h2>
+<p>The first step in our process is to define a series of parameters for the modeling approach. These include the network architecture, learning parameters, and the strategy for producing multiple models.</p>
+<p>In the example outlined in <a class="reference internal" href="simple.html#a-first-model"><span class="std std-ref">A First Model</span></a>, we were limited to using only one architecture. Here, we have the flexibility to ensemble multiple network complexities. We will define three architectures with increasing levels of complexity. Simple networks tend to overgeneralize predictions, while complex networks often overfit the data. Ensembling these networks provides a balanced prediction by leveraging their different strengths.</p>
+<p>We will use the following architectures:</p>
+<ul class="simple">
+<li><p><strong>Simple</strong>: This architecture consists of a single hidden layer with 7 neurons, represented as <cite>[7]</cite>.</p></li>
+<li><p><strong>Medium</strong>: This replicates the architecture from the earlier example, with three layers consisting of 10, 6, and 3 neurons in each layer, represented as <cite>[10, 6, 3]</cite>.</p></li>
+<li><p><strong>Complex</strong>: For this example, we use a more intricate architecture with five hidden layers, represented as <cite>[10, 8, 8, 6, 3]</cite>. While this architecture is likely overkill for the problem, it helps illustrate the range of complexity.</p></li>
+</ul>
+<p>For each architecture, we will generate 5 repetitions, resulting in a total of <cite>5 * 3 = 15</cite> predictions per pixel. In each repetition, 20% of the data will be reserved for testing the network.</p>
+<p>We will change the default learning optimizer from <em>RMSProp</em> (the only option in the previous example) to <em>Adam</em>. The <em>Adam</em> optimizer requires the definition of two momentum parameters. We will use a learning rate of 0.01. Since <em>Adam</em> is adaptive, the learning rate will vary throughout the iterative process. The two momentum parameters will be set to 0.9 and 0.999, as is typical for this optimizer.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">rep</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">test</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">schemes</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="n">LRate</span><span class="o">=</span><span class="mf">0.001</span>
+<span class="n">mom</span><span class="o">=</span><span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">]</span>
+<span class="n">optim</span> <span class="o">=</span> <span class="s2">&quot;Adam&quot;</span>
+</pre></div>
+</div>
+<p>We can proceed with the training stage by initializing a classifier and training the networks:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">ann</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">AnnClassifier</span><span class="o">.</span><span class="n">from_datatable</span><span class="p">(</span><span class="n">pnt</span><span class="p">,</span>
+    <span class="n">repetitions</span><span class="o">=</span><span class="n">rep</span><span class="p">,</span>
+    <span class="n">testpercent</span><span class="o">=</span><span class="n">test</span><span class="p">,</span>
+    <span class="n">hl_schemes</span> <span class="o">=</span> <span class="n">schemes</span><span class="p">,</span>
+    <span class="n">LR</span><span class="o">=</span><span class="n">LRate</span><span class="p">,</span>
+    <span class="n">momentum</span><span class="o">=</span><span class="n">mom</span><span class="p">,</span>
+    <span class="n">optim</span><span class="o">=</span><span class="n">optim</span><span class="p">)</span>
+
+<span class="n">ann</span><span class="o">.</span><span class="n">trainModel</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Training networks with scheme i:[13] | hl:[7] | o:[1].
+Repetition: 1 from 5
+| Iteration |   Error   | Train |  Test | Product |  ErrDiff |
+|      1222 |   0.95860 | 0.917 | 0.625 |  0.573  |  0.00065 |
+Best net:
+    Iteration 894
+    Error: 1.245
+    Validation train: 0.917
+    Validation test: 0.800
+    Validation product: 0.733
+    ...
+</pre></div>
+</div>
+<p>The iterative process displays the current repetition and network scheme. It also indicates the number of iterations required to minimize the best result, based on the optimal combination of train and test performance.</p>
+<p>We can inspect the built models using the following code:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ANN supervised learning model
+Model inputs provided:
+     - B4, central wavelength 665 nm         - B3, central wavelength 560 nm         - B2, central wavelength 490 nm         - B8, central wavelength 842 nm         - B5, central wavelength 705 nm         - B6, central wavelength 740 nm         - B7, central wavelength 783 nm         - B8A, central wavelength 865 nm        - B11, central wavelength 1610 nm       - B12, central wavelength 2190 nm       - B1, central wavelength 443 nm         - B9, central wavelength 945 nm         - B10, central wavelength 1375 nmModel outputs (targets):
+     - Clouds
+  Hidden layer schemes:
+    - i:[13] | hl:[7] | o:[1]
+    - i:[13] | hl:[10, 6, 3] | o:[1]
+    - i:[13] | hl:[10, 8, 8, 6, 3] | o:[1]
+5 repetitions for each scheme.
+Validation metric: Cohen&#39;s Kappa
+Optimizer: Adam
+15 networks trained.
+Repetition 0 for scheme [13, 7, 1]:
+    Iteration 894
+    Error: 1.2452362697107282
+    Validation train: 0.9168110918544194
+    Validation test: 0.8
+    Validation product: 0.7334488734835356
+Repetition 1 for scheme [13, 7, 1]:
+    Iteration 1
+    Error: 5.17178503715067
+    Validation train: 0.625
+    Validation test: 0.6363636363636364
+    Validation product: 0.3977272727272727
+Repetition 2 for scheme [13, 7, 1]:
+    Iteration 934
+    Error: 2.0674301906878685
+    Validation train: 0.7083333333333334
+    Validation test: 1.0
+    Validation product: 0.7083333333333334
+Repetition 3 for scheme [13, 7, 1]:
+    Iteration 942
+    Error: 1.892011726059445
+    Validation train: 0.8754325259515571
+    Validation test: 1.0
+    Validation product: 0.8754325259515571
+Repetition 4 for scheme [13, 7, 1]:
+    Iteration 1058
+    Error: 1.426562109206801
+    Validation train: 0.8754325259515571
+    Validation test: 0.625
+    Validation product: 0.5471453287197232
+Repetition 0 for scheme [13, 10, 6, 3, 1]:
+    Iteration 1375
+    Error: 0.7872104782338998
+    Validation train: 0.9581881533101045
+    Validation test: 0.8333333333333334
+    Validation product: 0.7984901277584204
+Repetition 1 for scheme [13, 10, 6, 3, 1]:
+    Iteration 46
+    Error: 5.616584455382552
+    Validation train: 0.5782073813708261
+    Validation test: 0.5263157894736842
+    Validation product: 0.3043196744056979
+Repetition 2 for scheme [13, 10, 6, 3, 1]:
+    Iteration 906
+    Error: 1.385236167524681
+    Validation train: 0.9168110918544194
+    Validation test: 1.0
+    Validation product: 0.9168110918544194
+Repetition 3 for scheme [13, 10, 6, 3, 1]:
+    Iteration 897
+    Error: 1.297855575495178
+    Validation train: 0.9154929577464789
+    Validation test: 0.8333333333333334
+    Validation product: 0.7629107981220657
+Repetition 4 for scheme [13, 10, 6, 3, 1]:
+    Iteration 496
+    Error: 2.1708587197763625
+    Validation train: 0.7894736842105263
+    Validation test: 0.35135135135135137
+    Validation product: 0.2773826458036985
+Repetition 0 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 674
+    Error: 1.4595032219556312
+    Validation train: 0.9166666666666666
+    Validation test: 0.8
+    Validation product: 0.7333333333333334
+Repetition 1 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 255
+    Error: 3.746965319310201
+    Validation train: 0.7083333333333334
+    Validation test: 0.8333333333333334
+    Validation product: 0.5902777777777778
+Repetition 2 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 1581
+    Error: 1.2031963969473864
+    Validation train: 0.9154929577464789
+    Validation test: 0.6571428571428571
+    Validation product: 0.6016096579476861
+Repetition 3 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 1142
+    Error: 2.119890823580577
+    Validation train: 0.7916666666666666
+    Validation test: 0.6666666666666666
+    Validation product: 0.5277777777777777
+Repetition 4 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 714
+    Error: 1.8369806752842848
+    Validation train: 0.8741258741258742
+    Validation test: 0.6666666666666666
+    Validation product: 0.5827505827505828
+</pre></div>
+</div>
+<p>We can write the models to a file so we can retrieve it later for predictions in same or different images (with the same bands).</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">ann</span><span class="o">.</span><span class="n">writeModel</span><span class="p">(</span><span class="s2">&quot;Clouds_model.obj&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="predicting-with-model">
+<h2>Predicting with model<a class="headerlink" href="#predicting-with-model" title="Link to this heading"></a></h2>
+<p>If you kept the session open, you will need to generate an <cite>AnnPredict</cite> object from the classifier. Since the raster to predict is the same, it does not need to be reopened.</p>
+<p>If you <strong>restarted the Python session</strong>, you can retrieve the saved models and the raster. To do so, start a new Python session, import the required modules, and load the models and raster.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">spartann</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sa</span>
+<span class="n">ap</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">AnnPredict</span><span class="o">.</span><span class="n">from_modelsfile</span><span class="p">(</span><span class="s2">&quot;Clouds_model.obj&quot;</span><span class="p">)</span>
+<span class="n">rst</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Raster</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;examples/data/Sentinel2_clouds.tif&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With SpartANN, you can predict using a list of values, a <cite>DataTable</cite>, or a raster. Since predicting with a raster is the most common use case, the following example demonstrates this:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pred</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">predictFromRaster</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The prediction process might take some time, as it computes values for all pixels. Once the prediction is complete, you can save the raster to a TIFF file for inspection in any GIS software.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pred</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="s2">&quot;Results.tif&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The band names in the output raster are descriptive, indicating which repetition and scheme were used for each prediction.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">bandnames</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;band&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">bname</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>band 1 : Prediction for Clouds, with scheme [13, 7, 1], repetition 0
+band 2 : Prediction for Clouds, with scheme [13, 7, 1], repetition 1
+band 3 : Prediction for Clouds, with scheme [13, 7, 1], repetition 2
+band 4 : Prediction for Clouds, with scheme [13, 7, 1], repetition 3
+band 5 : Prediction for Clouds, with scheme [13, 7, 1], repetition 4
+band 6 : Prediction for Clouds, with scheme [13, 10, 6, 3, 1], repetition 0
+band 7 : Prediction for Clouds, with scheme [13, 10, 6, 3, 1], repetition 1
+band 8 : Prediction for Clouds, with scheme [13, 10, 6, 3, 1], repetition 2
+band 9 : Prediction for Clouds, with scheme [13, 10, 6, 3, 1], repetition 3
+band 10 : Prediction for Clouds, with scheme [13, 10, 6, 3, 1], repetition 4
+band 11 : Prediction for Clouds, with scheme [13, 10, 8, 8, 6, 3, 1], repetition 0
+band 12 : Prediction for Clouds, with scheme [13, 10, 8, 8, 6, 3, 1], repetition 1
+band 13 : Prediction for Clouds, with scheme [13, 10, 8, 8, 6, 3, 1], repetition 2
+band 14 : Prediction for Clouds, with scheme [13, 10, 8, 8, 6, 3, 1], repetition 3
+band 15 : Prediction for Clouds, with scheme [13, 10, 8, 8, 6, 3, 1], repetition 4
+</pre></div>
+</div>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p>SpartANN does not provide built-in plotting capabilities for the results, but it can easily interact with external libraries such as matplotlib (not a listed requirement) for visualization. Alternatively, you can use any GIS software or other programming environments, such as R, for further analysis and visualization.</p>
+<p>Below, we showcase the results produced without including the code.</p>
+<p>The predictions show slight differences in their ability to detect clouds, but the core output remains consistent regardless of the repetition or network scheme.</p>
+<img alt="../_images/advanced_predictions.png" src="../_images/advanced_predictions.png" />
+<p>By calculating the mean and standard deviation, we can gain a clearer understanding of the core predictions and the associated uncertainty:</p>
+<img alt="../_images/advanced_ensemble.png" src="../_images/advanced_ensemble.png" />
+<p>When superimposed onto the original raster, the success of the cloud detection process becomes evident:</p>
+<img alt="../_images/advanced_predicted_clouds.png" src="../_images/advanced_predicted_clouds.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="simple.html" class="btn btn-neutral float-left" title="A First Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../spartann.html" class="btn btn-neutral float-right" title="spartann package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
