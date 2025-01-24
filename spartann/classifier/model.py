@@ -105,10 +105,10 @@ class ModelContainer:
         string = "ANN supervised learning model\n"
         string += "Model inputs provided:\n"
         for input in self.inputs:
-            string += f"\t - {input}"
+            string += f"\t - {input}\n"
         string += "Model outputs (targets):\n"
         for output in self.outputs:
-            string += f"\t - {output}"
+            string += f"\t - {output}\n"
         string += "Hidden layer schemes:\n"
         for scheme in self.hl_schemes:
             string += f"\t- i:[{self.n_inputs}] | hl:{scheme} | o:[{self.n_outputs}]\n"
