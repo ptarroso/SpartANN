@@ -23,6 +23,8 @@ The currently available tools are:
 
     -predict.py: Uses a trained model to generate predictions for a raster image with the same spectral information as the raster used during training.
 
+    -ensemble.py: Ensembles the final predicitons by aggregating bands based on a function. Available functions are 'mean', 'median', 'sdev', 'max' and 'min'.
+
 These tools can be used directly from the command line by providing the respective paths to the files. To check their basic usage and list of arguments, you can use the -h option:
 
 .. code-block:: bash

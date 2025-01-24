@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann.spatial package &mdash; SpartANN 1.0 documentation</title>
+  <title>spartann.spatial package &mdash; SpartANN 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/documentation_options.js?v=56dcb7b8"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -156,6 +156,50 @@ data from a raster.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.raster.Raster.aggregate_bands">
+<span class="sig-name descname"><span class="pre">aggregate_bands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fun=&lt;function</span> <span class="pre">median&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize=250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.aggregate_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.aggregate_bands" title="Link to this definition"></a></dt>
+<dd><p>Aggregate raster bands based on a user-defined function and return a
+new single-band raster.</p>
+<p>This function aggregates the bands of a raster into a single band by
+applying a user-defined aggregation function (e.g., mean, max, min,
+median, standard deviation). It supports multi-core processing, which
+is especially useful for handling large rasters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bands</strong> – List of band indices to aggregate (1-based indexing as per</p></li>
+<li><p><strong>None</strong> (<em>GDAL convention</em><em>)</em><em>. If</em>)</p></li>
+<li><p><strong>aggregated.</strong> (<em>all bands will be</em>)</p></li>
+<li><p><strong>fun</strong> – A numpy-style function used to aggregate the bands. The</p></li>
+<li><p><strong>(</strong><strong>e.g.</strong> (<em>function must accept the argument 'axis'</em>)</p></li>
+<li><p><strong>np.mean</strong></p></li>
+<li><p><strong>np.max</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>:param :
+:param np.min:
+:param np.median:
+:param np.std).:
+:param blocksize: The side length of the blocks to process during
+:type blocksize: int
+:param raster aggregation.:
+:param ncores: The number of CPU cores to use for processing each
+:type ncores: int
+:param block. This requires the raster to have a source file:
+:type block. This requires the raster to have a source file: loaded from or previously written to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new raster object with the same spatial properties as the
+source raster, but with a single aggregated band.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster">Raster</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spartann.spatial.raster.Raster.bandnames">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bandnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#spartann.spatial.raster.Raster.bandnames" title="Link to this definition"></a></dt>
@@ -164,13 +208,15 @@ data from a raster.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spartann.spatial.raster.Raster.block_iter">
-<span class="sig-name descname"><span class="pre">block_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.block_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.block_iter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">block_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.block_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.block_iter" title="Link to this definition"></a></dt>
 <dd><p>Generator of array with raster values with specified size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>blocksize</strong> – the square size of the block, defining the shape of the yielded array (default is 250).</p></li>
 <li><p><strong>band</strong> – Either ‘None’ for all bands or a specific raster band.</p></li>
+<li><p><strong>read_arr</strong> – It allows to return the array (default) or just the</p></li>
+<li><p><strong>data.</strong> (<em>position for each iterator block without attempt to read</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -298,6 +344,33 @@ First item in yielded list is a list with [row, column, current array, total num
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.raster.Raster.get_subarray">
+<span class="sig-name descname"><span class="pre">get_subarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convNA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.get_subarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.get_subarray" title="Link to this definition"></a></dt>
+<dd><p>Returns the full array of the raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rc</strong> – Corner position of the sub array to retrieve</p></li>
+<li><p><strong>blocksize</strong> – side length of the subarray to retrieve.</p></li>
+<li><p><strong>band</strong> – integer defining a band to get or None for all bands</p></li>
+<li><p><strong>convNA</strong> – attempts to convert NA values to np.nan (fails for non float rasters)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Conversion to np.nan forces an attempt to convert array to float, so use with caution.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.spatial.raster.Raster.hasSource">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hasSource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.spatial.raster.Raster.hasSource" title="Link to this definition"></a></dt>
+<dd><p>Indicates if the raster has a source file.</p>
+<p>If raster has source, it was read from or written to file.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spartann.spatial.raster.Raster.nbands">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nbands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#spartann.spatial.raster.Raster.nbands" title="Link to this definition"></a></dt>
@@ -342,36 +415,6 @@ First item in yielded list is a list with [row, column, current array, total num
 <dt class="sig sig-object py" id="spartann.spatial.raster.Raster.size">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spartann.spatial.raster.Raster.size" title="Link to this definition"></a></dt>
 <dd><p>Return the raster size [row, col]</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spartann.spatial.raster.Raster.summarise_bands">
-<span class="sig-name descname"><span class="pre">summarise_bands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">bands:</span> <span class="pre">list[int],</span> <span class="pre">fun:</span> <span class="pre">~typing.Callable[[~numpy.ndarray,</span> <span class="pre">int],</span> <span class="pre">~numpy.ndarray]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">median&gt;,</span> <span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2500</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.summarise_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.summarise_bands" title="Link to this definition"></a></dt>
-<dd><p>Summarizes raster bands into a single band raster.</p>
-<p>This method summarizes raster data along the band axis using a specified function.
-It returns a raster with a single band, retaining the same definitions as the original,
-containing the result of the summarization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bandd</strong> – A list of integers representing the bands to summarize. This
-follows GDAL’s band indexing convention, which starts at 1 (not
-0).</p></li>
-<li><p><strong>fun</strong> – A function used to summarize the band data. Typically, this is
-a NumPy function that accepts the <cite>axis</cite> argument, such as
-<cite>median</cite> (default), <cite>mean</cite>, <cite>max</cite>, or others.</p></li>
-<li><p><strong>blocksize</strong> – The size of the block to process in order to avoid large
-memory usage.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new raster with a single band, retaining the same
-definitions as the base raster.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster">Raster</a></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -459,6 +502,50 @@ data from a raster.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.Raster.aggregate_bands">
+<span class="sig-name descname"><span class="pre">aggregate_bands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fun=&lt;function</span> <span class="pre">median&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize=250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.aggregate_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.aggregate_bands" title="Link to this definition"></a></dt>
+<dd><p>Aggregate raster bands based on a user-defined function and return a
+new single-band raster.</p>
+<p>This function aggregates the bands of a raster into a single band by
+applying a user-defined aggregation function (e.g., mean, max, min,
+median, standard deviation). It supports multi-core processing, which
+is especially useful for handling large rasters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bands</strong> – List of band indices to aggregate (1-based indexing as per</p></li>
+<li><p><strong>None</strong> (<em>GDAL convention</em><em>)</em><em>. If</em>)</p></li>
+<li><p><strong>aggregated.</strong> (<em>all bands will be</em>)</p></li>
+<li><p><strong>fun</strong> – A numpy-style function used to aggregate the bands. The</p></li>
+<li><p><strong>(</strong><strong>e.g.</strong> (<em>function must accept the argument 'axis'</em>)</p></li>
+<li><p><strong>np.mean</strong></p></li>
+<li><p><strong>np.max</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>:param :
+:param np.min:
+:param np.median:
+:param np.std).:
+:param blocksize: The side length of the blocks to process during
+:type blocksize: int
+:param raster aggregation.:
+:param ncores: The number of CPU cores to use for processing each
+:type ncores: int
+:param block. This requires the raster to have a source file:
+:type block. This requires the raster to have a source file: loaded from or previously written to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new raster object with the same spatial properties as the
+source raster, but with a single aggregated band.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spartann.spatial.Raster" title="spartann.spatial.Raster">Raster</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spartann.spatial.Raster.bandnames">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bandnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#spartann.spatial.Raster.bandnames" title="Link to this definition"></a></dt>
@@ -467,13 +554,15 @@ data from a raster.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spartann.spatial.Raster.block_iter">
-<span class="sig-name descname"><span class="pre">block_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.block_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.block_iter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">block_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.block_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.block_iter" title="Link to this definition"></a></dt>
 <dd><p>Generator of array with raster values with specified size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>blocksize</strong> – the square size of the block, defining the shape of the yielded array (default is 250).</p></li>
 <li><p><strong>band</strong> – Either ‘None’ for all bands or a specific raster band.</p></li>
+<li><p><strong>read_arr</strong> – It allows to return the array (default) or just the</p></li>
+<li><p><strong>data.</strong> (<em>position for each iterator block without attempt to read</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -601,6 +690,33 @@ First item in yielded list is a list with [row, column, current array, total num
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.Raster.get_subarray">
+<span class="sig-name descname"><span class="pre">get_subarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convNA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.get_subarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.get_subarray" title="Link to this definition"></a></dt>
+<dd><p>Returns the full array of the raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rc</strong> – Corner position of the sub array to retrieve</p></li>
+<li><p><strong>blocksize</strong> – side length of the subarray to retrieve.</p></li>
+<li><p><strong>band</strong> – integer defining a band to get or None for all bands</p></li>
+<li><p><strong>convNA</strong> – attempts to convert NA values to np.nan (fails for non float rasters)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Conversion to np.nan forces an attempt to convert array to float, so use with caution.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.spatial.Raster.hasSource">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hasSource</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.spatial.Raster.hasSource" title="Link to this definition"></a></dt>
+<dd><p>Indicates if the raster has a source file.</p>
+<p>If raster has source, it was read from or written to file.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spartann.spatial.Raster.nbands">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nbands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#spartann.spatial.Raster.nbands" title="Link to this definition"></a></dt>
@@ -645,36 +761,6 @@ First item in yielded list is a list with [row, column, current array, total num
 <dt class="sig sig-object py" id="spartann.spatial.Raster.size">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spartann.spatial.Raster.size" title="Link to this definition"></a></dt>
 <dd><p>Return the raster size [row, col]</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spartann.spatial.Raster.summarise_bands">
-<span class="sig-name descname"><span class="pre">summarise_bands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">bands:</span> <span class="pre">list[int],</span> <span class="pre">fun:</span> <span class="pre">~typing.Callable[[~numpy.ndarray,</span> <span class="pre">int],</span> <span class="pre">~numpy.ndarray]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">median&gt;,</span> <span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2500</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.summarise_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.summarise_bands" title="Link to this definition"></a></dt>
-<dd><p>Summarizes raster bands into a single band raster.</p>
-<p>This method summarizes raster data along the band axis using a specified function.
-It returns a raster with a single band, retaining the same definitions as the original,
-containing the result of the summarization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bandd</strong> – A list of integers representing the bands to summarize. This
-follows GDAL’s band indexing convention, which starts at 1 (not
-0).</p></li>
-<li><p><strong>fun</strong> – A function used to summarize the band data. Typically, this is
-a NumPy function that accepts the <cite>axis</cite> argument, such as
-<cite>median</cite> (default), <cite>mean</cite>, <cite>max</cite>, or others.</p></li>
-<li><p><strong>blocksize</strong> – The size of the block to process in order to avoid large
-memory usage.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new raster with a single band, retaining the same
-definitions as the base raster.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spartann.spatial.Raster" title="spartann.spatial.Raster">Raster</a></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">

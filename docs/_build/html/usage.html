@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usage &mdash; SpartANN 1.0 documentation</title>
+  <title>Usage &mdash; SpartANN 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/documentation_options.js?v=56dcb7b8"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -103,6 +103,7 @@
 <li><p>buildmodel.py: Trains a model using a labeled dataset and a raster, producing a model file as output.</p></li>
 </ul>
 <p>-predict.py: Uses a trained model to generate predictions for a raster image with the same spectral information as the raster used during training.</p>
+<p>-ensemble.py: Ensembles the final predicitons by aggregating bands based on a function. Available functions are ‘mean’, ‘median’, ‘sdev’, ‘max’ and ‘min’.</p>
 </div></blockquote>
 <p>These tools can be used directly from the command line by providing the respective paths to the files. To check their basic usage and list of arguments, you can use the -h option:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>tools/buildmodel.py<span class="w"> </span>-h

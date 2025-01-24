@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced &mdash; SpartANN 1.0 documentation</title>
+  <title>Advanced &mdash; SpartANN 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/documentation_options.js?v=56dcb7b8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -181,13 +181,13 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Training networks with scheme i:[13] | hl:[7] | o:[1].
 Repetition: 1 from 5
 | Iteration |   Error   | Train |  Test | Product |  ErrDiff |
-|      1222 |   0.95860 | 0.917 | 0.625 |  0.573  |  0.00065 |
+|      1073 |   1.72282 | 0.790 | 0.667 |  0.527  |  0.00081 |
 Best net:
-    Iteration 894
-    Error: 1.245
-    Validation train: 0.917
-    Validation test: 0.800
-    Validation product: 0.733
+    Iteration 945
+    Error: 1.832
+    Validation train: 0.790
+    Validation test: 0.667
+    Validation product: 0.527
     ...
 </pre></div>
 </div>
@@ -198,9 +198,22 @@ Best net:
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ANN supervised learning model
 Model inputs provided:
-     - B4, central wavelength 665 nm         - B3, central wavelength 560 nm         - B2, central wavelength 490 nm         - B8, central wavelength 842 nm         - B5, central wavelength 705 nm         - B6, central wavelength 740 nm         - B7, central wavelength 783 nm         - B8A, central wavelength 865 nm        - B11, central wavelength 1610 nm       - B12, central wavelength 2190 nm       - B1, central wavelength 443 nm         - B9, central wavelength 945 nm         - B10, central wavelength 1375 nmModel outputs (targets):
-     - Clouds
-  Hidden layer schemes:
+    - B4, central wavelength 665 nm
+    - B3, central wavelength 560 nm
+    - B2, central wavelength 490 nm
+    - B8, central wavelength 842 nm
+    - B5, central wavelength 705 nm
+    - B6, central wavelength 740 nm
+    - B7, central wavelength 783 nm
+    - B8A, central wavelength 865 nm
+    - B11, central wavelength 1610 nm
+    - B12, central wavelength 2190 nm
+    - B1, central wavelength 443 nm
+    - B9, central wavelength 945 nm
+    - B10, central wavelength 1375 nm
+Model outputs (targets):
+    - Clouds
+Hidden layer schemes:
     - i:[13] | hl:[7] | o:[1]
     - i:[13] | hl:[10, 6, 3] | o:[1]
     - i:[13] | hl:[10, 8, 8, 6, 3] | o:[1]
@@ -209,95 +222,95 @@ Validation metric: Cohen&#39;s Kappa
 Optimizer: Adam
 15 networks trained.
 Repetition 0 for scheme [13, 7, 1]:
-    Iteration 894
-    Error: 1.2452362697107282
-    Validation train: 0.9168110918544194
-    Validation test: 0.8
-    Validation product: 0.7334488734835356
+    Iteration 945
+    Error: 1.8319342549497482
+    Validation train: 0.7902097902097902
+    Validation test: 0.6666666666666666
+    Validation product: 0.5268065268065267
 Repetition 1 for scheme [13, 7, 1]:
-    Iteration 1
-    Error: 5.17178503715067
-    Validation train: 0.625
-    Validation test: 0.6363636363636364
-    Validation product: 0.3977272727272727
+    Iteration 133
+    Error: 2.849658052782215
+    Validation train: 0.701067615658363
+    Validation test: 0.5
+    Validation product: 0.3505338078291815
 Repetition 2 for scheme [13, 7, 1]:
-    Iteration 934
-    Error: 2.0674301906878685
-    Validation train: 0.7083333333333334
-    Validation test: 1.0
-    Validation product: 0.7083333333333334
+    Iteration 129
+    Error: 2.810948597977949
+    Validation train: 0.701067615658363
+    Validation test: 0.5263157894736842
+    Validation product: 0.3689829556096647
 Repetition 3 for scheme [13, 7, 1]:
-    Iteration 942
-    Error: 1.892011726059445
-    Validation train: 0.8754325259515571
-    Validation test: 1.0
-    Validation product: 0.8754325259515571
+    Iteration 643
+    Error: 2.0116930046623356
+    Validation train: 0.781021897810219
+    Validation test: 0.4
+    Validation product: 0.3124087591240876
 Repetition 4 for scheme [13, 7, 1]:
-    Iteration 1058
-    Error: 1.426562109206801
-    Validation train: 0.8754325259515571
-    Validation test: 0.625
-    Validation product: 0.5471453287197232
+    Iteration 777
+    Error: 1.304985786439687
+    Validation train: 0.9166666666666666
+    Validation test: 0.4
+    Validation product: 0.3666666666666667
 Repetition 0 for scheme [13, 10, 6, 3, 1]:
-    Iteration 1375
-    Error: 0.7872104782338998
+    Iteration 930
+    Error: 1.0263790532540662
     Validation train: 0.9581881533101045
     Validation test: 0.8333333333333334
     Validation product: 0.7984901277584204
 Repetition 1 for scheme [13, 10, 6, 3, 1]:
-    Iteration 46
-    Error: 5.616584455382552
-    Validation train: 0.5782073813708261
-    Validation test: 0.5263157894736842
-    Validation product: 0.3043196744056979
+    Iteration 125
+    Error: 4.291481186293516
+    Validation train: 0.6502732240437158
+    Validation test: 0.6666666666666666
+    Validation product: 0.43351548269581053
 Repetition 2 for scheme [13, 10, 6, 3, 1]:
-    Iteration 906
-    Error: 1.385236167524681
-    Validation train: 0.9168110918544194
+    Iteration 1099
+    Error: 1.324294339644675
+    Validation train: 0.9162303664921466
     Validation test: 1.0
-    Validation product: 0.9168110918544194
+    Validation product: 0.9162303664921466
 Repetition 3 for scheme [13, 10, 6, 3, 1]:
-    Iteration 897
-    Error: 1.297855575495178
-    Validation train: 0.9154929577464789
-    Validation test: 0.8333333333333334
-    Validation product: 0.7629107981220657
+    Iteration 1040
+    Error: 1.7438099420979907
+    Validation train: 0.8309859154929577
+    Validation test: 0.8235294117647058
+    Validation product: 0.6843413421706711
 Repetition 4 for scheme [13, 10, 6, 3, 1]:
-    Iteration 496
-    Error: 2.1708587197763625
-    Validation train: 0.7894736842105263
-    Validation test: 0.35135135135135137
-    Validation product: 0.2773826458036985
-Repetition 0 for scheme [13, 10, 8, 8, 6, 3, 1]:
-    Iteration 674
-    Error: 1.4595032219556312
-    Validation train: 0.9166666666666666
-    Validation test: 0.8
-    Validation product: 0.7333333333333334
-Repetition 1 for scheme [13, 10, 8, 8, 6, 3, 1]:
-    Iteration 255
-    Error: 3.746965319310201
-    Validation train: 0.7083333333333334
+    Iteration 1131
+    Error: 0.6258572183908
+    Validation train: 0.9578947368421052
     Validation test: 0.8333333333333334
-    Validation product: 0.5902777777777778
+    Validation product: 0.7982456140350878
+Repetition 0 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 722
+    Error: 1.3057673879941003
+    Validation train: 0.8745644599303136
+    Validation test: 0.47058823529411764
+    Validation product: 0.41155974584955934
+Repetition 1 for scheme [13, 10, 8, 8, 6, 3, 1]:
+    Iteration 41
+    Error: 5.981142437982789
+    Validation train: 0.5352112676056338
+    Validation test: 1.0
+    Validation product: 0.5352112676056338
 Repetition 2 for scheme [13, 10, 8, 8, 6, 3, 1]:
-    Iteration 1581
-    Error: 1.2031963969473864
+    Iteration 1373
+    Error: 1.7830216289715917
     Validation train: 0.9154929577464789
-    Validation test: 0.6571428571428571
-    Validation product: 0.6016096579476861
+    Validation test: 1.0
+    Validation product: 0.9154929577464789
 Repetition 3 for scheme [13, 10, 8, 8, 6, 3, 1]:
-    Iteration 1142
-    Error: 2.119890823580577
-    Validation train: 0.7916666666666666
+    Iteration 769
+    Error: 1.5401543510961322
+    Validation train: 0.9162303664921466
     Validation test: 0.6666666666666666
-    Validation product: 0.5277777777777777
+    Validation product: 0.6108202443280977
 Repetition 4 for scheme [13, 10, 8, 8, 6, 3, 1]:
-    Iteration 714
-    Error: 1.8369806752842848
-    Validation train: 0.8741258741258742
-    Validation test: 0.6666666666666666
-    Validation product: 0.5827505827505828
+    Iteration 1137
+    Error: 1.7273137773705625
+    Validation train: 0.8309859154929577
+    Validation test: 0.8235294117647058
+    Validation product: 0.6843413421706711
 </pre></div>
 </div>
 <p>We can write the models to a file so we can retrieve it later for predictions in same or different images (with the same bands).</p>
@@ -314,8 +327,8 @@ Repetition 4 for scheme [13, 10, 8, 8, 6, 3, 1]:
 <span class="n">rst</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Raster</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;examples/data/Sentinel2_clouds.tif&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>With SpartANN, you can predict using a list of values, a <cite>DataTable</cite>, or a raster. Since predicting with a raster is the most common use case, the following example demonstrates this:</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pred</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">predictFromRaster</span><span class="p">(</span><span class="n">rst</span><span class="p">)</span>
+<p>With SpartANN, you can predict using a list of values, a <cite>DataTable</cite>, or a raster. Since predicting with a raster is the most common use case, the following example demonstrates this. Note that you can specify multicores to this function, allowing to leverage the use of multiple CPUs for predictions:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">pred</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">predictFromRaster</span><span class="p">(</span><span class="n">rst</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The prediction process might take some time, as it computes values for all pixels. Once the prediction is complete, you can save the raster to a TIFF file for inspection in any GIS software.</p>
@@ -351,7 +364,16 @@ band 15 : Prediction for Clouds, with scheme [13, 10, 8, 8, 6, 3, 1], repetition
 <p>Below, we showcase the results produced without including the code.</p>
 <p>The predictions show slight differences in their ability to detect clouds, but the core output remains consistent regardless of the repetition or network scheme.</p>
 <img alt="../_images/advanced_predictions.png" src="../_images/advanced_predictions.png" />
-<p>By calculating the mean and standard deviation, we can gain a clearer understanding of the core predictions and the associated uncertainty:</p>
+<p>By calculating the mean and standard deviation, we can gain a clearer understanding of the core predictions and the associated uncertainty. We can use the <code class="code docutils literal notranslate"><span class="pre">Raster.aggregate_bands()</span></code> method for this purpose. We have to define a function for aggregation that accepts the argument <code class="code docutils literal notranslate"><span class="pre">axes</span></code>. The most easy functions are the numpy functions such as <code class="code docutils literal notranslate"><span class="pre">np.mean</span></code> and <code class="code docutils literal notranslate"><span class="pre">np.std</span></code>, but you can aggregate with any. We will create mean prediction an standard deviation of the predictions, which will create two new rasters that we can write to file. (Note: as following GDAL convention, bands start at index 1)</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">nbands</span><span class="p">)]</span>
+<span class="n">rst_mean</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">aggregate_bands</span><span class="p">(</span><span class="n">bands</span><span class="p">,</span> <span class="n">fun</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">rst_sdev</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">aggregate_bands</span><span class="p">(</span><span class="n">bands</span><span class="p">,</span> <span class="n">fun</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">)</span>
+<span class="n">rst_mean</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="s2">&quot;Mean_prediction.tif&quot;</span><span class="p">)</span>
+<span class="n">rst_sdev</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span><span class="s2">&quot;SDev_prediction.tif&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can see both results:</p>
 <img alt="../_images/advanced_ensemble.png" src="../_images/advanced_ensemble.png" />
 <p>When superimposed onto the original raster, the success of the cloud detection process becomes evident:</p>
 <img alt="../_images/advanced_predicted_clouds.png" src="../_images/advanced_predicted_clouds.png" />

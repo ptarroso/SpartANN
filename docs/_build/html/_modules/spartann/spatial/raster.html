@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann.spatial.raster &mdash; SpartANN 1.0 documentation</title>
+  <title>spartann.spatial.raster &mdash; SpartANN 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../../_static/documentation_options.js?v=56dcb7b8"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -82,10 +82,13 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">osgeo</span><span class="w"> </span><span class="kn">import</span> <span class="n">gdal</span><span class="p">,</span> <span class="n">gdal_array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+
 
 <span class="n">gdal</span><span class="o">.</span><span class="n">UseExceptions</span><span class="p">()</span>
 
@@ -120,7 +123,7 @@
 <span class="sd">            dts: a gdal Dataset object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">=</span> <span class="n">dts</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Size is [row, cols] which translates to [RasterY, RasterX]&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Raster.from_scratch">
@@ -174,7 +177,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span></div>
+        <span class="n">rst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+        <span class="n">rst</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">return</span> <span class="n">rst</span></div>
 
 
 <div class="viewcode-block" id="Raster.from_array">
@@ -256,6 +261,14 @@
             <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">GetDescription</span><span class="p">())</span>
         <span class="k">return</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hasSource</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Indicates if the raster has a source file.</span>
+
+<span class="sd">        If raster has source, it was read from or written to file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
 
 <div class="viewcode-block" id="Raster.addNewBand">
 <a class="viewcode-back" href="../../../spartann.spatial.html#spartann.spatial.raster.Raster.addNewBand">[docs]</a>
@@ -392,7 +405,8 @@
         <span class="k">if</span> <span class="n">driver</span> <span class="o">==</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">:</span>
             <span class="n">opt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;BIGTIFF=YES&quot;</span><span class="p">)</span>
         <span class="n">out_dt</span><span class="o">.</span><span class="n">CreateCopy</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">opt</span><span class="p">)</span>
-        <span class="n">out_dt</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="n">out_dt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">filename</span></div>
 
 
 <div class="viewcode-block" id="Raster.get_array">
@@ -418,6 +432,48 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
                 <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
             <span class="n">arr</span><span class="p">[</span><span class="n">arr</span> <span class="o">==</span> <span class="n">na</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">return</span> <span class="n">arr</span></div>
+
+
+<div class="viewcode-block" id="Raster.get_subarray">
+<a class="viewcode-back" href="../../../spartann.spatial.html#spartann.spatial.raster.Raster.get_subarray">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_subarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">rc</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+        <span class="n">band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">convNA</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the full array of the raster.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rc: Corner position of the sub array to retrieve</span>
+<span class="sd">            blocksize: side length of the subarray to retrieve.</span>
+<span class="sd">            band: integer defining a band to get or None for all bands</span>
+<span class="sd">            convNA: attempts to convert NA values to np.nan (fails for non float rasters)</span>
+
+<span class="sd">        NOTE:</span>
+<span class="sd">            Conversion to np.nan forces an attempt to convert array to float, so use with caution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">rc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">rc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ys</span><span class="p">,</span> <span class="n">xs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">xoff</span> <span class="o">=</span> <span class="n">blocksize</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="o">+</span> <span class="n">xoff</span> <span class="o">&gt;</span> <span class="n">xs</span><span class="p">:</span>
+            <span class="n">xoff</span> <span class="o">=</span> <span class="n">xs</span> <span class="o">-</span> <span class="n">col</span>
+        <span class="n">yoff</span> <span class="o">=</span> <span class="n">blocksize</span>
+        <span class="k">if</span> <span class="n">row</span> <span class="o">+</span> <span class="n">yoff</span> <span class="o">&gt;</span> <span class="n">ys</span><span class="p">:</span>
+            <span class="n">yoff</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">row</span>
+
+        <span class="n">na</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">GetNoDataValue</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">band</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">convNA</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+            <span class="n">arr</span><span class="p">[</span><span class="n">arr</span> <span class="o">==</span> <span class="n">na</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
         <span class="k">return</span> <span class="n">arr</span></div>
 
 
@@ -450,13 +506,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">block_iter</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
-        <span class="n">band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+        <span class="n">band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">read_arr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator of array with raster values with specified size.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            blocksize: the square size of the block, defining the shape of the yielded array (default is 250).</span>
 <span class="sd">            band: Either &#39;None&#39; for all bands or a specific raster band.</span>
+<span class="sd">            read_arr: It allows to return the array (default) or just the</span>
+<span class="sd">            position for each iterator block without attempt to read data.</span>
 
 <span class="sd">        Yields:</span>
 <span class="sd">            a list with location elements and the nnumpy array with data.</span>
@@ -468,6 +527,7 @@
         <span class="n">na</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">GetNoDataValue</span><span class="p">()</span>
         <span class="n">total</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">xs</span> <span class="o">/</span> <span class="n">blocksize</span><span class="p">)</span> <span class="o">*</span> <span class="n">ceil</span><span class="p">(</span><span class="n">ys</span> <span class="o">/</span> <span class="n">blocksize</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">):</span>
             <span class="n">xoff</span> <span class="o">=</span> <span class="n">blocksize</span>
             <span class="k">if</span> <span class="n">col</span> <span class="o">+</span> <span class="n">xoff</span> <span class="o">&gt;</span> <span class="n">xs</span><span class="p">:</span>
@@ -477,13 +537,14 @@
                 <span class="k">if</span> <span class="n">row</span> <span class="o">+</span> <span class="n">yoff</span> <span class="o">&gt;</span> <span class="n">ys</span><span class="p">:</span>
                     <span class="n">yoff</span> <span class="o">=</span> <span class="n">ys</span> <span class="o">-</span> <span class="n">row</span>
 
-                <span class="k">if</span> <span class="n">band</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">)</span>
-                <span class="c1"># Arrays are sent as float to accept np.nan</span>
-                <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
-                <span class="n">arr</span><span class="p">[</span><span class="n">arr</span> <span class="o">==</span> <span class="n">na</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="k">if</span> <span class="n">read_arr</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">band</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">)</span>
+                    <span class="c1"># Arrays are sent as float to accept np.nan</span>
+                    <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+                    <span class="n">arr</span><span class="p">[</span><span class="n">arr</span> <span class="o">==</span> <span class="n">na</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">yield</span> <span class="p">((</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">total</span><span class="p">),</span> <span class="n">arr</span><span class="p">)</span></div>
 
@@ -512,58 +573,102 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">WriteArray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">rc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="Raster.summarise_bands">
-<a class="viewcode-back" href="../../../spartann.spatial.html#spartann.spatial.raster.Raster.summarise_bands">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">summarise_bands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-        <span class="n">bands</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-        <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span>
-        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2500</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Raster</span><span class="p">:</span>
+<div class="viewcode-block" id="Raster.aggregate_bands">
+<a class="viewcode-back" href="../../../spartann.spatial.html#spartann.spatial.raster.Raster.aggregate_bands">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">aggregate_bands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">fun</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Summarizes raster bands into a single band raster.</span>
+<span class="sd">        Aggregate raster bands based on a user-defined function and return a</span>
+<span class="sd">        new single-band raster.</span>
 
-<span class="sd">        This method summarizes raster data along the band axis using a specified function.</span>
-<span class="sd">        It returns a raster with a single band, retaining the same definitions as the original,</span>
-<span class="sd">        containing the result of the summarization.</span>
+<span class="sd">        This function aggregates the bands of a raster into a single band by</span>
+<span class="sd">        applying a user-defined aggregation function (e.g., mean, max, min,</span>
+<span class="sd">        median, standard deviation). It supports multi-core processing, which</span>
+<span class="sd">        is especially useful for handling large rasters.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            bandd: A list of integers representing the bands to summarize. This</span>
-<span class="sd">                follows GDAL&#39;s band indexing convention, which starts at 1 (not</span>
-<span class="sd">                0).</span>
-<span class="sd">            fun: A function used to summarize the band data. Typically, this is</span>
-<span class="sd">                a NumPy function that accepts the `axis` argument, such as</span>
-<span class="sd">                `median` (default), `mean`, `max`, or others.</span>
-<span class="sd">            blocksize: The size of the block to process in order to avoid large</span>
-<span class="sd">                memory usage.</span>
+<span class="sd">            bands: List of band indices to aggregate (1-based indexing as per</span>
+<span class="sd">            GDAL convention). If None, all bands will be aggregated.</span>
+<span class="sd">            fun: A numpy-style function used to aggregate the bands. The</span>
+<span class="sd">            function must accept the argument &#39;axis&#39; (e.g., np.mean, np.max,</span>
+<span class="sd">            np.min, np.median, np.std).</span>
+<span class="sd">            blocksize (int): The side length of the blocks to process during</span>
+<span class="sd">            raster aggregation.</span>
+<span class="sd">            ncores (int): The number of CPU cores to use for processing each</span>
+<span class="sd">            block. This requires the raster to have a source file (loaded from or previously written to a file).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Raster: A new raster with a single band, retaining the same</span>
-<span class="sd">            definitions as the base raster.</span>
+<span class="sd">            Raster: A new raster object with the same spatial properties as the</span>
+<span class="sd">            source raster, but with a single aggregated band.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nodata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">GetNoDataValue</span><span class="p">()</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">DataType</span>
+
         <span class="n">rst</span> <span class="o">=</span> <span class="n">Raster</span><span class="o">.</span><span class="n">from_scratch</span><span class="p">(</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">,</span>
-            <span class="n">crd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+            <span class="n">res</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">,</span>
+            <span class="n">crd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
             <span class="n">bands</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">nodata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">GetNoDataValue</span><span class="p">(),</span>
-            <span class="n">projwkt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">DataType</span><span class="p">)</span>
+            <span class="n">nodata</span><span class="o">=</span><span class="n">nodata</span><span class="p">,</span>
+            <span class="n">projwkt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="n">data_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_iter</span><span class="p">(</span><span class="n">blocksize</span><span class="o">=</span><span class="n">blocksize</span><span class="p">)</span>
-
-        <span class="c1"># From 1 based to zero based index</span>
-        <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbands</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#GDAL bands start at 1 but here must be numpy indices (from 0)</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">]</span>
 
         <span class="n">progressbar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">data_iter</span><span class="p">:</span>
-            <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">bands</span><span class="p">,::]</span>
-            <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">arr</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">rst</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="n">pos</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">progressbar</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">ncores</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">r_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_iter</span><span class="p">(</span><span class="n">blocksize</span><span class="o">=</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">r_iter</span><span class="p">:</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">bands</span><span class="p">,:,:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">rst</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">pos</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">progressbar</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasSource</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The raster must be associated with a file (either &quot;</span> <span class="o">+</span>\
+                      <span class="s2">&quot;loaded from or written to one) to enable multicore &quot;</span> <span class="o">+</span>\
+                      <span class="s2">&quot;processing.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span>
+            <span class="n">r_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_iter</span><span class="p">(</span><span class="n">blocksize</span><span class="o">=</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">read_arr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="n">progress</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span> <span class="k">as</span> <span class="n">exec</span><span class="p">:</span>
+                <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">exec</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">_worker</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">r_iter</span>
+                <span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+                    <span class="n">pos</span><span class="p">,</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">rst</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">pos</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">progressbar</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">progress</span><span class="p">),</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">rst</span></div>
 </div>
 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_worker</span><span class="p">(</span>
+        <span class="n">pos</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">bands</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal worker function for multi-core raster band aggregation.</span>
+
+<span class="sd">    The function is not intended to be used directly outside the context of the</span>
+<span class="sd">    multi-core processing setup.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rst</span> <span class="o">=</span> <span class="n">Raster</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">rst</span><span class="o">.</span><span class="n">get_subarray</span><span class="p">(</span><span class="n">pos</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">blocksize</span><span class="p">)</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">bands</span><span class="p">,:,:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>
 </pre></div>
 
            </div>

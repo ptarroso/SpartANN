@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann package &mdash; SpartANN 1.0 documentation</title>
+  <title>spartann package &mdash; SpartANN 1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/documentation_options.js?v=56dcb7b8"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -330,6 +330,7 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.addDescription"><code class="docutils literal notranslate"><span class="pre">Raster.addDescription()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.addMetadata"><code class="docutils literal notranslate"><span class="pre">Raster.addMetadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.addNewBand"><code class="docutils literal notranslate"><span class="pre">Raster.addNewBand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.aggregate_bands"><code class="docutils literal notranslate"><span class="pre">Raster.aggregate_bands()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.bandnames"><code class="docutils literal notranslate"><span class="pre">Raster.bandnames</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.block_iter"><code class="docutils literal notranslate"><span class="pre">Raster.block_iter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.extent"><code class="docutils literal notranslate"><span class="pre">Raster.extent</span></code></a></li>
@@ -342,13 +343,14 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.getXYFromRowCol"><code class="docutils literal notranslate"><span class="pre">Raster.getXYFromRowCol()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.get_array"><code class="docutils literal notranslate"><span class="pre">Raster.get_array()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.get_nodata_mask"><code class="docutils literal notranslate"><span class="pre">Raster.get_nodata_mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.get_subarray"><code class="docutils literal notranslate"><span class="pre">Raster.get_subarray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.hasSource"><code class="docutils literal notranslate"><span class="pre">Raster.hasSource</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.nbands"><code class="docutils literal notranslate"><span class="pre">Raster.nbands</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.origin"><code class="docutils literal notranslate"><span class="pre">Raster.origin</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.proj"><code class="docutils literal notranslate"><span class="pre">Raster.proj</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.res"><code class="docutils literal notranslate"><span class="pre">Raster.res</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.set_array"><code class="docutils literal notranslate"><span class="pre">Raster.set_array()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.size"><code class="docutils literal notranslate"><span class="pre">Raster.size</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.summarise_bands"><code class="docutils literal notranslate"><span class="pre">Raster.summarise_bands()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.writeRaster"><code class="docutils literal notranslate"><span class="pre">Raster.writeRaster()</span></code></a></li>
 </ul>
 </li>
@@ -360,6 +362,7 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.addDescription"><code class="docutils literal notranslate"><span class="pre">Raster.addDescription()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.addMetadata"><code class="docutils literal notranslate"><span class="pre">Raster.addMetadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.addNewBand"><code class="docutils literal notranslate"><span class="pre">Raster.addNewBand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.aggregate_bands"><code class="docutils literal notranslate"><span class="pre">Raster.aggregate_bands()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.bandnames"><code class="docutils literal notranslate"><span class="pre">Raster.bandnames</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.block_iter"><code class="docutils literal notranslate"><span class="pre">Raster.block_iter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.extent"><code class="docutils literal notranslate"><span class="pre">Raster.extent</span></code></a></li>
@@ -372,13 +375,14 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.getXYFromRowCol"><code class="docutils literal notranslate"><span class="pre">Raster.getXYFromRowCol()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.get_array"><code class="docutils literal notranslate"><span class="pre">Raster.get_array()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.get_nodata_mask"><code class="docutils literal notranslate"><span class="pre">Raster.get_nodata_mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.get_subarray"><code class="docutils literal notranslate"><span class="pre">Raster.get_subarray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.hasSource"><code class="docutils literal notranslate"><span class="pre">Raster.hasSource</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.nbands"><code class="docutils literal notranslate"><span class="pre">Raster.nbands</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.origin"><code class="docutils literal notranslate"><span class="pre">Raster.origin</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.proj"><code class="docutils literal notranslate"><span class="pre">Raster.proj</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.res"><code class="docutils literal notranslate"><span class="pre">Raster.res</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.set_array"><code class="docutils literal notranslate"><span class="pre">Raster.set_array()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.size"><code class="docutils literal notranslate"><span class="pre">Raster.size</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.summarise_bands"><code class="docutils literal notranslate"><span class="pre">Raster.summarise_bands()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.writeRaster"><code class="docutils literal notranslate"><span class="pre">Raster.writeRaster()</span></code></a></li>
 </ul>
 </li>
@@ -397,15 +401,6 @@
 <span id="spartann-version-module"></span><h2>spartann.version module<a class="headerlink" href="#module-spartann.version" title="Link to this heading"></a></h2>
 <p>SpartANN - Spectral Pattern Analysis and Remote-sensing Tool with Artificial Neural Networks
 Copyright (C) 2025 Pedro Tarroso</p>
-<p>This program is free software: you can redistribute it and/or modify it under the terms
-of the GNU General Public License as published by the Free Software Foundation, either
-version 3 of the License, or (at your option) any later version.</p>
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with this program. If not, see &lt;<a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>&gt;.</p>
 </section>
 <section id="module-spartann">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spartann" title="Link to this heading"></a></h2>

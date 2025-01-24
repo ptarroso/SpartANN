@@ -14,7 +14,7 @@ At its core, SpartANN uses a fully connected Multilayer Perceptron network with 
 
 SpartANN is designed for ease of use with common data formats. Typical inputs include text files for tabular data and raster data in the standard TIFF format, though other formats are also supported. Its primary strength lies in simplifying model building and mitigating overfitting through ensemble predictions. These ensembles are generated from repetitions of the same network structure or by combining predictions from different network configurations.
 
-For basic use, SpartANN provides a straightforward structure for importing tabular data and raster imagery, extracting training data directly from the raster. Users can save trained models and apply them to make predictions on new imagery. Additionally, SpartANN supports both categorical and continuous targets, offering single or multiple predictions for each target category.
+For basic use, SpartANN provides a straightforward structure for importing tabular data and raster imagery, extracting training data directly from the raster. Users can save trained models and apply them to make predictions on new imagery and final ensemble of the predictions. Additionally, SpartANN supports both categorical and continuous targets, offering single or multiple predictions for each target category.
 
 Because SpartANN is a Python module, advanced customization and integration into broader workflows are also possible, making it a versatile tool for remote sensing tasks.
 
