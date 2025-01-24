@@ -23,13 +23,14 @@ The `documentation <https://ptarroso.github.io/SpartANN/>`_ provides step-by-ste
 .. container:: examples
 
    .. figure:: docs/examples/assets/raster_with_points.png
-      :width: 48%
+      :width: 45%
       :align: left
 
-      Original image (True Color) with classification points
+      Original image (True Color)
+      with classification points
 
    .. figure:: docs/examples/assets/predicted_clouds.png
-      :width: 48%
+      :width: 45%
       :align: right
 
       Predicted clouds with SpartANN
