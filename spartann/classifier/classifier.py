@@ -276,7 +276,7 @@ class AnnPredict:
 
         """
         if isinstance(ann, AnnClassifier):
-            return cls(ann.getmodels())
+            return cls(ann.getmodels)
         else:
             raise TypeError("Provide an instance of AnnClassifier")
 
