@@ -15,6 +15,12 @@ setup(name='SpartANN',
       description='Spectral Pattern Analysis Remote-sensing Tool with Artificial Neural Networks',
       author='Pedro Tarroso',
       author_email='ptarroso@cibio.up.pt',
-      url='',
+      url='https://github.com/ptarroso/SpartANN',
+      classifiers=[
+          "Programming Language :: Python :: 3.12",
+          "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+          "Operating System :: OS Independent",
+          "Topic :: Scientific/Engineering :: GIS",
+      ],
       packages=find_packages(),
       )
