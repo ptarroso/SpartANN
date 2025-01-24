@@ -20,17 +20,12 @@ Examples
 
 The `documentation <https://ptarroso.github.io/SpartANN/>`_ provides step-by-step examples based on the data included in the package. The primary example uses a subset of a Sentinel-2 image alongside data identifying pixel clouds.
 
-.. container:: examples
+.. figure:: docs/examples/assets/raster_with_points.png
+    :align: center
 
-   .. figure:: docs/examples/assets/raster_with_points.png
-      :width: 45%
-      :align: left
+    Original image (True Color) with classification points
 
-      Original image (True Color)
-      with classification points
+.. figure:: docs/examples/assets/predicted_clouds.png
+    :align: center
 
-   .. figure:: docs/examples/assets/predicted_clouds.png
-      :width: 45%
-      :align: right
-
-      Predicted clouds with SpartANN
+    Predicted clouds with SpartANN
