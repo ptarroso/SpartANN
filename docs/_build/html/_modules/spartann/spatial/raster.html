@@ -39,10 +39,19 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Instalation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/simple.html">A First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/advanced.html">Advanced</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../spartann.html">spartann package</a></li>
 </ul>
 
         </div>
@@ -144,7 +153,7 @@
         <span class="n">ds</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bands</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">projwkt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">SetProjection</span><span class="p">(</span><span class="n">projwkt</span><span class="p">)</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">SetGeoTransform</span><span class="p">([</span><span class="n">crd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">crd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">SetGeoTransform</span><span class="p">([</span><span class="n">crd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">crd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands</span><span class="p">):</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Fill</span><span class="p">(</span><span class="n">nodata</span><span class="p">)</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">GetRasterBand</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">SetNoDataValue</span><span class="p">(</span><span class="n">nodata</span><span class="p">)</span>
@@ -213,13 +222,21 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">res</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the raster resolution [X,Y]&quot;&quot;&quot;</span>
         <span class="n">gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetGeoTransform</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">gt</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">gt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">gt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">gt</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the coordinate of the origin [X,Y]&quot;&quot;&quot;</span>
         <span class="n">gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">GetGeoTransform</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">gt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">gt</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns extent of raster as [xmin, xmax, ymin, ymax]&quot;&quot;&quot;</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">ox</span><span class="p">,</span> <span class="n">ox</span><span class="o">+</span><span class="n">rx</span><span class="o">*</span><span class="n">cols</span><span class="p">,</span> <span class="n">oy</span><span class="o">+</span><span class="n">ry</span><span class="o">*</span><span class="n">rows</span><span class="p">,</span> <span class="n">oy</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">proj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

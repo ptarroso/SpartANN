@@ -65,7 +65,7 @@ class Raster(object):
         ds = driver.Create("", size[1], size[0], bands, dtype)
         if projwkt is not None:
             ds.SetProjection(projwkt)
-        ds.SetGeoTransform([crd[0], res[1], 0, crd[1], 0, res[0]])
+        ds.SetGeoTransform([crd[0], res[0], 0, crd[1], 0, res[1]])
         for i in range(bands):
             ds.GetRasterBand(i + 1).Fill(nodata)
             ds.GetRasterBand(i + 1).SetNoDataValue(nodata)
@@ -127,13 +127,21 @@ class Raster(object):
     def res(self) -> Tuple[float, float]:
         """Returns the raster resolution [X,Y]"""
         gt = self.dts.GetGeoTransform()
-        return (gt[5], gt[1])
+        return (gt[1], gt[5])
 
     @property
     def origin(self) -> Tuple[float, float]:
         """Return the coordinate of the origin [X,Y]"""
         gt = self.dts.GetGeoTransform()
         return (gt[0], gt[3])
+
+    @property
+    def extent(self) -> Tuple[float, float, float, float]:
+        """ Returns extent of raster as [xmin, xmax, ymin, ymax]"""
+        rows, cols = self.size
+        ox, oy = self.origin
+        rx, ry = self.res
+        return (ox, ox+rx*cols, oy+ry*rows, oy)
 
     @property
     def proj(self) -> str:

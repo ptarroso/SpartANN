@@ -19,8 +19,12 @@ For basic use, SpartANN provides a straightforward structure for importing tabul
 Because SpartANN is a Python module, advanced customization and integration into broader workflows are also possible, making it a versatile tool for remote sensing tasks.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
+   :caption: Getting Started
 
-   Instalation <install>
-   API <modules>
+   Installation <install>
+   Usage <usage>
+
+.. include:: examples.rst
+
+.. include:: modules.rst
