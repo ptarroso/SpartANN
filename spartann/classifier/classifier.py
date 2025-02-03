@@ -203,7 +203,7 @@ class AnnClassifier:
 
                 nn.initWeights()
 
-                best = [0, 0, ""]
+                best = [float('-inf'), 0, ""]
                 tracker = []
                 err_dif = -1
 
