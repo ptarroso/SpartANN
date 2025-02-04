@@ -213,6 +213,7 @@ class Raster(object):
                                 crd = self.origin,
                                 nodata = nodata,
                                 projwkt = self.proj)
+        rst.addMetadata(self.getMetadata())
         for i, bname in enumerate(self.bandnames):
             rst.addDescription(bname, i+1)
 
