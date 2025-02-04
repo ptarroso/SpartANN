@@ -92,6 +92,29 @@ class Raster(object):
         return rst
 
     @classmethod
+    def from_raster(cls, source: Raster):
+        """Creates a new instance of Raster from a raster object.
+
+        Initializes an empty in-memory Raster object with another raster with a
+        single empty band.
+        Note: It does not copy contents. Use Raster.copy() if you need to copy.
+
+        Args:
+            source: a Raster instance serving as source.
+
+        """
+        rst = Raster.from_scratch(
+            size = source.size,
+            res = source.res,
+            crd = source.origin,
+            bands = 1,
+            nodata = source.dts.GetRasterBand(1).GetNoDataValue(),
+            projwkt = source.proj,
+            dtype = source.dts.GetRasterBand(1).DataType
+        )
+        return rst
+
+    @classmethod
     def from_array(
         cls,
         arr: np.ndarray,
