@@ -142,7 +142,7 @@ class Raster(object):
         ds = driver.Create("", c, r, b, dtype)
         if projwkt is not None:
             ds.SetProjection(projwkt)
-        ds.SetGeoTransform([crd[0], res[1], 0, crd[1], 0, res[0]])
+        ds.SetGeoTransform([crd[0], res[0], 0, crd[1], 0, res[1]])
         ds.WriteArray(arr)
         _ = ds.GetRasterBand(1).SetNoDataValue(nodata)
         return cls(ds)
