@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+from enum import Enum
 from osgeo import gdal, gdal_array
 from time import sleep
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -174,6 +175,25 @@ class Raster(object):
         If raster has source, it was read from or written to file.
         """
         return self.source != ""
+
+    def copy(self) -> Raster:
+        """Makes an in-memory copy of current raster.
+
+        Creates a new raster with same geotransform and band contents
+
+        Returns:
+            Raster instance with in-memory copy or source.
+        """
+        nodata = self.dts.GetRasterBand(1).GetNoDataValue()
+        rst = Raster.from_array(self.get_array(),
+                                res = self.res,
+                                crd = self.origin,
+                                nodata = nodata,
+                                projwkt = self.proj)
+        for i, bname in enumerate(self.bandnames):
+            rst.addDescription(bname, i+1)
+
+        return rst
 
     def addNewBand(self, data: np.ndarray, name: Optional[str] = None) -> None:
         """ Adds a new band to the raster datset and fill with data.
