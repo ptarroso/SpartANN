@@ -107,7 +107,7 @@ class Raster(object):
             size = source.size,
             res = source.res,
             crd = source.origin,
-            bands = 1,
+            bands = 0,
             nodata = source.dts.GetRasterBand(1).GetNoDataValue(),
             projwkt = source.proj,
             dtype = source.dts.GetRasterBand(1).DataType
