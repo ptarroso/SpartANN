@@ -222,6 +222,10 @@ class Raster(object):
     def addNewBand(self, data: np.ndarray, name: Optional[str] = None) -> None:
         """ Adds a new band to the raster datset and fill with data.
 
+        Adds a new band with a numpy array data. It preserves raster datatype.
+        If raster has no bands, adds a band with equivalent datatype to data
+        array.
+
         Args:
             data: a numpy array for a single band and with same shape as base
             raster band (row size, col size)
@@ -231,7 +235,12 @@ class Raster(object):
             msg = f"Array must be of same size as raster {self.size}."
             raise ValueError(msg)
 
-        _ = self.dts.AddBand(self.dts.GetRasterBand(1).DataType)
+        if len(self.bandnames) > 0:
+            dtype = self.dts.GetRasterBand(1).DataType
+        else:
+            dtype = gdal_array.NumericTypeCodeToGDALTypeCode(data.dtype)
+
+        _ = self.dts.AddBand(dtype)
         self.set_array(data, band=self.nbands)
 
         if name:
