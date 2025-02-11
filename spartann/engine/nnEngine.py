@@ -475,7 +475,8 @@ class NN:
     def backpropag(self, patterns):
         """Backpropagation
 
-        Backpropagates error calculation on neural network structure and updates weights.
+        Backpropagates error calculation on neural network structure and
+        accumulated gradients for batch.
 
         Args:
             patterns (list[list]): a list of n training data with a list of p input (i) values to classify
@@ -526,7 +527,10 @@ class NN:
             grad[0][n][-1][0] += delta
 
     def update_weights(self, batch_size):
-        """Updates weights using averaged gradients"""
+        """Network weight update
+
+        Updates weights using accumulated gradients normailized by batch size
+        """
         optimizer = self._getOptimizer()
         weights = self.weights
         changes = self.changes
