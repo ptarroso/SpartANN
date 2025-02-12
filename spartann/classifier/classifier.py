@@ -211,7 +211,7 @@ class AnnClassifier:
                 tracker = []
                 err_dif = -1
 
-                print("| Iteration |   Error   | Train |  Test | Product |  ErrDiff |")
+                print("| Iteration |   Error   |  Train |  Test  |  Product |  ErrDiff |")
 
                 for i in range(maxiter):
                     nn.trainnet(pat_train, tgt_train, batch_size = batch_size, scale=not scale, verbose=0)
@@ -232,8 +232,9 @@ class AnnClassifier:
                         [x[4] <= stable_val and x[4] > 0 for x in tracker[-stable:]]
                     )
                     print(
-                        f"| {i:9d} | {err:9.5f} | {k_train:5.3f} | {k_test:5.3f} |  {k_prod:5.3f}  | {err_dif:8.5f} |",
+                        f"| {i:9d} | {err:9.5f} | {k_train: 5.3f} | {k_test: 5.3f} |  {k_prod: 5.3f}  | {err_dif:8.5f} |",
                         end="\r",
+                        flush=True
                     )
                     if tt >= stable:
                         break
