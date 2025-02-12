@@ -128,6 +128,7 @@ class AnnClassifier:
     def trainModel(
         self,
         datatable: DataTable|None = None,
+        batch_size: int = 1,
         maxiter: int = 10000,
         stable: int = 250,
         stable_val: float = 0.001,
@@ -138,6 +139,9 @@ class AnnClassifier:
 
         Args:
             datatable: A DataTable instance with points for supervised learning.
+            batch_size: Defines the size of the batch for training that must be
+            between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after
+            every sample. Larger batches might provide a smoother training.
             maxiter: Maximum number of iterations to train.
             stable: number if iterations with error diference bellow stable_val to stop training early.
             stable_val: value for the network error difference between to consider stable.
@@ -210,7 +214,7 @@ class AnnClassifier:
                 print("| Iteration |   Error   | Train |  Test | Product |  ErrDiff |")
 
                 for i in range(maxiter):
-                    nn.trainnet(pat_train, tgt_train, scale=not scale, verbose=0)
+                    nn.trainnet(pat_train, tgt_train, batch_size = batch_size, scale=not scale, verbose=0)
                     pred_train = nn.testnet(pat_train, scale=not scale, verbose=0)
                     pred_test = nn.testnet(pat_test, scale=not scale, verbose=0)
                     k_train = self.validation.calc(tgt_train, pred_train)
