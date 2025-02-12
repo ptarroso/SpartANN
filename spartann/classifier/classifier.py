@@ -140,12 +140,8 @@ class AnnClassifier:
 
         Args:
             datatable: A DataTable instance with points for supervised learning.
-            batch_size: Defines the size of the batch for training that must be
-            between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after
-            every sample. Larger batches might provide a smoother training.
-            burnin: Number of burn-in iterations (networks not considered) that
-            allows a first weight adjustment and avoid choosing a near random
-            network before a number of learning steps.
+            batch_size: Defines the size of the batch for training that must be between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after every sample. Larger batches might provide a smoother training.
+            burnin: Number of burn-in iterations (networks not considered) that allows a first weight adjustment and avoid choosing a near random network before a number of learning steps.
             maxiter: Maximum number of iterations to train.
             stable: number if iterations with error diference bellow stable_val to stop training early.
             stable_val: value for the network error difference between to consider stable.
