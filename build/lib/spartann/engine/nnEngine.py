@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from random import uniform, normalvariate
+from random import uniform, normalvariate, sample
 from math import exp
 
 __all__ = ["NN"]
@@ -186,7 +186,7 @@ class NN:
                     "List length does not match the number of input neurons."
                 )
 
-    def trainnet(self, patterns, targets, varnames=None, scale=True, verbose=None):
+    def trainnet(self, patterns, targets, batch_size=1, varnames=None, scale=True, verbose=None):
         """Trains the network with loaded inputs.
 
         Args:
@@ -203,6 +203,11 @@ class NN:
             1 - Prints Iteration number | Network error
 
         """
+        nsamples = len(patterns)
+
+        if batch_size and (batch_size > nsamples or batch_size <= 0):
+            msg = "Batch size must be greater than 0 and less or equal to number of patterns."
+            raise ValueError(msg)
 
         if verbose is None:
             verbose = self.verbosity
@@ -218,11 +223,10 @@ class NN:
             patterns = self.scale(patterns)
 
         self.varnames = varnames
-
         # train with patterns and targets
         for i in range(self.iterations):
             self.cur_iter = i
-            for p in range(len(patterns)):
+            for p in range(nsamples):
                 pattern = patterns[p][:]
                 target = targets[p]
 
@@ -233,14 +237,21 @@ class NN:
                 # Calculate net error
                 self.calcTargetError(target)
                 # Change weights on network
+
+                if p % batch_size + 1 == batch_size:
+                    self.update_weights(batch_size)
+
                 # BACK PROPAGATION
                 self.backpropag(pattern)
+
+            if nsamples % batch_size > 0:
+                self.update_weights(nsamples % batch_size)
 
             err = self.neterror(patterns, targets, "SSerror")
             self.netTrainError = err
             # Print error for this iteration
             if verbose == 1:
-                print("iteration = {} | RMS error = {}".format(i, err))
+                print("iteration = {} | error = {}".format(i, err))
         self.cur_iter = None
 
     def checkVarNames(self, varnames):
@@ -390,7 +401,7 @@ class NN:
             self.feedforward(patterns[p])
             self.calcTargetError(targets[p])
             temp = [temp[x] + (self.errPat[x]) ** 2 for x in range(nOutputs)]
-        RMSerror = [(temp[x] / self.nPatterns) ** 0.5 for x in range(nOutputs)]
+        RMSerror = [(temp[x] / len(patterns)) ** 0.5 for x in range(nOutputs)]
         return RMSerror
 
     def __SSerror(self, patterns, targets):
@@ -404,40 +415,46 @@ class NN:
         SSerror = [0.5 * (temp[x]) for x in range(nOutputs)]
         return SSerror
 
-    def _optimSGD(self, grad, l, n, w):
+    def _optimSGD(self, l, n, w):
         """ Implementation of Simple Gradient Descent optimizer."""
+        grad = self.G[l][n][w][0]
         self.changes[l][n][w] = self.LearningRate * grad
 
-    def _optimSimpleMomentum(self, grad, l, n, w):
+    def _optimSimpleMomentum(self, l, n, w):
         """ Implementation of SGD with simple momentum optimizer"""
+        grad = self.G[l][n][w][0]
         self.changes[l][n][w] = self.LearningRate * grad + self.momentum * self.changes[l][n][w]
 
-    def _optimMomentum(self, grad, l, n, w):
+    def _optimMomentum(self, l, n, w):
         """ Implementation of SGD with momentum optimizer"""
-        prevG = self.G[l][n][w]
-        self.G[l][n][w] = grad
+        prevG = self.G[l][n][w][1]
+        grad = self.G[l][n][w][0]
         self.changes[l][n][w] = self.LearningRate * ((1-self.momentum) * grad + (self.momentum * prevG))
+        self.G[l][n][w][1] = grad
 
-    def _optimAdagrad(self, grad, l, n, w):
+    def _optimAdagrad(self, l, n, w):
         """ Implementation of Adaptive Gradient Optimization (AdaGRAD) optimizer"""
-        self.G[l][n][w] += grad**2
-        self.changes[l][n][w] =  self.LearningRate/((self.G[l][n][w]+self.eps)**0.5) * grad
+        grad = self.G[l][n][w][0]
+        self.G[l][n][w][1] += grad**2
+        self.changes[l][n][w] =  self.LearningRate/((self.G[l][n][w][1]+self.eps)**0.5) * grad
 
-    def _optimRMSProp(self, grad, l, n, w):
+    def _optimRMSProp(self, l, n, w):
         """ Implementation of Root Mean Squared Propagation (RMSProp) optimizer"""
-        self.G[l][n][w] = self.momentum * self.G[l][n][w] + (1-self.momentum)*(grad**2)
-        self.changes[l][n][w] =  self.LearningRate/((self.G[l][n][w]+self.eps)**0.5) * grad
+        grad = self.G[l][n][w][0]
+        self.G[l][n][w][1] = self.momentum * self.G[l][n][w][1] + (1-self.momentum)*(grad**2)
+        self.changes[l][n][w] =  self.LearningRate/((self.G[l][n][w][1]+self.eps)**0.5) * grad
 
-    def _optimAdam(self, grad, l, n, w):
+    def _optimAdam(self, l, n, w):
         """ Implementation of Adaptive Moment Estimation (Adam) optimizer"""
         B1,B2, = self.momentum
+        grad = self.G[l][n][w][0]
         # Needs to track two values, so, it modifies G in the first iteration
-        if self.G[l][n][w] == 0:
-            self.G[l][n][w] = [0,0]
-        self.G[l][n][w][0] = B1*self.G[l][n][w][0] + (1-B1)*grad
-        self.G[l][n][w][1] = B2*self.G[l][n][w][1] + (1-B2)*(grad**2)
-        grad_bias = self.G[l][n][w][0] / (1-B1**(self.cur_iter+1))
-        gradsq_bias = self.G[l][n][w][1] / (1-B2**(self.cur_iter+1))
+        if self.G[l][n][w][1] == 0:
+            self.G[l][n][w][1] = [0,0]
+        self.G[l][n][w][1][0] = B1*self.G[l][n][w][1][0] + (1-B1)*grad
+        self.G[l][n][w][1][1] = B2*self.G[l][n][w][1][1] + (1-B2)*(grad**2)
+        grad_bias = self.G[l][n][w][1][0] / (1-B1**(self.cur_iter+1))
+        gradsq_bias = self.G[l][n][w][1][1] / (1-B2**(self.cur_iter+1))
         self.changes[l][n][w] =  self.LearningRate/((gradsq_bias+self.eps)**0.5) * grad_bias
 
     def _getOptimizer(self):
@@ -458,22 +475,21 @@ class NN:
     def backpropag(self, patterns):
         """Backpropagation
 
-        Backpropagates error calculation on neural network structure and updates weights.
+        Backpropagates error calculation on neural network structure and
+        accumulated gradients for batch.
 
         Args:
             patterns (list[list]): a list of n training data with a list of p input (i) values to classify
             [[i_1_1, i_2_1, ..., i_p_1], [i_1_2, i_2_2, ...,i_p_2], ..., [i_1_n, i_2_n, ..., i_p_n]]
 
         """
-        nlayers = len(self.scheme) - 1  # Without input layer
         scheme = self.scheme
         dfunc = self.dfunc
         nlayers = len(scheme)
         weights = self.weights
         values = self.values
-        changes = self.changes
         out_errors = self.errPat[:]
-        optimizer = self._getOptimizer()
+        grad = self.G
 
         # Calculate error at output level
         errors = [0.0] * (scheme[-2] + 1)
@@ -481,14 +497,11 @@ class NN:
             derivative = dfunc(values[-1][n])
             delta = derivative * out_errors[n]
             for w in range(scheme[-2]):
-                grad = delta * values[-2][w]
+                grad[-1][n][w][0] += delta * values[-2][w]
                 errors[w] += weights[-1][n][w] * out_errors[n]
-                optimizer(grad, -1, n, w)
-                weights[-1][n][w] = weights[-1][n][w] - changes[-1][n][w]
             # Bias
             errors[-1] += weights[-1][n][-1] * out_errors[n]
-            optimizer(delta, -1, n, -1)
-            weights[-1][n][-1] = weights[-1][n][-1] - changes[-1][n][-1]
+            grad[-1][n][-1][0] += delta
 
         # Calculate error for hidden layers (except first)
         for l in range(nlayers - 2, 1, -1):
@@ -497,14 +510,11 @@ class NN:
                 derivative = dfunc(values[l - 1][n])
                 delta = derivative * errors[n]
                 for w in range(scheme[l - 1]):
-                    grad = delta * values[l - 2][w]
+                    grad[l-1][n][w][0] += delta * values[l - 2][w]
                     prevL_errors[w] += weights[l - 1][n][w] * errors[n]
-                    optimizer(grad, l-1, n, w)
-                    weights[l - 1][n][w] = weights[l - 1][n][w] - changes[l - 1][n][w]
                 # Bias
                 prevL_errors[-1] += weights[l - 1][n][-1] * errors[n]
-                optimizer(delta, l-1, n, -1)
-                weights[l - 1][n][-1] = weights[l - 1][n][-1] - changes[l-1][n][-1]
+                grad[l-1][n][-1][0] += delta
             errors = prevL_errors[:]
 
         # Calculate error for the first hidden layer
@@ -512,12 +522,27 @@ class NN:
             derivative = dfunc(values[0][n])
             delta = derivative * errors[n]
             for w in range(scheme[0]):
-                grad = delta * patterns[w]
-                optimizer(grad, 0, n, w)
-                weights[0][n][w] = weights[0][n][w] - changes[0][n][w]
+                grad[0][n][w][0] += delta * patterns[w]
             # Bias
-            optimizer(delta, 0, n, -1)
-            weights[0][n][-1] = weights[0][n][-1] - changes[0][n][-1]
+            grad[0][n][-1][0] += delta
+
+    def update_weights(self, batch_size):
+        """Network weight update
+
+        Updates weights using accumulated gradients normailized by batch size
+        """
+        optimizer = self._getOptimizer()
+        weights = self.weights
+        changes = self.changes
+        grad = self.G
+
+        for l in range(len(grad)):
+            for n in range(len(grad[l])):
+                for w in range(len(grad[l][n])):
+                    grad[l][n][w][0] /= batch_size
+                    optimizer(l, n, w)
+                    weights[l][n][w] -= changes[l][n][w]
+                    grad[l][n][w][0] = 0.0
 
     def feedforward(self, pattern):
         """Feedforward stage
@@ -673,9 +698,9 @@ class NN:
                 for neuron in range(nneurons):
                     values[i].append(0.0)
                     derivatives[i].append(0.0)
-                    weights[i].append([0.0] * (p_nneurons))
-                    changes[i].append([0.0] * (p_nneurons))
-                    G[i].append([0.0] * (p_nneurons))
+                    weights[i].append([0.0 for _ in range(p_nneurons)])
+                    changes[i].append([0.0 for _ in range(p_nneurons)])
+                    G[i].append([[0.0, 0.0] for _ in range(p_nneurons)])
 
             self.values = values
             self.derivatives = derivatives
@@ -790,21 +815,21 @@ class NN:
                 w[l][n] = [normalvariate(0, rng) for x in w[l][n]]
         self.weights = w
 
-        def XORexample(self):
-            """Example network data with XOR"""
-            print("Loading XOR example...\n")
-            Patterns = [[1, 0], [0, 1], [1, 1], [0, 0]]
-            Targets = [[1.0], [1.0], [0.0], [0.0]]
-            self.initWeights()
-            self.trainnet(Patterns, Targets, scale=False, verbose=1)
+    def XORexample(self):
+        """Example network data with XOR"""
+        print("Loading XOR example...\n")
+        Patterns = [[1, 0], [0, 1], [1, 1], [0, 0]]
+        Targets = [[1.0], [1.0], [0.0], [0.0]]
+        self.initWeights()
+        self.trainnet(Patterns, Targets, scale=False, verbose=1)
 
-            for p in range(len(Patterns)):
-                self.feedforward(Patterns[p])
-                self.calcTargetError(Targets[p])
-                print(f"Pattern = {p+1} | real = {Targets[p]} | predicted = {self.values[-1]}")
-            derivs = self.pderiv(Patterns)
-            for i in range(len(Patterns)):
-                print("Input: {} | Partial derivative: {}".format(Patterns[i], derivs[i]))
+        for p in range(len(Patterns)):
+            self.feedforward(Patterns[p])
+            self.calcTargetError(Targets[p])
+            print(f"Pattern = {p+1} | real = {Targets[p]} | predicted = {self.values[-1]}")
+        derivs = self.pderiv(Patterns)
+        for i in range(len(Patterns)):
+            print("Input: {} | Partial derivative: {}".format(Patterns[i], derivs[i]))
 
 
 def repeat(lst, rep):

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
+from enum import Enum
 from osgeo import gdal, gdal_array
 from time import sleep
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -91,6 +92,29 @@ class Raster(object):
         return rst
 
     @classmethod
+    def from_raster(cls, source: Raster):
+        """Creates a new instance of Raster from a raster object.
+
+        Initializes an empty in-memory Raster object with another raster with a
+        single empty band.
+        Note: It does not copy contents. Use Raster.copy() if you need to copy.
+
+        Args:
+            source: a Raster instance serving as source.
+
+        """
+        rst = Raster.from_scratch(
+            size = source.size,
+            res = source.res,
+            crd = source.origin,
+            bands = 0,
+            nodata = source.dts.GetRasterBand(1).GetNoDataValue(),
+            projwkt = source.proj,
+            dtype = source.dts.GetRasterBand(1).DataType
+        )
+        return rst
+
+    @classmethod
     def from_array(
         cls,
         arr: np.ndarray,
@@ -118,7 +142,7 @@ class Raster(object):
         ds = driver.Create("", c, r, b, dtype)
         if projwkt is not None:
             ds.SetProjection(projwkt)
-        ds.SetGeoTransform([crd[0], res[1], 0, crd[1], 0, res[0]])
+        ds.SetGeoTransform([crd[0], res[0], 0, crd[1], 0, res[1]])
         ds.WriteArray(arr)
         _ = ds.GetRasterBand(1).SetNoDataValue(nodata)
         return cls(ds)
@@ -175,8 +199,32 @@ class Raster(object):
         """
         return self.source != ""
 
+    def copy(self) -> Raster:
+        """Makes an in-memory copy of current raster.
+
+        Creates a new raster with same geotransform and band contents
+
+        Returns:
+            Raster instance with in-memory copy or source.
+        """
+        nodata = self.dts.GetRasterBand(1).GetNoDataValue()
+        rst = Raster.from_array(self.get_array(),
+                                res = self.res,
+                                crd = self.origin,
+                                nodata = nodata,
+                                projwkt = self.proj)
+        rst.addMetadata(self.getMetadata())
+        for i, bname in enumerate(self.bandnames):
+            rst.addDescription(bname, i+1)
+
+        return rst
+
     def addNewBand(self, data: np.ndarray, name: Optional[str] = None) -> None:
         """ Adds a new band to the raster datset and fill with data.
+
+        Adds a new band with a numpy array data. It preserves raster datatype.
+        If raster has no bands, adds a band with equivalent datatype to data
+        array.
 
         Args:
             data: a numpy array for a single band and with same shape as base
@@ -187,7 +235,12 @@ class Raster(object):
             msg = f"Array must be of same size as raster {self.size}."
             raise ValueError(msg)
 
-        _ = self.dts.AddBand(self.dts.GetRasterBand(1).DataType)
+        if len(self.bandnames) > 0:
+            dtype = self.dts.GetRasterBand(1).DataType
+        else:
+            dtype = gdal_array.NumericTypeCodeToGDALTypeCode(data.dtype)
+
+        _ = self.dts.AddBand(dtype)
         self.set_array(data, band=self.nbands)
 
         if name:

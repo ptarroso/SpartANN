@@ -128,6 +128,8 @@ class AnnClassifier:
     def trainModel(
         self,
         datatable: DataTable|None = None,
+        batch_size: int = 1,
+        burnin = 1000,
         maxiter: int = 10000,
         stable: int = 250,
         stable_val: float = 0.001,
@@ -138,6 +140,12 @@ class AnnClassifier:
 
         Args:
             datatable: A DataTable instance with points for supervised learning.
+            batch_size: Defines the size of the batch for training that must be
+            between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after
+            every sample. Larger batches might provide a smoother training.
+            burnin: Number of burn-in iterations (networks not considered) that
+            allows a first weight adjustment and avoid choosing a near random
+            network before a number of learning steps.
             maxiter: Maximum number of iterations to train.
             stable: number if iterations with error diference bellow stable_val to stop training early.
             stable_val: value for the network error difference between to consider stable.
@@ -203,14 +211,19 @@ class AnnClassifier:
 
                 nn.initWeights()
 
-                best = [0, 0, ""]
+                best = [float('-inf'), 0, ""]
                 tracker = []
                 err_dif = -1
 
-                print("| Iteration |   Error   | Train |  Test | Product |  ErrDiff |")
+                for i in range(burnin):
+                    nn.trainnet(pat_train, tgt_train, batch_size = batch_size, scale=not scale, verbose=0)
+                    print(f"Burn-in iteration: {i+1}", end="\r")
+                print("")
+
+                print("| Iteration |   Error   |  Train |  Test  |  Product |  ErrDiff |")
 
                 for i in range(maxiter):
-                    nn.trainnet(pat_train, tgt_train, scale=not scale, verbose=0)
+                    nn.trainnet(pat_train, tgt_train, batch_size = batch_size, scale=not scale, verbose=0)
                     pred_train = nn.testnet(pat_train, scale=not scale, verbose=0)
                     pred_test = nn.testnet(pat_test, scale=not scale, verbose=0)
                     k_train = self.validation.calc(tgt_train, pred_train)
@@ -228,8 +241,9 @@ class AnnClassifier:
                         [x[4] <= stable_val and x[4] > 0 for x in tracker[-stable:]]
                     )
                     print(
-                        f"| {i:9d} | {err:9.5f} | {k_train:5.3f} | {k_test:5.3f} |  {k_prod:5.3f}  | {err_dif:8.5f} |",
+                        f"| {i:9d} | {err:9.5f} | {k_train: 5.3f} | {k_test: 5.3f} |  {k_prod: 5.3f}  | {err_dif:8.5f} |",
                         end="\r",
+                        flush=True
                     )
                     if tt >= stable:
                         break
