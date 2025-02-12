@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann.spatial package &mdash; SpartANN 1.1 documentation</title>
+  <title>spartann.spatial package &mdash; SpartANN 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=56dcb7b8"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -145,6 +145,9 @@ data from a raster.</p>
 <dt class="sig sig-object py" id="spartann.spatial.raster.Raster.addNewBand">
 <span class="sig-name descname"><span class="pre">addNewBand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.addNewBand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.addNewBand" title="Link to this definition"></a></dt>
 <dd><p>Adds a new band to the raster datset and fill with data.</p>
+<p>Adds a new band with a numpy array data. It preserves raster datatype.
+If raster has no bands, adds a band with equivalent datatype to data
+array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -226,6 +229,18 @@ First item in yielded list is a list with [row, column, current array, total num
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.raster.Raster.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.copy" title="Link to this definition"></a></dt>
+<dd><p>Makes an in-memory copy of current raster.</p>
+<p>Creates a new raster with same geotransform and band contents</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Raster instance with in-memory copy or source.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spartann.spatial.raster.Raster.extent">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spartann.spatial.raster.Raster.extent" title="Link to this definition"></a></dt>
@@ -269,6 +284,20 @@ First item in yielded list is a list with [row, column, current array, total num
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> – a filename with full path to a raster file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.raster.Raster.from_raster">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.from_raster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.raster.Raster.from_raster" title="Link to this definition"></a></dt>
+<dd><p>Creates a new instance of Raster from a raster object.</p>
+<p>Initializes an empty in-memory Raster object with another raster with a
+single empty band.
+Note: It does not copy contents. Use Raster.copy() if you need to copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source</strong> – a Raster instance serving as source.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -491,6 +520,9 @@ data from a raster.</p>
 <dt class="sig sig-object py" id="spartann.spatial.Raster.addNewBand">
 <span class="sig-name descname"><span class="pre">addNewBand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.addNewBand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.addNewBand" title="Link to this definition"></a></dt>
 <dd><p>Adds a new band to the raster datset and fill with data.</p>
+<p>Adds a new band with a numpy array data. It preserves raster datatype.
+If raster has no bands, adds a band with equivalent datatype to data
+array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -572,6 +604,18 @@ First item in yielded list is a list with [row, column, current array, total num
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.Raster.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.copy" title="Link to this definition"></a></dt>
+<dd><p>Makes an in-memory copy of current raster.</p>
+<p>Creates a new raster with same geotransform and band contents</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Raster instance with in-memory copy or source.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spartann.spatial.Raster.extent">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spartann.spatial.Raster.extent" title="Link to this definition"></a></dt>
@@ -615,6 +659,20 @@ First item in yielded list is a list with [row, column, current array, total num
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> – a filename with full path to a raster file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.spatial.Raster.from_raster">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/spatial/raster.html#Raster.from_raster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.spatial.Raster.from_raster" title="Link to this definition"></a></dt>
+<dd><p>Creates a new instance of Raster from a raster object.</p>
+<p>Initializes an empty in-memory Raster object with another raster with a
+single empty band.
+Note: It does not copy contents. Use Raster.copy() if you need to copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source</strong> – a Raster instance serving as source.</p>
 </dd>
 </dl>
 </dd></dl>

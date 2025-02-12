@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann.classifier.classifier &mdash; SpartANN 1.1 documentation</title>
+  <title>spartann.classifier.classifier &mdash; SpartANN 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=56dcb7b8"></script>
+      <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -219,6 +219,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">trainModel</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTable</span><span class="o">|</span><span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">burnin</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
         <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
         <span class="n">stable</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
         <span class="n">stable_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
@@ -229,6 +231,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            datatable: A DataTable instance with points for supervised learning.</span>
+<span class="sd">            batch_size: Defines the size of the batch for training that must be between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after every sample. Larger batches might provide a smoother training.</span>
+<span class="sd">            burnin: Number of burn-in iterations (networks not considered) that allows a first weight adjustment and avoid choosing a near random network before a number of learning steps.</span>
 <span class="sd">            maxiter: Maximum number of iterations to train.</span>
 <span class="sd">            stable: number if iterations with error diference bellow stable_val to stop training early.</span>
 <span class="sd">            stable_val: value for the network error difference between to consider stable.</span>
@@ -294,14 +298,19 @@
 
                 <span class="n">nn</span><span class="o">.</span><span class="n">initWeights</span><span class="p">()</span>
 
-                <span class="n">best</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
                 <span class="n">tracker</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">err_dif</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;| Iteration |   Error   | Train |  Test | Product |  ErrDiff |&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">burnin</span><span class="p">):</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">trainnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">tgt_train</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Burn-in iteration: </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;| Iteration |   Error   |  Train |  Test  |  Product |  ErrDiff |&quot;</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiter</span><span class="p">):</span>
-                    <span class="n">nn</span><span class="o">.</span><span class="n">trainnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">tgt_train</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">trainnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">tgt_train</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                     <span class="n">pred_train</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">testnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                     <span class="n">pred_test</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">testnet</span><span class="p">(</span><span class="n">pat_test</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                     <span class="n">k_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">tgt_train</span><span class="p">,</span> <span class="n">pred_train</span><span class="p">)</span>
@@ -319,8 +328,9 @@
                         <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">stable_val</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tracker</span><span class="p">[</span><span class="o">-</span><span class="n">stable</span><span class="p">:]]</span>
                     <span class="p">)</span>
                     <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">err</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">k_train</span><span class="si">:</span><span class="s2">5.3f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">k_test</span><span class="si">:</span><span class="s2">5.3f</span><span class="si">}</span><span class="s2"> |  </span><span class="si">{</span><span class="n">k_prod</span><span class="si">:</span><span class="s2">5.3f</span><span class="si">}</span><span class="s2">  | </span><span class="si">{</span><span class="n">err_dif</span><span class="si">:</span><span class="s2">8.5f</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">err</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">k_train</span><span class="si">:</span><span class="s2"> 5.3f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">k_test</span><span class="si">:</span><span class="s2"> 5.3f</span><span class="si">}</span><span class="s2"> |  </span><span class="si">{</span><span class="n">k_prod</span><span class="si">:</span><span class="s2"> 5.3f</span><span class="si">}</span><span class="s2">  | </span><span class="si">{</span><span class="n">err_dif</span><span class="si">:</span><span class="s2">8.5f</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">,</span>
                         <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">flush</span><span class="o">=</span><span class="kc">True</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="n">tt</span> <span class="o">&gt;=</span> <span class="n">stable</span><span class="p">:</span>
                         <span class="k">break</span>

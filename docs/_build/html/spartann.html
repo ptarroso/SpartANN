@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann package &mdash; SpartANN 1.1 documentation</title>
+  <title>spartann package &mdash; SpartANN 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=56dcb7b8"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -265,6 +265,7 @@
 <li class="toctree-l2"><a class="reference internal" href="spartann.engine.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spartann.engine.html#module-spartann.engine.nnEngine">spartann.engine.nnEngine module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN"><code class="docutils literal notranslate"><span class="pre">NN</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.XORexample"><code class="docutils literal notranslate"><span class="pre">NN.XORexample()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.backpropag"><code class="docutils literal notranslate"><span class="pre">NN.backpropag()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.calcTargetError"><code class="docutils literal notranslate"><span class="pre">NN.calcTargetError()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.checkVarNames"><code class="docutils literal notranslate"><span class="pre">NN.checkVarNames()</span></code></a></li>
@@ -286,12 +287,14 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.structure"><code class="docutils literal notranslate"><span class="pre">NN.structure()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.testnet"><code class="docutils literal notranslate"><span class="pre">NN.testnet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.trainnet"><code class="docutils literal notranslate"><span class="pre">NN.trainnet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.nnEngine.NN.update_weights"><code class="docutils literal notranslate"><span class="pre">NN.update_weights()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="spartann.engine.html#module-spartann.engine">Module contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN"><code class="docutils literal notranslate"><span class="pre">NN</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.XORexample"><code class="docutils literal notranslate"><span class="pre">NN.XORexample()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.backpropag"><code class="docutils literal notranslate"><span class="pre">NN.backpropag()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.calcTargetError"><code class="docutils literal notranslate"><span class="pre">NN.calcTargetError()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.checkVarNames"><code class="docutils literal notranslate"><span class="pre">NN.checkVarNames()</span></code></a></li>
@@ -313,6 +316,7 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.structure"><code class="docutils literal notranslate"><span class="pre">NN.structure()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.testnet"><code class="docutils literal notranslate"><span class="pre">NN.testnet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.trainnet"><code class="docutils literal notranslate"><span class="pre">NN.trainnet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.engine.html#spartann.engine.NN.update_weights"><code class="docutils literal notranslate"><span class="pre">NN.update_weights()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="spartann.engine.html#spartann.engine.drelu"><code class="docutils literal notranslate"><span class="pre">drelu()</span></code></a></li>
@@ -333,10 +337,12 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.aggregate_bands"><code class="docutils literal notranslate"><span class="pre">Raster.aggregate_bands()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.bandnames"><code class="docutils literal notranslate"><span class="pre">Raster.bandnames</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.block_iter"><code class="docutils literal notranslate"><span class="pre">Raster.block_iter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.copy"><code class="docutils literal notranslate"><span class="pre">Raster.copy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.extent"><code class="docutils literal notranslate"><span class="pre">Raster.extent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.extractFromXY"><code class="docutils literal notranslate"><span class="pre">Raster.extractFromXY()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.from_array"><code class="docutils literal notranslate"><span class="pre">Raster.from_array()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.from_file"><code class="docutils literal notranslate"><span class="pre">Raster.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.from_raster"><code class="docutils literal notranslate"><span class="pre">Raster.from_raster()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.from_scratch"><code class="docutils literal notranslate"><span class="pre">Raster.from_scratch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.getMetadata"><code class="docutils literal notranslate"><span class="pre">Raster.getMetadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster.getRowColFromXY"><code class="docutils literal notranslate"><span class="pre">Raster.getRowColFromXY()</span></code></a></li>
@@ -365,10 +371,12 @@
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.aggregate_bands"><code class="docutils literal notranslate"><span class="pre">Raster.aggregate_bands()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.bandnames"><code class="docutils literal notranslate"><span class="pre">Raster.bandnames</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.block_iter"><code class="docutils literal notranslate"><span class="pre">Raster.block_iter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.copy"><code class="docutils literal notranslate"><span class="pre">Raster.copy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.extent"><code class="docutils literal notranslate"><span class="pre">Raster.extent</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.extractFromXY"><code class="docutils literal notranslate"><span class="pre">Raster.extractFromXY()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.from_array"><code class="docutils literal notranslate"><span class="pre">Raster.from_array()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.from_file"><code class="docutils literal notranslate"><span class="pre">Raster.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.from_raster"><code class="docutils literal notranslate"><span class="pre">Raster.from_raster()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.from_scratch"><code class="docutils literal notranslate"><span class="pre">Raster.from_scratch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.getMetadata"><code class="docutils literal notranslate"><span class="pre">Raster.getMetadata()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.Raster.getRowColFromXY"><code class="docutils literal notranslate"><span class="pre">Raster.getRowColFromXY()</span></code></a></li>
