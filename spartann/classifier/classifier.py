@@ -230,7 +230,9 @@ class AnnClassifier:
                     k_test = self.validation.calc(tgt_test, pred_test)
                     k_prod = k_train * k_test
                     err = nn.netTrainError[0]
-                    if k_prod > best[0]:
+
+                    if (k_train >= min_train and k_test >= min_test
+                        and k_prod > best[0]):
                         best = [k_prod, i, str(nn)]
 
                     if i > 1:
@@ -248,8 +250,7 @@ class AnnClassifier:
                     if tt >= stable:
                         break
 
-                if (tracker[best[1]][1] >= min_train
-                        and tracker[best[1]][2] >= min_test):
+                if best[0] > float('-inf'):
                     self.container.add_model(Model(best[2], rep, scheme, tracker, best[1]))
                     print(
                         "\nBest net:"
@@ -263,7 +264,7 @@ class AnnClassifier:
                     rep += 1
                 else :
                     print("\nTraining failed minimum values (train > "
-                        + f"{min_train} and test > {min_test}. Repeating "
+                        + f"{min_train} and test > {min_test}.\nRepeating "
                         + "network training.")
 
     def writeModel(self, filename: str):
