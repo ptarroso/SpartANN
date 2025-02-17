@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spartann.classifier.classifier &mdash; SpartANN 1.2.0 documentation</title>
+  <title>spartann.classifier.classifier &mdash; SpartANN 1.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../../../_static/documentation_options.js?v=ca842793"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -221,22 +221,25 @@
         <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTable</span><span class="o">|</span><span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">burnin</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+        <span class="n">min_train</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">min_test</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
         <span class="n">stable</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
         <span class="n">stable_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains a model ensemble.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains a model ensemble using an artificial neural network (ANN)</span>
 
-<span class="sd">        Uses information (data and classification) in a DataTable to train ANN with the user defined parameters.</span>
+<span class="sd">        This function trains an ANN using data and classification labels provided in a DataTable. The training process follows user-defined parameters, including batch size, stopping criteria, and minimum performance thresholds.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            datatable: A DataTable instance with points for supervised learning.</span>
-<span class="sd">            batch_size: Defines the size of the batch for training that must be between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after every sample. Larger batches might provide a smoother training.</span>
-<span class="sd">            burnin: Number of burn-in iterations (networks not considered) that allows a first weight adjustment and avoid choosing a near random network before a number of learning steps.</span>
-<span class="sd">            maxiter: Maximum number of iterations to train.</span>
-<span class="sd">            stable: number if iterations with error diference bellow stable_val to stop training early.</span>
-<span class="sd">            stable_val: value for the network error difference between to consider stable.</span>
-
+<span class="sd">            datatable (DataTable): A dataset containing labeled points for supervised learning.</span>
+<span class="sd">            batch_size (int, optional): The number of samples per training batch. Must be between 1 and the total number of available samples. The default is 1, meaning weight updates occur after every sample. Larger batch sizes may provide smoother training.</span>
+<span class="sd">            burnin (int, optional): The number of initial iterations to exclude. This allows the network to adjust its weights before selecting valid models, reducing the likelihood of retaining near-random networks.</span>
+<span class="sd">            min_train (float, optional): The minimum training accuracy required to accept a network. If this threshold is not met, training is repeated.</span>
+<span class="sd">            min_test (float, optional): The minimum testing accuracy required to accept a network. If this threshold is not met, training is repeated.</span>
+<span class="sd">            maxiter (int, optional): The maximum number of training iterations.</span>
+<span class="sd">            stable (int, optional): The number of consecutive iterations with an error difference below `stable_val` required to trigger early stopping.</span>
+<span class="sd">            stable_val (float, optional): The threshold for error difference between iterations to be considered stable, used for early stopping.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">datatable</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">):</span>
@@ -271,7 +274,8 @@
 
             <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_train</span> <span class="o">+</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_test</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">repetitions</span><span class="p">):</span>
+            <span class="n">rep</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">rep</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">repetitions</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Repetition: </span><span class="si">{</span><span class="n">rep</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">repetitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                 <span class="c1"># Prepare train and test data</span>
@@ -317,7 +321,9 @@
                     <span class="n">k_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">tgt_test</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">)</span>
                     <span class="n">k_prod</span> <span class="o">=</span> <span class="n">k_train</span> <span class="o">*</span> <span class="n">k_test</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">netTrainError</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">k_prod</span> <span class="o">&gt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">k_train</span> <span class="o">&gt;=</span> <span class="n">min_train</span> <span class="ow">and</span> <span class="n">k_test</span> <span class="o">&gt;=</span> <span class="n">min_test</span>
+                        <span class="ow">and</span> <span class="n">k_prod</span> <span class="o">&gt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                         <span class="n">best</span> <span class="o">=</span> <span class="p">[</span><span class="n">k_prod</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn</span><span class="p">)]</span>
 
                     <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -335,17 +341,22 @@
                     <span class="k">if</span> <span class="n">tt</span> <span class="o">&gt;=</span> <span class="n">stable</span><span class="p">:</span>
                         <span class="k">break</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">Model</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">rep</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best net:&quot;</span>
-                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Iteration </span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Error: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation train: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation test: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation product: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-
-                <span class="n">net_counter</span> <span class="o">+=</span> <span class="mi">1</span></div>
+                <span class="k">if</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">Model</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">rep</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best net:&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Iteration </span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Error: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation train: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation test: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation product: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">net_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">rep</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training failed minimum values (train &gt; &quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">min_train</span><span class="si">}</span><span class="s2"> and test &gt; </span><span class="si">{</span><span class="n">min_test</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Repeating &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;network training.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AnnClassifier.writeModel">
