@@ -130,22 +130,25 @@ class AnnClassifier:
         datatable: DataTable|None = None,
         batch_size: int = 1,
         burnin = 250,
+        min_train = 0,
+        min_test = 0,
         maxiter: int = 10000,
         stable: int = 250,
         stable_val: float = 0.001,
     ):
-        """Trains a model ensemble.
+        """Trains a model ensemble using an artificial neural network (ANN)
 
-        Uses information (data and classification) in a DataTable to train ANN with the user defined parameters.
+        This function trains an ANN using data and classification labels provided in a DataTable. The training process follows user-defined parameters, including batch size, stopping criteria, and minimum performance thresholds.
 
         Args:
-            datatable: A DataTable instance with points for supervised learning.
-            batch_size: Defines the size of the batch for training that must be between 1 and the number of samples available for training. The default is 1, which means that network weight updating happens after every sample. Larger batches might provide a smoother training.
-            burnin: Number of burn-in iterations (networks not considered) that allows a first weight adjustment and avoid choosing a near random network before a number of learning steps.
-            maxiter: Maximum number of iterations to train.
-            stable: number if iterations with error diference bellow stable_val to stop training early.
-            stable_val: value for the network error difference between to consider stable.
-
+            datatable (DataTable): A dataset containing labeled points for supervised learning.
+            batch_size (int, optional): The number of samples per training batch. Must be between 1 and the total number of available samples. The default is 1, meaning weight updates occur after every sample. Larger batch sizes may provide smoother training.
+            burnin (int, optional): The number of initial iterations to exclude. This allows the network to adjust its weights before selecting valid models, reducing the likelihood of retaining near-random networks.
+            min_train (float, optional): The minimum training accuracy required to accept a network. If this threshold is not met, training is repeated.
+            min_test (float, optional): The minimum testing accuracy required to accept a network. If this threshold is not met, training is repeated.
+            maxiter (int, optional): The maximum number of training iterations.
+            stable (int, optional): The number of consecutive iterations with an error difference below `stable_val` required to trigger early stopping.
+            stable_val (float, optional): The threshold for error difference between iterations to be considered stable, used for early stopping.
         """
         if datatable:
             if isinstance(datatable, DataTable):
@@ -180,7 +183,8 @@ class AnnClassifier:
 
             mask = np.array([True] * n_train + [False] * n_test)
 
-            for rep in range(self.container.repetitions):
+            rep = 0
+            while rep < self.container.repetitions:
                 print(f"Repetition: {rep+1} from {self.container.repetitions}")
 
                 # Prepare train and test data
@@ -226,7 +230,9 @@ class AnnClassifier:
                     k_test = self.validation.calc(tgt_test, pred_test)
                     k_prod = k_train * k_test
                     err = nn.netTrainError[0]
-                    if k_prod > best[0]:
+
+                    if (k_train >= min_train and k_test >= min_test
+                        and k_prod > best[0]):
                         best = [k_prod, i, str(nn)]
 
                     if i > 1:
@@ -244,17 +250,22 @@ class AnnClassifier:
                     if tt >= stable:
                         break
 
-                self.container.add_model(Model(best[2], rep, scheme, tracker, best[1]))
-                print(
-                    "\nBest net:"
-                    + f"\n\tIteration {best[1]}"
-                    + f"\n\tError: {tracker[best[1]][0]:.3f}"
-                    + f"\n\tValidation train: {tracker[best[1]][1]:.3f}"
-                    + f"\n\tValidation test: {tracker[best[1]][2]:.3f}"
-                    + f"\n\tValidation product: {tracker[best[1]][3]:.3f}"
-                )
-
-                net_counter += 1
+                if best[0] > float('-inf'):
+                    self.container.add_model(Model(best[2], rep, scheme, tracker, best[1]))
+                    print(
+                        "\nBest net:"
+                        + f"\n\tIteration {best[1]}"
+                        + f"\n\tError: {tracker[best[1]][0]:.3f}"
+                        + f"\n\tValidation train: {tracker[best[1]][1]:.3f}"
+                        + f"\n\tValidation test: {tracker[best[1]][2]:.3f}"
+                        + f"\n\tValidation product: {tracker[best[1]][3]:.3f}"
+                    )
+                    net_counter += 1
+                    rep += 1
+                else :
+                    print("\nTraining failed minimum values (train > "
+                        + f"{min_train} and test > {min_test}.\nRepeating "
+                        + "network training.")
 
     def writeModel(self, filename: str):
         """Writes the trained models to a file.
