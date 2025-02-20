@@ -1,0 +1,987 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spartann.engine package &mdash; SpartANN 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ca842793"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spartann.spatial package" href="spartann.spatial.html" />
+    <link rel="prev" title="spartann.datatable package" href="spartann.datatable.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/simple.html">A First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advanced.html">Advanced</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="spartann.html">spartann package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="spartann.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="spartann.classifier.html">spartann.classifier package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.datatable.html">spartann.datatable package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">spartann.engine package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.engine.nnEngine">spartann.engine.nnEngine module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.engine">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.spatial.html">spartann.spatial package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#module-spartann.version">spartann.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#module-spartann">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="spartann.html">spartann package</a></li>
+      <li class="breadcrumb-item active">spartann.engine package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/spartann.engine.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spartann-engine-package">
+<h1>spartann.engine package<a class="headerlink" href="#spartann-engine-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-spartann.engine.nnEngine">
+<span id="spartann-engine-nnengine-module"></span><h2>spartann.engine.nnEngine module<a class="headerlink" href="#module-spartann.engine.nnEngine" title="Link to this heading"></a></h2>
+<p>FeedForward Backpropagation Neural Networks
+Version 3.00
+Copyright (C) 2010-2024  Pedro Tarroso</p>
+<p>Originally published in
+“Tarroso, P., Carvalho, S. &amp; Brito, J.C. (2012) Simapse - Simulation
+Maps for Ecological Niche Modelling. Methods in Ecology and Evolution
+doi: 10.1111/j.2041-210X.2012.00210.x”</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.engine.nnEngine.</span></span><span class="sig-name descname"><span class="pre">NN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSProp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-18</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.XORexample">
+<span class="sig-name descname"><span class="pre">XORexample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.XORexample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.XORexample" title="Link to this definition"></a></dt>
+<dd><p>Example network data with XOR</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.backpropag">
+<span class="sig-name descname"><span class="pre">backpropag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.backpropag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.backpropag" title="Link to this definition"></a></dt>
+<dd><p>Backpropagation</p>
+<p>Backpropagates error calculation on neural network structure and
+accumulated gradients for batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.calcTargetError">
+<span class="sig-name descname"><span class="pre">calcTargetError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.calcTargetError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.calcTargetError" title="Link to this definition"></a></dt>
+<dd><p>Calculates the error in relation to each output target.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.checkVarNames">
+<span class="sig-name descname"><span class="pre">checkVarNames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varnames</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.checkVarNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.checkVarNames" title="Link to this definition"></a></dt>
+<dd><p>Tests if varnames are the same an in the same order as trained</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.feedforward">
+<span class="sig-name descname"><span class="pre">feedforward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.feedforward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.feedforward" title="Link to this definition"></a></dt>
+<dd><p>Feedforward stage</p>
+<p>Calculates output values from a set of input patterns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.glorotWeights">
+<span class="sig-name descname"><span class="pre">glorotWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.glorotWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.glorotWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random numbers between
+[-sqrt(6/(n_input+n_output)), sqrt(6/(n_input+n_output))] if uniform
+mu=0, sigma=2/(n_input+n_output), if normal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.heWeights">
+<span class="sig-name descname"><span class="pre">heWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.heWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.heWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random numbers between
+[-sqrt(6/(n_input), sqrt(6/(n_input))] if uniform
+mu=0, sigma=2/(n_input), if normal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.initWeights">
+<span class="sig-name descname"><span class="pre">initWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'random'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.initWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.initWeights" title="Link to this definition"></a></dt>
+<dd><p>Network weigh initialization</p>
+<dl class="simple">
+<dt>General function for weight initialization with a available methods:</dt><dd><ul class="simple">
+<li><p>Random: (method = “random”) Recommende for small networks</p></li>
+<li><p>Glorot/Xavier: (method = “glorot”) Recommended for sigmoid or tanh activation</p></li>
+<li><p>He: (method = “he”) Recommended for ReLU activation (no dead neurons)</p></li>
+<li><p>LeCun: (method = “lecun” ) Recommended for sigmoid functions and ReLU</p></li>
+</ul>
+</dd>
+</dl>
+<p>based on “normal” or “uniform” random numbers.
+(Note: for LeCun, distrib is always normal.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>string</em>) – One of the available methods.</p></li>
+<li><p><strong>distrib</strong> (<em>string</em>) – A distribution to be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.lecunWeights">
+<span class="sig-name descname"><span class="pre">lecunWeights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.lecunWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.lecunWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random normal numbers between
+mu=0, sigma=1/(n_input), if normal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.loadnet">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loadnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netstr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.loadnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.loadnet" title="Link to this definition"></a></dt>
+<dd><p>Inits object with a string.</p>
+<p>The net string is the string representation of the NN trained network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a trained network</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spartann.engine.nnEngine.NN" title="spartann.engine.nnEngine.NN">NN</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.loadnet_fromfile">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loadnet_fromfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.loadnet_fromfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.loadnet_fromfile" title="Link to this definition"></a></dt>
+<dd><p>Inits object with a network in a file</p>
+<p>It opens a file containing the NN trained network details resulting from using
+NN.savenet().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a trained network</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spartann.engine.nnEngine.NN" title="spartann.engine.nnEngine.NN">NN</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.means">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">means</span></span><a class="headerlink" href="#spartann.engine.nnEngine.NN.means" title="Link to this definition"></a></dt>
+<dd><p>Returns the vector of means used for scaling inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.neterror">
+<span class="sig-name descname"><span class="pre">neterror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errorType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SSerror'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.neterror"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.neterror" title="Link to this definition"></a></dt>
+<dd><p>Calculates the overall error of the network.</p>
+<p>The error of the network based on a set of patterns and targets,
+usually the training data or for some independent evaluation of the
+fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>targets</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n classification targets for training with a list of o outputs</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>O_1_1</strong></p></li>
+<li><p><strong>O_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_2</strong></p></li>
+<li><p><strong>O_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_n</strong></p></li>
+<li><p><strong>O_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>errorType</strong> (<em>string</em>) – Options for error type are:
+- RMSerror - Root Mean Square error (default)
+- SSerror  - Sum of Squared error</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the net error</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.pderiv">
+<span class="sig-name descname"><span class="pre">pderiv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.pderiv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.pderiv" title="Link to this definition"></a></dt>
+<dd><p>Processes the partial derivatives of the output vs. input
+Input patterns must be [[i1],[i2],[i3],…], or [patterns]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.rndWeights">
+<span class="sig-name descname"><span class="pre">rndWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.rndWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.rndWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random numbers between [-1/sqrt(n_input), 1/sqrt(n_input)]
+based on uniform or normal distribution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.savenet">
+<span class="sig-name descname"><span class="pre">savenet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.savenet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.savenet" title="Link to this definition"></a></dt>
+<dd><p>Saves the trained network to a file.</p>
+<p>It saves the current state of the network to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.scale" title="Link to this definition"></a></dt>
+<dd><p>Scale given patterns with stored means and standard deviations</p>
+<p>This function scales a set of patterns with stored means and standard deviations.
+It is useful for predicting using the same scaling values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>patterns</strong> (<em>list</em><em>(</em><em>[</em><em>list</em><em>]</em>) – a list of input patterns similar to training or testing.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of scaled values with same dimensions as patterns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.sdevs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sdevs</span></span><a class="headerlink" href="#spartann.engine.nnEngine.NN.sdevs" title="Link to this definition"></a></dt>
+<dd><p>Returns the vector of standard deviations used for scaling inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.setFunc">
+<span class="sig-name descname"><span class="pre">setFunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfun</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.setFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.setFunc" title="Link to this definition"></a></dt>
+<dd><p>Sets activation function and derivative function</p>
+<p>Allows to change the neuron activation function and derivative. The default initialization
+sets the sigmoid and respective derivative function for activation. This funtion allows to
+change the activation with the pair of functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – A function accepting a float and return other based on desired activation response</p></li>
+<li><p><strong>dfun</strong> – The respective derivative function of fun that accepts and returns a float.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.structure">
+<span class="sig-name descname"><span class="pre">structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.structure" title="Link to this definition"></a></dt>
+<dd><p>Creates the structure of the network</p>
+<p>Builds the network structure based on user definitions and sets all
+weights between neurons plus a BIAS neuron in each layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> (<em>list</em>) – a network structure defining the number of layers</p></li>
+<li><p><strong>length</strong> (<em>and neurons in each layer. Number</em><em> of </em><em>layers is given by the</em>)</p></li>
+<li><p><strong>in</strong> (<em>of the list and number</em><em> of </em><em>neurons is given by eacg integer item</em>)</p></li>
+<li><p><strong>[</strong><strong>2</strong> (<em>the list. For instance</em>)</p></li>
+<li><p><strong>4</strong></p></li>
+<li><p><strong>3</strong></p></li>
+<li><p><strong>input</strong> (<em>1</em><em>] </em><em>creates a network with a</em>)</p></li>
+<li><p><strong>neurons</strong> (<em>layer with two</em>)</p></li>
+<li><p><strong>each</strong> (<em>two hidden layers with 4 and 3 neurons</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param :
+:param and an output layer with a single output.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.testnet">
+<span class="sig-name descname"><span class="pre">testnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">varnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.testnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.testnet" title="Link to this definition"></a></dt>
+<dd><p>Tests the network with a sequence of patterns and returns
+the predicted output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n testing data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>varnames</strong> (<em>list</em>) – a list of variable names for each input</p></li>
+<li><p><strong>scale</strong> (<em>bool</em>) – if True scales the inputs to z-scores (x-mean(X))/sdev(X))</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Control the verbosity for testing.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Verbose level</dt><dd><p>0 - nothing is printed
+1 - prints ‘pattern number | network output’</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a list of same length as patterns with the required number of output predictions.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[list]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.trainnet">
+<span class="sig-name descname"><span class="pre">trainnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">varnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.trainnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.trainnet" title="Link to this definition"></a></dt>
+<dd><p>Trains the network with loaded inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>targets</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n classification targets for training with a list of o outputs</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>O_1_1</strong></p></li>
+<li><p><strong>O_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_2</strong></p></li>
+<li><p><strong>O_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_n</strong></p></li>
+<li><p><strong>O_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>varnames</strong> (<em>list</em>) – a list of variable names for each input</p></li>
+<li><p><strong>scale</strong> (<em>bool</em>) – if True scales the inputs to z-scores (x-mean(X))/sdev(X))</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Control the verbosity of training.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Verbose level</dt><dd><p>0 - Nothing is printed
+1 - Prints Iteration number | Network error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.nnEngine.NN.update_weights">
+<span class="sig-name descname"><span class="pre">update_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.update_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.nnEngine.NN.update_weights" title="Link to this definition"></a></dt>
+<dd><p>Network weight update</p>
+<p>Updates weights using accumulated gradients normailized by batch size</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-spartann.engine">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spartann.engine" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.engine.NN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.engine.</span></span><span class="sig-name descname"><span class="pre">NN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RMSProp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-18</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.XORexample">
+<span class="sig-name descname"><span class="pre">XORexample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.XORexample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.XORexample" title="Link to this definition"></a></dt>
+<dd><p>Example network data with XOR</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.backpropag">
+<span class="sig-name descname"><span class="pre">backpropag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.backpropag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.backpropag" title="Link to this definition"></a></dt>
+<dd><p>Backpropagation</p>
+<p>Backpropagates error calculation on neural network structure and
+accumulated gradients for batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.calcTargetError">
+<span class="sig-name descname"><span class="pre">calcTargetError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.calcTargetError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.calcTargetError" title="Link to this definition"></a></dt>
+<dd><p>Calculates the error in relation to each output target.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.checkVarNames">
+<span class="sig-name descname"><span class="pre">checkVarNames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">varnames</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.checkVarNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.checkVarNames" title="Link to this definition"></a></dt>
+<dd><p>Tests if varnames are the same an in the same order as trained</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.feedforward">
+<span class="sig-name descname"><span class="pre">feedforward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.feedforward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.feedforward" title="Link to this definition"></a></dt>
+<dd><p>Feedforward stage</p>
+<p>Calculates output values from a set of input patterns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.glorotWeights">
+<span class="sig-name descname"><span class="pre">glorotWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.glorotWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.glorotWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random numbers between
+[-sqrt(6/(n_input+n_output)), sqrt(6/(n_input+n_output))] if uniform
+mu=0, sigma=2/(n_input+n_output), if normal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.heWeights">
+<span class="sig-name descname"><span class="pre">heWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.heWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.heWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random numbers between
+[-sqrt(6/(n_input), sqrt(6/(n_input))] if uniform
+mu=0, sigma=2/(n_input), if normal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.initWeights">
+<span class="sig-name descname"><span class="pre">initWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'random'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.initWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.initWeights" title="Link to this definition"></a></dt>
+<dd><p>Network weigh initialization</p>
+<dl class="simple">
+<dt>General function for weight initialization with a available methods:</dt><dd><ul class="simple">
+<li><p>Random: (method = “random”) Recommende for small networks</p></li>
+<li><p>Glorot/Xavier: (method = “glorot”) Recommended for sigmoid or tanh activation</p></li>
+<li><p>He: (method = “he”) Recommended for ReLU activation (no dead neurons)</p></li>
+<li><p>LeCun: (method = “lecun” ) Recommended for sigmoid functions and ReLU</p></li>
+</ul>
+</dd>
+</dl>
+<p>based on “normal” or “uniform” random numbers.
+(Note: for LeCun, distrib is always normal.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>string</em>) – One of the available methods.</p></li>
+<li><p><strong>distrib</strong> (<em>string</em>) – A distribution to be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.lecunWeights">
+<span class="sig-name descname"><span class="pre">lecunWeights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.lecunWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.lecunWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random normal numbers between
+mu=0, sigma=1/(n_input), if normal</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.loadnet">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loadnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netstr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.loadnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.loadnet" title="Link to this definition"></a></dt>
+<dd><p>Inits object with a string.</p>
+<p>The net string is the string representation of the NN trained network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a trained network</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spartann.engine.NN" title="spartann.engine.NN">NN</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.loadnet_fromfile">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loadnet_fromfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.loadnet_fromfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.loadnet_fromfile" title="Link to this definition"></a></dt>
+<dd><p>Inits object with a network in a file</p>
+<p>It opens a file containing the NN trained network details resulting from using
+NN.savenet().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a trained network</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spartann.engine.NN" title="spartann.engine.NN">NN</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.engine.NN.means">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">means</span></span><a class="headerlink" href="#spartann.engine.NN.means" title="Link to this definition"></a></dt>
+<dd><p>Returns the vector of means used for scaling inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.neterror">
+<span class="sig-name descname"><span class="pre">neterror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errorType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SSerror'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.neterror"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.neterror" title="Link to this definition"></a></dt>
+<dd><p>Calculates the overall error of the network.</p>
+<p>The error of the network based on a set of patterns and targets,
+usually the training data or for some independent evaluation of the
+fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>targets</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n classification targets for training with a list of o outputs</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>O_1_1</strong></p></li>
+<li><p><strong>O_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_2</strong></p></li>
+<li><p><strong>O_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_n</strong></p></li>
+<li><p><strong>O_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>errorType</strong> (<em>string</em>) – Options for error type are:
+- RMSerror - Root Mean Square error (default)
+- SSerror  - Sum of Squared error</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the net error</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.pderiv">
+<span class="sig-name descname"><span class="pre">pderiv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.pderiv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.pderiv" title="Link to this definition"></a></dt>
+<dd><p>Processes the partial derivatives of the output vs. input
+Input patterns must be [[i1],[i2],[i3],…], or [patterns]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.rndWeights">
+<span class="sig-name descname"><span class="pre">rndWeights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distrib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.rndWeights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.rndWeights" title="Link to this definition"></a></dt>
+<dd><p>Initiates all network weights with random numbers between [-1/sqrt(n_input), 1/sqrt(n_input)]
+based on uniform or normal distribution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.savenet">
+<span class="sig-name descname"><span class="pre">savenet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.savenet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.savenet" title="Link to this definition"></a></dt>
+<dd><p>Saves the trained network to a file.</p>
+<p>It saves the current state of the network to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.scale" title="Link to this definition"></a></dt>
+<dd><p>Scale given patterns with stored means and standard deviations</p>
+<p>This function scales a set of patterns with stored means and standard deviations.
+It is useful for predicting using the same scaling values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>patterns</strong> (<em>list</em><em>(</em><em>[</em><em>list</em><em>]</em>) – a list of input patterns similar to training or testing.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of scaled values with same dimensions as patterns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.engine.NN.sdevs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sdevs</span></span><a class="headerlink" href="#spartann.engine.NN.sdevs" title="Link to this definition"></a></dt>
+<dd><p>Returns the vector of standard deviations used for scaling inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.setFunc">
+<span class="sig-name descname"><span class="pre">setFunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dfun</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.setFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.setFunc" title="Link to this definition"></a></dt>
+<dd><p>Sets activation function and derivative function</p>
+<p>Allows to change the neuron activation function and derivative. The default initialization
+sets the sigmoid and respective derivative function for activation. This funtion allows to
+change the activation with the pair of functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fun</strong> – A function accepting a float and return other based on desired activation response</p></li>
+<li><p><strong>dfun</strong> – The respective derivative function of fun that accepts and returns a float.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.structure">
+<span class="sig-name descname"><span class="pre">structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.structure" title="Link to this definition"></a></dt>
+<dd><p>Creates the structure of the network</p>
+<p>Builds the network structure based on user definitions and sets all
+weights between neurons plus a BIAS neuron in each layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network</strong> (<em>list</em>) – a network structure defining the number of layers</p></li>
+<li><p><strong>length</strong> (<em>and neurons in each layer. Number</em><em> of </em><em>layers is given by the</em>)</p></li>
+<li><p><strong>in</strong> (<em>of the list and number</em><em> of </em><em>neurons is given by eacg integer item</em>)</p></li>
+<li><p><strong>[</strong><strong>2</strong> (<em>the list. For instance</em>)</p></li>
+<li><p><strong>4</strong></p></li>
+<li><p><strong>3</strong></p></li>
+<li><p><strong>input</strong> (<em>1</em><em>] </em><em>creates a network with a</em>)</p></li>
+<li><p><strong>neurons</strong> (<em>layer with two</em>)</p></li>
+<li><p><strong>each</strong> (<em>two hidden layers with 4 and 3 neurons</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param :
+:param and an output layer with a single output.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.testnet">
+<span class="sig-name descname"><span class="pre">testnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">varnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.testnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.testnet" title="Link to this definition"></a></dt>
+<dd><p>Tests the network with a sequence of patterns and returns
+the predicted output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n testing data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>varnames</strong> (<em>list</em>) – a list of variable names for each input</p></li>
+<li><p><strong>scale</strong> (<em>bool</em>) – if True scales the inputs to z-scores (x-mean(X))/sdev(X))</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Control the verbosity for testing.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Verbose level</dt><dd><p>0 - nothing is printed
+1 - prints ‘pattern number | network output’</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a list of same length as patterns with the required number of output predictions.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[list]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.trainnet">
+<span class="sig-name descname"><span class="pre">trainnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">varnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.trainnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.trainnet" title="Link to this definition"></a></dt>
+<dd><p>Trains the network with loaded inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n training data with a list of p input (i) values to classify</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>i_1_1</strong></p></li>
+<li><p><strong>i_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_2</strong></p></li>
+<li><p><strong>i_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>i_1_n</strong></p></li>
+<li><p><strong>i_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>i_p_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>targets</strong> (<em>list</em><em>[</em><em>list</em><em>]</em>) – a list of n classification targets for training with a list of o outputs</p></li>
+<li><p><strong>[</strong><strong>[</strong><strong>O_1_1</strong></p></li>
+<li><p><strong>O_2_1</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_1</strong><strong>]</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_2</strong></p></li>
+<li><p><strong>O_2_2</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_2</strong><strong>]</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>[</strong><strong>O_1_n</strong></p></li>
+<li><p><strong>O_2_n</strong></p></li>
+<li><p><strong>...</strong></p></li>
+<li><p><strong>O_o_n</strong><strong>]</strong><strong>]</strong></p></li>
+<li><p><strong>varnames</strong> (<em>list</em>) – a list of variable names for each input</p></li>
+<li><p><strong>scale</strong> (<em>bool</em>) – if True scales the inputs to z-scores (x-mean(X))/sdev(X))</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Control the verbosity of training.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Verbose level</dt><dd><p>0 - Nothing is printed
+1 - Prints Iteration number | Network error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.engine.NN.update_weights">
+<span class="sig-name descname"><span class="pre">update_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#NN.update_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.NN.update_weights" title="Link to this definition"></a></dt>
+<dd><p>Network weight update</p>
+<p>Updates weights using accumulated gradients normailized by batch size</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.engine.drelu">
+<span class="sig-prename descclassname"><span class="pre">spartann.engine.</span></span><span class="sig-name descname"><span class="pre">drelu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#drelu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.drelu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.engine.dsigm">
+<span class="sig-prename descclassname"><span class="pre">spartann.engine.</span></span><span class="sig-name descname"><span class="pre">dsigm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#dsigm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.dsigm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.engine.relu">
+<span class="sig-prename descclassname"><span class="pre">spartann.engine.</span></span><span class="sig-name descname"><span class="pre">relu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#relu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.relu" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.engine.sigm">
+<span class="sig-prename descclassname"><span class="pre">spartann.engine.</span></span><span class="sig-name descname"><span class="pre">sigm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/engine/nnEngine.html#sigm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.engine.sigm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spartann.datatable.html" class="btn btn-neutral float-left" title="spartann.datatable package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spartann.spatial.html" class="btn btn-neutral float-right" title="spartann.spatial package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

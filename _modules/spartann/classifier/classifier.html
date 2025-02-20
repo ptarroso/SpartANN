@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spartann.classifier.classifier &mdash; SpartANN 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=ca842793"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/simple.html">A First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/advanced.html">Advanced</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../spartann.html">spartann package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">spartann.classifier.classifier</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for spartann.classifier.classifier</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">osgeo</span><span class="w"> </span><span class="kn">import</span> <span class="n">gdal_array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">ctime</span><span class="p">,</span> <span class="n">sleep</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Queue</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spartann.datatable.datatable</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataTable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spartann.engine.nnEngine</span><span class="w"> </span><span class="kn">import</span> <span class="n">NN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spartann.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">Raster</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CohensKappa_Validation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">ModelContainer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spartann.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Empty</span>
+
+<div class="viewcode-block" id="AnnClassifier">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnClassifier">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnnClassifier</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The AnnClassifier provides methods for training a Artificial Neural Network with different parameters and optimizers for supervised classification.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">modelcontainer</span><span class="p">:</span> <span class="n">ModelContainer</span><span class="p">,</span>
+        <span class="n">validation</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">CohensKappa_Validation</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initiallise the classifier with a model container</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            modelcontainer: an initialised ModelContainer with model parameters.</span>
+<span class="sd">            validation: an instance of Validation with a proper validation metric (default:Cohen&#39;s Kappa)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">modelcontainer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation</span> <span class="o">=</span> <span class="n">validation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="AnnClassifier.from_options">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnClassifier.from_options">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_options</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">outputs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Output1&quot;</span><span class="p">],</span>
+        <span class="n">repetitions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">testpercent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">hl_schemes</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="n">LR</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">momentum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">optim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span>
+        <span class="n">validation</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">CohensKappa_Validation</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initiallise the classifier with options with defaults.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n_inputs: Number of inputs neurons.</span>
+<span class="sd">            n_outputs: Number of ouput neurons (default is 1)</span>
+<span class="sd">            repetitions: Number of repetitions performed per network scheme.</span>
+<span class="sd">            testpercent: percentage of points reserved for independent testing the training of the network (overfitting control).</span>
+<span class="sd">            hl_schemes: list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].</span>
+<span class="sd">            LR: Learning rate. Depending on the optimizer, might have different importance.</span>
+<span class="sd">            momentum: Decay factor for the optimizer. Note: the &quot;Adam&quot; optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.</span>
+<span class="sd">            optim: Optimization method. Available methods are &quot;SGD&quot; (stochastic gradient descend), &quot;SimpleMomentum&quot;, &quot;Momentum&quot;, &quot;Adagrad&quot;, &quot;RMSProp&quot; and &quot;Adam&quot;.</span>
+<span class="sd">            validation: Validation metric to be used, depending on the data. An instance of Validatio class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hl_schemes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">hl_schemes</span> <span class="o">=</span> <span class="p">[</span><span class="n">hl_schemes</span><span class="p">]</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">ModelContainer</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="p">,</span>
+            <span class="n">hl_schemes</span><span class="p">,</span>
+            <span class="n">LR</span><span class="p">,</span>
+            <span class="n">momentum</span><span class="p">,</span>
+            <span class="n">repetitions</span><span class="p">,</span>
+            <span class="n">optim</span><span class="p">,</span>
+            <span class="n">testpercent</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">validation</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">validation</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnClassifier.from_datatable">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnClassifier.from_datatable">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_datatable</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">dt</span><span class="p">:</span> <span class="n">DataTable</span><span class="p">,</span>
+        <span class="n">repetitions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">testpercent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">hl_schemes</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="n">LR</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">momentum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">optim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span>
+        <span class="n">validation</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">CohensKappa_Validation</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initiallise the classifier with a DataTable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dt: A DataTable instance with data to train model.</span>
+<span class="sd">            repetitions: Number of repetitions performed per network scheme.</span>
+<span class="sd">            testpercent: percentage of points reserved for independent testing the training of the network (overfitting control).</span>
+<span class="sd">            hl_schemes: list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].</span>
+<span class="sd">            LR: Learning rate. Depending on the optimizer, might have different importance.</span>
+<span class="sd">            momentum: Decay factor for the optimizer. Note: the &quot;Adam&quot; optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.</span>
+<span class="sd">            optim: Optimization method. Available methods are &quot;SGD&quot; (stochastic gradient descend), &quot;SimpleMomentum&quot;, &quot;Momentum&quot;, &quot;Adagrad&quot;, &quot;RMSProp&quot; and &quot;Adam&quot;.</span>
+<span class="sd">            validation: Validation metric to be used, depending on the data. An instance of Validatio class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hl_schemes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">hl_schemes</span> <span class="o">=</span> <span class="p">[</span><span class="n">hl_schemes</span><span class="p">]</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">ModelContainer</span><span class="p">(</span>
+            <span class="n">dt</span><span class="o">.</span><span class="n">datacolnames</span><span class="p">,</span>
+            <span class="n">dt</span><span class="o">.</span><span class="n">class_names</span><span class="p">,</span>
+            <span class="n">hl_schemes</span><span class="p">,</span>
+            <span class="n">LR</span><span class="p">,</span>
+            <span class="n">momentum</span><span class="p">,</span>
+            <span class="n">repetitions</span><span class="p">,</span>
+            <span class="n">optim</span><span class="p">,</span>
+            <span class="n">testpercent</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">validation</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">anncl</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">validation</span><span class="p">)</span>
+        <span class="n">anncl</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="k">return</span> <span class="n">anncl</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the length of stored best networks of the classifier.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation providing a summary of the classifier parameters and trained networks.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getmodels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a ModelContainer with trained models.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span>
+
+<div class="viewcode-block" id="AnnClassifier.trainModel">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnClassifier.trainModel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">trainModel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTable</span><span class="o">|</span><span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">burnin</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+        <span class="n">min_train</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">min_test</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+        <span class="n">stable</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+        <span class="n">stable_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains a model ensemble using an artificial neural network (ANN)</span>
+
+<span class="sd">        This function trains an ANN using data and classification labels provided in a DataTable. The training process follows user-defined parameters, including batch size, stopping criteria, and minimum performance thresholds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable (DataTable): A dataset containing labeled points for supervised learning.</span>
+<span class="sd">            batch_size (int, optional): The number of samples per training batch. Must be between 1 and the total number of available samples. The default is 1, meaning weight updates occur after every sample. Larger batch sizes may provide smoother training.</span>
+<span class="sd">            burnin (int, optional): The number of initial iterations to exclude. This allows the network to adjust its weights before selecting valid models, reducing the likelihood of retaining near-random networks.</span>
+<span class="sd">            min_train (float, optional): The minimum training accuracy required to accept a network. If this threshold is not met, training is repeated.</span>
+<span class="sd">            min_test (float, optional): The minimum testing accuracy required to accept a network. If this threshold is not met, training is repeated.</span>
+<span class="sd">            maxiter (int, optional): The maximum number of training iterations.</span>
+<span class="sd">            stable (int, optional): The number of consecutive iterations with an error difference below `stable_val` required to trigger early stopping.</span>
+<span class="sd">            stable_val (float, optional): The threshold for error difference between iterations to be considered stable, used for early stopping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">datatable</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datatable</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">datatable</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Provided data must be an instance of DataTable.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provide data in a datatable to train the models.&quot;</span><span class="p">)</span>
+
+        <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">getClasses</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">getData</span>
+
+        <span class="n">n_input</span> <span class="o">=</span> <span class="n">patterns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">n_output</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">n_input</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_inputs</span> <span class="ow">or</span> <span class="n">n_output</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_outputs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Data must have </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_inputs</span><span class="si">}</span><span class="s2"> inputs and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_outputs</span><span class="si">}</span><span class="s2"> targets.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">net_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">hl_scheme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">hl_schemes</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Training networks with scheme i:[</span><span class="si">{</span><span class="n">n_input</span><span class="si">}</span><span class="s2">] | hl:</span><span class="si">{</span><span class="n">hl_scheme</span><span class="si">}</span><span class="s2"> | o:[</span><span class="si">{</span><span class="n">n_output</span><span class="si">}</span><span class="s2">].&quot;</span>
+            <span class="p">)</span>
+            <span class="n">scheme</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_input</span><span class="p">]</span> <span class="o">+</span> <span class="n">hl_scheme</span> <span class="o">+</span> <span class="p">[</span><span class="n">n_output</span><span class="p">]</span>
+
+            <span class="n">n_test</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">testpercent</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span>
+            <span class="n">n_train</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_test</span>
+
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_train</span> <span class="o">+</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_test</span><span class="p">)</span>
+
+            <span class="n">rep</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">rep</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">repetitions</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Repetition: </span><span class="si">{</span><span class="n">rep</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">repetitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Prepare train and test data</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="n">tgt_train</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_output</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">tgt_test</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask</span><span class="p">)]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_test</span><span class="p">,</span> <span class="n">n_output</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">pat_train</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="n">mask</span><span class="p">,]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">pat_test</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">mask</span><span class="p">),]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+                <span class="c1"># Start a ANN based on provided scheme</span>
+                <span class="n">nn</span> <span class="o">=</span> <span class="n">NN</span><span class="p">(</span>
+                    <span class="n">scheme</span><span class="p">,</span>
+                    <span class="n">iterations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">LR</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
+                    <span class="n">momentum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">momentum</span><span class="p">,</span>
+                    <span class="n">optim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">is_scaled</span>
+
+                <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">scale_means</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">sdevs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">scale_sdevs</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+                <span class="n">nn</span><span class="o">.</span><span class="n">initWeights</span><span class="p">()</span>
+
+                <span class="n">best</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+                <span class="n">tracker</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">err_dif</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">burnin</span><span class="p">):</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">trainnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">tgt_train</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Burn-in iteration: </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;| Iteration |   Error   |  Train |  Test  |  Product |  ErrDiff |&quot;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiter</span><span class="p">):</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">trainnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">tgt_train</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">pred_train</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">testnet</span><span class="p">(</span><span class="n">pat_train</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">pred_test</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">testnet</span><span class="p">(</span><span class="n">pat_test</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="ow">not</span> <span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">k_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">tgt_train</span><span class="p">,</span> <span class="n">pred_train</span><span class="p">)</span>
+                    <span class="n">k_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">tgt_test</span><span class="p">,</span> <span class="n">pred_test</span><span class="p">)</span>
+                    <span class="n">k_prod</span> <span class="o">=</span> <span class="n">k_train</span> <span class="o">*</span> <span class="n">k_test</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">netTrainError</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">k_train</span> <span class="o">&gt;=</span> <span class="n">min_train</span> <span class="ow">and</span> <span class="n">k_test</span> <span class="o">&gt;=</span> <span class="n">min_test</span>
+                        <span class="ow">and</span> <span class="n">k_prod</span> <span class="o">&gt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="n">best</span> <span class="o">=</span> <span class="p">[</span><span class="n">k_prod</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nn</span><span class="p">)]</span>
+
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">err_dif</span> <span class="o">=</span> <span class="n">tracker</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">err</span>
+                    <span class="n">tracker</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">err</span><span class="p">,</span> <span class="n">k_train</span><span class="p">,</span> <span class="n">k_test</span><span class="p">,</span> <span class="n">k_prod</span><span class="p">,</span> <span class="n">err_dif</span><span class="p">])</span>
+
+                    <span class="n">tt</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">stable_val</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tracker</span><span class="p">[</span><span class="o">-</span><span class="n">stable</span><span class="p">:]]</span>
+                    <span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">err</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">k_train</span><span class="si">:</span><span class="s2"> 5.3f</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">k_test</span><span class="si">:</span><span class="s2"> 5.3f</span><span class="si">}</span><span class="s2"> |  </span><span class="si">{</span><span class="n">k_prod</span><span class="si">:</span><span class="s2"> 5.3f</span><span class="si">}</span><span class="s2">  | </span><span class="si">{</span><span class="n">err_dif</span><span class="si">:</span><span class="s2">8.5f</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">,</span>
+                        <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">flush</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">tt</span> <span class="o">&gt;=</span> <span class="n">stable</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+                <span class="k">if</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span><span class="n">Model</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">rep</span><span class="p">,</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Best net:&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Iteration </span><span class="si">{</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Error: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation train: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation test: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Validation product: </span><span class="si">{</span><span class="n">tracker</span><span class="p">[</span><span class="n">best</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">net_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">rep</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training failed minimum values (train &gt; &quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">min_train</span><span class="si">}</span><span class="s2"> and test &gt; </span><span class="si">{</span><span class="n">min_test</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Repeating &quot;</span>
+                        <span class="o">+</span> <span class="s2">&quot;network training.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnClassifier.writeModel">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnClassifier.writeModel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the trained models to a file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: the file name to be written, usually with .obj extension.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnnPredict">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnPredict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnnPredict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for predicting based on trained models.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modelcontainer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise class</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            modelcontainer: an instance of ModelContainer with the best trained model with ANNClassifier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">modelcontainer</span>
+
+<div class="viewcode-block" id="AnnPredict.from_annclassifier">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnPredict.from_annclassifier">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_annclassifier</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ann</span><span class="p">:</span> <span class="n">AnnClassifier</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open models and predict from a AnnClassifier instance with trained networks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ann: instace of AnnClassifier with trained models.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ann</span><span class="p">,</span> <span class="n">AnnClassifier</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">getmodels</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Provide an instance of AnnClassifier&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnPredict.from_modelsfile">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnPredict.from_modelsfile">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_modelsfile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open models from file for prediction.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: the models file saved from an AnnClassifier instance. Usually .obj file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">ModelContainer</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">container</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AnnPredict.predict">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnPredict.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">patterns</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict output of model to a list of patterns.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            patterns: a list with patterns to be tested with trained models. Patterns must follow the same order as in training.</span>
+<span class="sd">            scale: if patterns should be scaled with network stored means and standard deviations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of predictions with the format [[[output_1], [output_2]]] for all models trained.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">net</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">get_best_nets</span><span class="p">():</span>
+            <span class="n">nn</span> <span class="o">=</span> <span class="n">NN</span><span class="o">.</span><span class="n">loadnet</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+            <span class="n">predictions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">testnet</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">predictions</span></div>
+
+
+
+<div class="viewcode-block" id="AnnPredict.predictFromDataTable">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnPredict.predictFromDataTable">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predictFromDataTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict values with data from a DataTable instance.</span>
+
+<span class="sd">        Uses the data slot of a DataTable to get values to predict.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datatable: a DataTable instance with data to test and predict. Must follow the same order as original data used to train models.</span>
+<span class="sd">            scale: If true, use network stored mean and standard deviations to scale data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">datatable</span><span class="o">.</span><span class="n">datacolnames</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: The data column names do not match the model&#39;s input names. Predictions are still being made, but please ensure that the order of the data columns is correct.&quot;</span><span class="p">)</span>
+
+        <span class="n">patterns</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getData</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">predtable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span>
+            <span class="n">datatable</span><span class="o">.</span><span class="n">getPoints</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getClasses</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pred</span><span class="p">)):</span>
+            <span class="n">predtable</span><span class="o">.</span><span class="n">add_datacolumns</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">datatable</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">predtable</span></div>
+
+
+<div class="viewcode-block" id="AnnPredict.predictFromRaster">
+<a class="viewcode-back" href="../../../spartann.classifier.html#spartann.classifier.classifier.AnnPredict.predictFromRaster">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predictFromRaster</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">raster</span><span class="p">:</span> <span class="n">Raster</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">multiplier</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+        <span class="n">nodata</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mi">9999</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;int16&quot;</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Raster</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predicts from a raster object used trained models.</span>
+
+<span class="sd">        The bands of the raster object are used as patterns and must be provided in the same order as original data used for training.</span>
+<span class="sd">        Multicore processing is usefull for large rasters. It requires that the</span>
+<span class="sd">        raster exists as a file (either loaded form file or written to one).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            raster: an instance of a Raster object.</span>
+<span class="sd">            scale: If True, use means and standard deviation stored with the network to scale data.</span>
+<span class="sd">            multiplier: a multiplication factor for the predictions values</span>
+<span class="sd">            blocksize: the size of the blocks to predict (instead of using the whole raster array at once).</span>
+<span class="sd">            nodata: nodata value to be used in the new raster</span>
+<span class="sd">            dtype: the data type of the raster to be created</span>
+<span class="sd">            ncores: Number of cores/processes to be used for processing a raster</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A Raster object with predictions, where each band represents a trained network (repetitions and schemes). Check metadata.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">raster</span><span class="o">.</span><span class="n">bandnames</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: The raster band names do not match the model&#39;s input names. Predictions are still being made, but please ensure that the order of the bands is correct.&quot;</span><span class="p">)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+        <span class="n">n_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_outputs</span>
+
+        <span class="n">pred_rst</span> <span class="o">=</span> <span class="n">Raster</span><span class="o">.</span><span class="n">from_scratch</span><span class="p">(</span>
+            <span class="n">raster</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+            <span class="n">raster</span><span class="o">.</span><span class="n">res</span><span class="p">,</span>
+            <span class="n">raster</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
+            <span class="n">bands</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">n_outputs</span><span class="p">,</span>
+            <span class="n">nodata</span><span class="o">=</span><span class="n">nodata</span><span class="p">,</span>
+            <span class="n">projwkt</span><span class="o">=</span><span class="n">raster</span><span class="o">.</span><span class="n">proj</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">gdal_array</span><span class="o">.</span><span class="n">NumericTypeCodeToGDALTypeCode</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set Metadata</span>
+        <span class="n">md</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Created_with&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;SpartANN, version </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Creation_date&quot;</span><span class="p">:</span> <span class="n">ctime</span><span class="p">(),</span>
+            <span class="s2">&quot;Number_of_predictions&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="o">*</span><span class="n">n_outputs</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> models with </span><span class="si">{</span><span class="n">n_outputs</span><span class="si">}</span><span class="s2"> outputs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Multiplier&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">multiplier</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">pred_rst</span><span class="o">.</span><span class="n">addMetadata</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ncores</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_singlecore_raster_predict</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">pred_rst</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span>
+                                <span class="n">multiplier</span><span class="p">,</span> <span class="n">nodata</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_multicore_raster_predict</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">pred_rst</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span>
+                                <span class="n">multiplier</span><span class="p">,</span> <span class="n">nodata</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">ncores</span><span class="p">)</span>
+
+        <span class="c1"># Sets bands specific metadata</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_outputs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">md</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;Scheme&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                    <span class="s2">&quot;Repetition&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">repetition</span><span class="p">,</span>
+                    <span class="s2">&quot;Output&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">o</span><span class="p">],</span>
+                <span class="p">}</span>
+                <span class="n">descr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Prediction for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">o</span><span class="p">]</span><span class="si">}</span><span class="s1">, with scheme </span><span class="si">{</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;Scheme&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">, repetition </span><span class="si">{</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;Repetition&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">pred_rst</span><span class="o">.</span><span class="n">addMetadata</span><span class="p">(</span><span class="n">md</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">o</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">pred_rst</span><span class="o">.</span><span class="n">addDescription</span><span class="p">(</span><span class="n">descr</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">o</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pred_rst</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_singlecore_raster_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">raster</span><span class="p">:</span> <span class="n">Raster</span><span class="p">,</span>
+        <span class="n">pred_rst</span><span class="p">:</span> <span class="n">Raster</span><span class="p">,</span>
+        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">multiplier</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">nodata</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal function for raster prediction using a single-core</span>
+<span class="sd">        implementation.</span>
+
+<span class="sd">        This function avoids the overhead of creating additional processes and</span>
+<span class="sd">        directly provides predictions for the raster.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_outputs</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+
+        <span class="n">progressbar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">r_iter</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">block_iter</span><span class="p">(</span><span class="n">blocksize</span><span class="o">=</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">read_arr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">r_iter</span><span class="p">:</span>
+            <span class="n">pos</span><span class="p">,</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">block</span>
+            <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="c1">## to table format (pixels, bands)</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">))</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">n_outputs</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span> <span class="o">*</span> <span class="n">multiplier</span>
+            <span class="n">pred</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pred</span><span class="p">)]</span> <span class="o">=</span> <span class="n">nodata</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">pred_rst</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="n">pos</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="n">progressbar</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_multicore_raster_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">raster</span><span class="p">:</span> <span class="n">Raster</span><span class="p">,</span>
+        <span class="n">pred_rst</span><span class="p">:</span> <span class="n">Raster</span><span class="p">,</span>
+        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">multiplier</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">nodata</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal function for raster prediction using a multi-core</span>
+<span class="sd">        implementation.</span>
+
+<span class="sd">        This function spawns a set of workers to process the raster with</span>
+<span class="sd">        minimal memory usage. The raster is divided into blocks for efficient</span>
+<span class="sd">        processing. To circumvent the single-process raster access limitation,</span>
+<span class="sd">        each process reads the raster file directly. Therefore, the raster must</span>
+<span class="sd">        either be written to or loaded from a file.</span>
+
+<span class="sd">        It utilizes task and result queues to provide data to and retrieve</span>
+<span class="sd">        results from the worker functions. Results are processed as they become</span>
+<span class="sd">        available in the queue, ensuring continuous and efficient data</span>
+<span class="sd">        processing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">progressbar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">tasks</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raster</span><span class="o">.</span><span class="n">hasSource</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The raster must be associated with a file (either loaded &quot;</span> <span class="o">+</span>\
+                  <span class="s2">&quot;from or written to one) to enable multicore processing.&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">file</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">source</span>
+
+        <span class="n">r_iter</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">block_iter</span><span class="p">(</span><span class="n">blocksize</span><span class="o">=</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">read_arr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">r_iter</span><span class="p">:</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+
+        <span class="n">processes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">wid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncores</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">blocksize</span><span class="p">,</span> <span class="n">results</span><span class="p">))</span>
+            <span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="n">progress</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">any</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">results</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Try to get a result from the result queue (non-blocking)</span>
+                <span class="n">pos</span><span class="p">,</span> <span class="n">pred</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span> <span class="o">*</span> <span class="n">multiplier</span>
+                <span class="n">pred</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">pred</span><span class="p">)]</span> <span class="o">=</span> <span class="n">nodata</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">pred_rst</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="n">pos</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">progressbar</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">progress</span><span class="p">),</span> <span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+                <span class="c1"># To result retrieve, wait for next one</span>
+                <span class="k">pass</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="c1"># Allow a small sleep to avoid tight polling loop</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">tasks</span><span class="p">:</span> <span class="n">Queue</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">results</span><span class="p">:</span> <span class="n">Queue</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal worker function for multi-core raster processing.</span>
+
+<span class="sd">        This function predicts raster values for a specific block of data. It</span>
+<span class="sd">        reads the required subset of data directly from the file and applies</span>
+<span class="sd">        all trained models found in the model container. A queue-based strategy</span>
+<span class="sd">        is used for retrieving data and sending results, ensuring minimal</span>
+<span class="sd">        memory usage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">tasks</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+                <span class="n">rst</span> <span class="o">=</span> <span class="n">Raster</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">rst</span><span class="o">.</span><span class="n">get_subarray</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">],</span> <span class="n">blocksize</span><span class="p">)</span>
+                <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">n_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">n_outputs</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+                <span class="c1">## to table format (pixels, bands)</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">))</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">n_outputs</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+                <span class="c1"># No tasks to process</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># Handle unexpected exceptions</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

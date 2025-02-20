@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spartann.classifier package &mdash; SpartANN 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ca842793"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spartann.datatable package" href="spartann.datatable.html" />
+    <link rel="prev" title="spartann package" href="spartann.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/simple.html">A First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advanced.html">Advanced</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="spartann.html">spartann package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="spartann.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">spartann.classifier package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.classifier.classifier">spartann.classifier.classifier module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.classifier.model">spartann.classifier.model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.classifier.validation">spartann.classifier.validation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.classifier">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.datatable.html">spartann.datatable package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.engine.html">spartann.engine package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.spatial.html">spartann.spatial package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#module-spartann.version">spartann.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#module-spartann">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="spartann.html">spartann package</a></li>
+      <li class="breadcrumb-item active">spartann.classifier package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/spartann.classifier.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spartann-classifier-package">
+<h1>spartann.classifier package<a class="headerlink" href="#spartann-classifier-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-spartann.classifier.classifier">
+<span id="spartann-classifier-classifier-module"></span><h2>spartann.classifier.classifier module<a class="headerlink" href="#module-spartann.classifier.classifier" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnClassifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.classifier.</span></span><span class="sig-name descname"><span class="pre">AnnClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelcontainer:</span> <span class="pre">~spartann.classifier.model.ModelContainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnClassifier" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The AnnClassifier provides methods for training a Artificial Neural Network with different parameters and optimizers for supervised classification.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnClassifier.from_datatable">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_datatable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dt:</span> <span class="pre">~spartann.datatable.datatable.DataTable,</span> <span class="pre">repetitions:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">testpercent:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">hl_schemes:</span> <span class="pre">list</span> <span class="pre">|</span> <span class="pre">list[list]</span> <span class="pre">=</span> <span class="pre">[8,</span> <span class="pre">4],</span> <span class="pre">LR:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">momentum:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">optim:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Adam',</span> <span class="pre">validation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.from_datatable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnClassifier.from_datatable" title="Link to this definition"></a></dt>
+<dd><p>Initiallise the classifier with a DataTable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – A DataTable instance with data to train model.</p></li>
+<li><p><strong>repetitions</strong> – Number of repetitions performed per network scheme.</p></li>
+<li><p><strong>testpercent</strong> – percentage of points reserved for independent testing the training of the network (overfitting control).</p></li>
+<li><p><strong>hl_schemes</strong> – list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].</p></li>
+<li><p><strong>LR</strong> – Learning rate. Depending on the optimizer, might have different importance.</p></li>
+<li><p><strong>momentum</strong> – Decay factor for the optimizer. Note: the “Adam” optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.</p></li>
+<li><p><strong>optim</strong> – Optimization method. Available methods are “SGD” (stochastic gradient descend), “SimpleMomentum”, “Momentum”, “Adagrad”, “RMSProp” and “Adam”.</p></li>
+<li><p><strong>validation</strong> – Validation metric to be used, depending on the data. An instance of Validatio class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnClassifier.from_options">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">inputs:</span> <span class="pre">list,</span> <span class="pre">outputs:</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">['Output1'],</span> <span class="pre">repetitions:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">testpercent:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">hl_schemes:</span> <span class="pre">list</span> <span class="pre">|</span> <span class="pre">list[list]</span> <span class="pre">=</span> <span class="pre">[8,</span> <span class="pre">4],</span> <span class="pre">LR:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">momentum:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">optim:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Adam',</span> <span class="pre">validation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.from_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnClassifier.from_options" title="Link to this definition"></a></dt>
+<dd><p>Initiallise the classifier with options with defaults.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_inputs</strong> – Number of inputs neurons.</p></li>
+<li><p><strong>n_outputs</strong> – Number of ouput neurons (default is 1)</p></li>
+<li><p><strong>repetitions</strong> – Number of repetitions performed per network scheme.</p></li>
+<li><p><strong>testpercent</strong> – percentage of points reserved for independent testing the training of the network (overfitting control).</p></li>
+<li><p><strong>hl_schemes</strong> – list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].</p></li>
+<li><p><strong>LR</strong> – Learning rate. Depending on the optimizer, might have different importance.</p></li>
+<li><p><strong>momentum</strong> – Decay factor for the optimizer. Note: the “Adam” optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.</p></li>
+<li><p><strong>optim</strong> – Optimization method. Available methods are “SGD” (stochastic gradient descend), “SimpleMomentum”, “Momentum”, “Adagrad”, “RMSProp” and “Adam”.</p></li>
+<li><p><strong>validation</strong> – Validation metric to be used, depending on the data. An instance of Validatio class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnClassifier.getmodels">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getmodels</span></span><a class="headerlink" href="#spartann.classifier.classifier.AnnClassifier.getmodels" title="Link to this definition"></a></dt>
+<dd><p>Returns a ModelContainer with trained models.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnClassifier.trainModel">
+<span class="sig-name descname"><span class="pre">trainModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><span class="pre">DataTable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burnin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.trainModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnClassifier.trainModel" title="Link to this definition"></a></dt>
+<dd><p>Trains a model ensemble using an artificial neural network (ANN)</p>
+<p>This function trains an ANN using data and classification labels provided in a DataTable. The training process follows user-defined parameters, including batch size, stopping criteria, and minimum performance thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datatable</strong> (<a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><em>DataTable</em></a>) – A dataset containing labeled points for supervised learning.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of samples per training batch. Must be between 1 and the total number of available samples. The default is 1, meaning weight updates occur after every sample. Larger batch sizes may provide smoother training.</p></li>
+<li><p><strong>burnin</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of initial iterations to exclude. This allows the network to adjust its weights before selecting valid models, reducing the likelihood of retaining near-random networks.</p></li>
+<li><p><strong>min_train</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum training accuracy required to accept a network. If this threshold is not met, training is repeated.</p></li>
+<li><p><strong>min_test</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum testing accuracy required to accept a network. If this threshold is not met, training is repeated.</p></li>
+<li><p><strong>maxiter</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of training iterations.</p></li>
+<li><p><strong>stable</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of consecutive iterations with an error difference below <cite>stable_val</cite> required to trigger early stopping.</p></li>
+<li><p><strong>stable_val</strong> (<em>float</em><em>, </em><em>optional</em>) – The threshold for error difference between iterations to be considered stable, used for early stopping.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnClassifier.writeModel">
+<span class="sig-name descname"><span class="pre">writeModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.writeModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnClassifier.writeModel" title="Link to this definition"></a></dt>
+<dd><p>Writes the trained models to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – the file name to be written, usually with .obj extension.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnPredict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.classifier.</span></span><span class="sig-name descname"><span class="pre">AnnPredict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelcontainer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnPredict" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for predicting based on trained models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnPredict.from_annclassifier">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_annclassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ann</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#spartann.classifier.classifier.AnnClassifier" title="spartann.classifier.classifier.AnnClassifier"><span class="pre">AnnClassifier</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.from_annclassifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnPredict.from_annclassifier" title="Link to this definition"></a></dt>
+<dd><p>Open models and predict from a AnnClassifier instance with trained networks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ann</strong> – instace of AnnClassifier with trained models.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnPredict.from_modelsfile">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_modelsfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.from_modelsfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnPredict.from_modelsfile" title="Link to this definition"></a></dt>
+<dd><p>Open models from file for prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – the models file saved from an AnnClassifier instance. Usually .obj file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnPredict.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnPredict.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict output of model to a list of patterns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> – a list with patterns to be tested with trained models. Patterns must follow the same order as in training.</p></li>
+<li><p><strong>scale</strong> – if patterns should be scaled with network stored means and standard deviations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of predictions with the format [[[output_1], [output_2]]] for all models trained.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnPredict.predictFromDataTable">
+<span class="sig-name descname"><span class="pre">predictFromDataTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><span class="pre">DataTable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><span class="pre">DataTable</span></a></span></span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.predictFromDataTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnPredict.predictFromDataTable" title="Link to this definition"></a></dt>
+<dd><p>Predict values with data from a DataTable instance.</p>
+<p>Uses the data slot of a DataTable to get values to predict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datatable</strong> – a DataTable instance with data to test and predict. Must follow the same order as original data used to train models.</p></li>
+<li><p><strong>scale</strong> – If true, use network stored mean and standard deviations to scale data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.classifier.AnnPredict.predictFromRaster">
+<span class="sig-name descname"><span class="pre">predictFromRaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-9999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'int16'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.predictFromRaster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.classifier.AnnPredict.predictFromRaster" title="Link to this definition"></a></dt>
+<dd><p>Predicts from a raster object used trained models.</p>
+<p>The bands of the raster object are used as patterns and must be provided in the same order as original data used for training.
+Multicore processing is usefull for large rasters. It requires that the
+raster exists as a file (either loaded form file or written to one).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster</strong> – an instance of a Raster object.</p></li>
+<li><p><strong>scale</strong> – If True, use means and standard deviation stored with the network to scale data.</p></li>
+<li><p><strong>multiplier</strong> – a multiplication factor for the predictions values</p></li>
+<li><p><strong>blocksize</strong> – the size of the blocks to predict (instead of using the whole raster array at once).</p></li>
+<li><p><strong>nodata</strong> – nodata value to be used in the new raster</p></li>
+<li><p><strong>dtype</strong> – the data type of the raster to be created</p></li>
+<li><p><strong>ncores</strong> – Number of cores/processes to be used for processing a raster</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Raster object with predictions, where each band represents a trained network (repetitions and schemes). Check metadata.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-spartann.classifier.model">
+<span id="spartann-classifier-model-module"></span><h2>spartann.classifier.model module<a class="headerlink" href="#module-spartann.classifier.model" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.model.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.model.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">net</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.Model" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Storage of a single model with metadata.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.model.Model.error">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#spartann.classifier.model.Model.error" title="Link to this definition"></a></dt>
+<dd><p>Returns the error of the selected network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.model.Model.validation">
+<span class="sig-name descname"><span class="pre">validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'train'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/classifier/model.html#Model.validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.Model.validation" title="Link to this definition"></a></dt>
+<dd><p>Returns the validation achieved by the best network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>valid</strong> (<em>str</em>) – The type of validation, either “train”, “test”, or the “product” of both.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.model.</span></span><span class="sig-name descname"><span class="pre">ModelContainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hl_schemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testpercent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.ModelContainer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container to store fitted models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.add_model">
+<span class="sig-name descname"><span class="pre">add_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.add_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.ModelContainer.add_model" title="Link to this definition"></a></dt>
+<dd><p>Store a model in the container.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.get_best_models">
+<span class="sig-name descname"><span class="pre">get_best_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.get_best_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.ModelContainer.get_best_models" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the best models.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.get_best_nets">
+<span class="sig-name descname"><span class="pre">get_best_nets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.get_best_nets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.ModelContainer.get_best_nets" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the best networks (without associated metadata)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.ModelContainer.load" title="Link to this definition"></a></dt>
+<dd><p>Load the model container from a file.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.n_inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_inputs</span></span><a class="headerlink" href="#spartann.classifier.model.ModelContainer.n_inputs" title="Link to this definition"></a></dt>
+<dd><p>The number of inputs given for each model.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.n_outputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_outputs</span></span><a class="headerlink" href="#spartann.classifier.model.ModelContainer.n_outputs" title="Link to this definition"></a></dt>
+<dd><p>The number of outputs predicted by each model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.model.ModelContainer.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.model.ModelContainer.save" title="Link to this definition"></a></dt>
+<dd><p>write the model container to a file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-spartann.classifier.validation">
+<span id="spartann-classifier-validation-module"></span><h2>spartann.classifier.validation module<a class="headerlink" href="#module-spartann.classifier.validation" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="spartann.classifier.validation.CohensKappa_Validation">
+<span class="sig-prename descclassname"><span class="pre">spartann.classifier.validation.</span></span><span class="sig-name descname"><span class="pre">CohensKappa_Validation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#spartann.classifier.validation.CohensKappa_Validation" title="Link to this definition"></a></dt>
+<dd><p>Assess the performance of a binary classification model using Cohen’s Kappa.</p>
+<p>This instantiation of the “Validation” class simplifies the evaluation process
+for the user. It is specifically designed for binary datasets and uses Cohen’s
+Kappa metric to measure agreement between predictions and calibration data.</p>
+<p>Note:
+- The default threshold for classification is set to 0.5, meaning values</p>
+<blockquote>
+<div><p>greater than or equal to 0.5 are classified as positive, and values
+below 0.5 are classified as negative.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="spartann.classifier.validation.PearsonsCorr_Validation">
+<span class="sig-prename descclassname"><span class="pre">spartann.classifier.validation.</span></span><span class="sig-name descname"><span class="pre">PearsonsCorr_Validation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#spartann.classifier.validation.PearsonsCorr_Validation" title="Link to this definition"></a></dt>
+<dd><p>Assess the performance of a continuous data using Pearson’s Correlation Score.</p>
+<p>This instantiation of the “Validation” class simplifies the evaluation process
+for the user. It is specifically designed for continuous datasets and uses Pearson’s
+Correlation Score to measure agreement between predictions and calibration data.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.validation.Validation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.validation.</span></span><span class="sig-name descname"><span class="pre">Validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/validation.html#Validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.validation.Validation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>General class for providing validation metric to classifier.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.validation.Validation.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/spartann/classifier/validation.html#Validation.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.validation.Validation.calc" title="Link to this definition"></a></dt>
+<dd><p>Calculate metric. Used by classifier.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.classifier.validation.cohenkappa">
+<span class="sig-prename descclassname"><span class="pre">spartann.classifier.validation.</span></span><span class="sig-name descname"><span class="pre">cohenkappa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/spartann/classifier/validation.html#cohenkappa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.validation.cohenkappa" title="Link to this definition"></a></dt>
+<dd><p>Cohen’s Kappa</p>
+<p>Calculates Cohen’s Kappa from a list of real and predicted values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>real</strong> – a list of zeros and ones referring to binary targets.</p></li>
+<li><p><strong>pred</strong> – a list of same size of real with predicted binary values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.classifier.validation.pearsonscorr">
+<span class="sig-prename descclassname"><span class="pre">spartann.classifier.validation.</span></span><span class="sig-name descname"><span class="pre">pearsonscorr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/spartann/classifier/validation.html#pearsonscorr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.validation.pearsonscorr" title="Link to this definition"></a></dt>
+<dd><p>Pearson’s correlation</p>
+<p>Calculates Pearson’s correlation from two list of continuous values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>real</strong> – the target values.</p></li>
+<li><p><strong>pred</strong> – the predicted values by the model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-spartann.classifier">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spartann.classifier" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.AnnClassifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.</span></span><span class="sig-name descname"><span class="pre">AnnClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelcontainer:</span> <span class="pre">~spartann.classifier.model.ModelContainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnClassifier" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The AnnClassifier provides methods for training a Artificial Neural Network with different parameters and optimizers for supervised classification.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnClassifier.from_datatable">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_datatable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dt:</span> <span class="pre">~spartann.datatable.datatable.DataTable,</span> <span class="pre">repetitions:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">testpercent:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">hl_schemes:</span> <span class="pre">list</span> <span class="pre">|</span> <span class="pre">list[list]</span> <span class="pre">=</span> <span class="pre">[8,</span> <span class="pre">4],</span> <span class="pre">LR:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">momentum:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">optim:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Adam',</span> <span class="pre">validation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.from_datatable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnClassifier.from_datatable" title="Link to this definition"></a></dt>
+<dd><p>Initiallise the classifier with a DataTable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – A DataTable instance with data to train model.</p></li>
+<li><p><strong>repetitions</strong> – Number of repetitions performed per network scheme.</p></li>
+<li><p><strong>testpercent</strong> – percentage of points reserved for independent testing the training of the network (overfitting control).</p></li>
+<li><p><strong>hl_schemes</strong> – list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].</p></li>
+<li><p><strong>LR</strong> – Learning rate. Depending on the optimizer, might have different importance.</p></li>
+<li><p><strong>momentum</strong> – Decay factor for the optimizer. Note: the “Adam” optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.</p></li>
+<li><p><strong>optim</strong> – Optimization method. Available methods are “SGD” (stochastic gradient descend), “SimpleMomentum”, “Momentum”, “Adagrad”, “RMSProp” and “Adam”.</p></li>
+<li><p><strong>validation</strong> – Validation metric to be used, depending on the data. An instance of Validatio class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnClassifier.from_options">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">inputs:</span> <span class="pre">list,</span> <span class="pre">outputs:</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">['Output1'],</span> <span class="pre">repetitions:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">testpercent:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20,</span> <span class="pre">hl_schemes:</span> <span class="pre">list</span> <span class="pre">|</span> <span class="pre">list[list]</span> <span class="pre">=</span> <span class="pre">[8,</span> <span class="pre">4],</span> <span class="pre">LR:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">momentum:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">optim:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Adam',</span> <span class="pre">validation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;spartann.classifier.validation.Validation</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.from_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnClassifier.from_options" title="Link to this definition"></a></dt>
+<dd><p>Initiallise the classifier with options with defaults.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_inputs</strong> – Number of inputs neurons.</p></li>
+<li><p><strong>n_outputs</strong> – Number of ouput neurons (default is 1)</p></li>
+<li><p><strong>repetitions</strong> – Number of repetitions performed per network scheme.</p></li>
+<li><p><strong>testpercent</strong> – percentage of points reserved for independent testing the training of the network (overfitting control).</p></li>
+<li><p><strong>hl_schemes</strong> – list of hidden layer network schemes to test. A network with 10 inputs and 2 hidden layers with 5 and 3 neurons, plus a single output layer is simply given as [5,3].</p></li>
+<li><p><strong>LR</strong> – Learning rate. Depending on the optimizer, might have different importance.</p></li>
+<li><p><strong>momentum</strong> – Decay factor for the optimizer. Note: the “Adam” optimizer need two decay factors given in a list [B1, B2] (usually [0.9, 0.999]). Other optimization methods need only a float.</p></li>
+<li><p><strong>optim</strong> – Optimization method. Available methods are “SGD” (stochastic gradient descend), “SimpleMomentum”, “Momentum”, “Adagrad”, “RMSProp” and “Adam”.</p></li>
+<li><p><strong>validation</strong> – Validation metric to be used, depending on the data. An instance of Validatio class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.AnnClassifier.getmodels">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getmodels</span></span><a class="headerlink" href="#spartann.classifier.AnnClassifier.getmodels" title="Link to this definition"></a></dt>
+<dd><p>Returns a ModelContainer with trained models.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnClassifier.trainModel">
+<span class="sig-name descname"><span class="pre">trainModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><span class="pre">DataTable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burnin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stable_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.trainModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnClassifier.trainModel" title="Link to this definition"></a></dt>
+<dd><p>Trains a model ensemble using an artificial neural network (ANN)</p>
+<p>This function trains an ANN using data and classification labels provided in a DataTable. The training process follows user-defined parameters, including batch size, stopping criteria, and minimum performance thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datatable</strong> (<a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><em>DataTable</em></a>) – A dataset containing labeled points for supervised learning.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of samples per training batch. Must be between 1 and the total number of available samples. The default is 1, meaning weight updates occur after every sample. Larger batch sizes may provide smoother training.</p></li>
+<li><p><strong>burnin</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of initial iterations to exclude. This allows the network to adjust its weights before selecting valid models, reducing the likelihood of retaining near-random networks.</p></li>
+<li><p><strong>min_train</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum training accuracy required to accept a network. If this threshold is not met, training is repeated.</p></li>
+<li><p><strong>min_test</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum testing accuracy required to accept a network. If this threshold is not met, training is repeated.</p></li>
+<li><p><strong>maxiter</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of training iterations.</p></li>
+<li><p><strong>stable</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of consecutive iterations with an error difference below <cite>stable_val</cite> required to trigger early stopping.</p></li>
+<li><p><strong>stable_val</strong> (<em>float</em><em>, </em><em>optional</em>) – The threshold for error difference between iterations to be considered stable, used for early stopping.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnClassifier.writeModel">
+<span class="sig-name descname"><span class="pre">writeModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnClassifier.writeModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnClassifier.writeModel" title="Link to this definition"></a></dt>
+<dd><p>Writes the trained models to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – the file name to be written, usually with .obj extension.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.AnnPredict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.</span></span><span class="sig-name descname"><span class="pre">AnnPredict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelcontainer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnPredict" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for predicting based on trained models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnPredict.from_annclassifier">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_annclassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ann</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#spartann.classifier.classifier.AnnClassifier" title="spartann.classifier.classifier.AnnClassifier"><span class="pre">AnnClassifier</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.from_annclassifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnPredict.from_annclassifier" title="Link to this definition"></a></dt>
+<dd><p>Open models and predict from a AnnClassifier instance with trained networks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ann</strong> – instace of AnnClassifier with trained models.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnPredict.from_modelsfile">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_modelsfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.from_modelsfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnPredict.from_modelsfile" title="Link to this definition"></a></dt>
+<dd><p>Open models from file for prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – the models file saved from an AnnClassifier instance. Usually .obj file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnPredict.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnPredict.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict output of model to a list of patterns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> – a list with patterns to be tested with trained models. Patterns must follow the same order as in training.</p></li>
+<li><p><strong>scale</strong> – if patterns should be scaled with network stored means and standard deviations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of predictions with the format [[[output_1], [output_2]]] for all models trained.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnPredict.predictFromDataTable">
+<span class="sig-name descname"><span class="pre">predictFromDataTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><span class="pre">DataTable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="spartann.datatable.html#spartann.datatable.datatable.DataTable" title="spartann.datatable.datatable.DataTable"><span class="pre">DataTable</span></a></span></span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.predictFromDataTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnPredict.predictFromDataTable" title="Link to this definition"></a></dt>
+<dd><p>Predict values with data from a DataTable instance.</p>
+<p>Uses the data slot of a DataTable to get values to predict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datatable</strong> – a DataTable instance with data to test and predict. Must follow the same order as original data used to train models.</p></li>
+<li><p><strong>scale</strong> – If true, use network stored mean and standard deviations to scale data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.AnnPredict.predictFromRaster">
+<span class="sig-name descname"><span class="pre">predictFromRaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocksize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-9999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'int16'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></span><a class="reference internal" href="_modules/spartann/classifier/classifier.html#AnnPredict.predictFromRaster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.AnnPredict.predictFromRaster" title="Link to this definition"></a></dt>
+<dd><p>Predicts from a raster object used trained models.</p>
+<p>The bands of the raster object are used as patterns and must be provided in the same order as original data used for training.
+Multicore processing is usefull for large rasters. It requires that the
+raster exists as a file (either loaded form file or written to one).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster</strong> – an instance of a Raster object.</p></li>
+<li><p><strong>scale</strong> – If True, use means and standard deviation stored with the network to scale data.</p></li>
+<li><p><strong>multiplier</strong> – a multiplication factor for the predictions values</p></li>
+<li><p><strong>blocksize</strong> – the size of the blocks to predict (instead of using the whole raster array at once).</p></li>
+<li><p><strong>nodata</strong> – nodata value to be used in the new raster</p></li>
+<li><p><strong>dtype</strong> – the data type of the raster to be created</p></li>
+<li><p><strong>ncores</strong> – Number of cores/processes to be used for processing a raster</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Raster object with predictions, where each band represents a trained network (repetitions and schemes). Check metadata.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">net</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.Model" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Storage of a single model with metadata.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.Model.error">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#spartann.classifier.Model.error" title="Link to this definition"></a></dt>
+<dd><p>Returns the error of the selected network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.Model.validation">
+<span class="sig-name descname"><span class="pre">validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'train'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/classifier/model.html#Model.validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.Model.validation" title="Link to this definition"></a></dt>
+<dd><p>Returns the validation achieved by the best network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>valid</strong> (<em>str</em>) – The type of validation, either “train”, “test”, or the “product” of both.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.</span></span><span class="sig-name descname"><span class="pre">ModelContainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hl_schemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repetitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testpercent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.ModelContainer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container to store fitted models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.add_model">
+<span class="sig-name descname"><span class="pre">add_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.add_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.ModelContainer.add_model" title="Link to this definition"></a></dt>
+<dd><p>Store a model in the container.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.get_best_models">
+<span class="sig-name descname"><span class="pre">get_best_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.get_best_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.ModelContainer.get_best_models" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the best models.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.get_best_nets">
+<span class="sig-name descname"><span class="pre">get_best_nets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.get_best_nets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.ModelContainer.get_best_nets" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the best networks (without associated metadata)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.ModelContainer.load" title="Link to this definition"></a></dt>
+<dd><p>Load the model container from a file.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.n_inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_inputs</span></span><a class="headerlink" href="#spartann.classifier.ModelContainer.n_inputs" title="Link to this definition"></a></dt>
+<dd><p>The number of inputs given for each model.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.n_outputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_outputs</span></span><a class="headerlink" href="#spartann.classifier.ModelContainer.n_outputs" title="Link to this definition"></a></dt>
+<dd><p>The number of outputs predicted by each model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.ModelContainer.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/model.html#ModelContainer.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.ModelContainer.save" title="Link to this definition"></a></dt>
+<dd><p>write the model container to a file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.classifier.Validation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.classifier.</span></span><span class="sig-name descname"><span class="pre">Validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/classifier/validation.html#Validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.Validation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>General class for providing validation metric to classifier.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.classifier.Validation.calc">
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/spartann/classifier/validation.html#Validation.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.classifier.Validation.calc" title="Link to this definition"></a></dt>
+<dd><p>Calculate metric. Used by classifier.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spartann.html" class="btn btn-neutral float-left" title="spartann package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spartann.datatable.html" class="btn btn-neutral float-right" title="spartann.datatable package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

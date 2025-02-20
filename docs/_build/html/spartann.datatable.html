@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spartann.datatable package &mdash; SpartANN 1.2.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ca842793"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="spartann.engine package" href="spartann.engine.html" />
+    <link rel="prev" title="spartann.classifier package" href="spartann.classifier.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SpartANN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/simple.html">A First Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advanced.html">Advanced</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Package API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="spartann.html">spartann package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="spartann.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="spartann.classifier.html">spartann.classifier package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">spartann.datatable package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.datatable.datatable">spartann.datatable.datatable module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-spartann.datatable">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.engine.html">spartann.engine package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spartann.spatial.html">spartann.spatial package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#module-spartann.version">spartann.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spartann.html#module-spartann">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SpartANN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="spartann.html">spartann package</a></li>
+      <li class="breadcrumb-item active">spartann.datatable package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/spartann.datatable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spartann-datatable-package">
+<h1>spartann.datatable package<a class="headerlink" href="#spartann-datatable-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-spartann.datatable.datatable">
+<span id="spartann-datatable-datatable-module"></span><h2>spartann.datatable.datatable module<a class="headerlink" href="#module-spartann.datatable.datatable" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.datatable.datatable.</span></span><span class="sig-name descname"><span class="pre">DataTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>“The DataTable provides interface for a tabular point data for supervised learning.
+It provides methods to read point coodinates, classes and to read/add predictor data.
+Methods provided allow interaction with Raster object to extract data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.add_datacolumn">
+<span class="sig-name descname"><span class="pre">add_datacolumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.add_datacolumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.add_datacolumn" title="Link to this definition"></a></dt>
+<dd><p>Adds a data column to available data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – a list of values to be added. It needs to have the same length as data points available.</p></li>
+<li><p><strong>name</strong> – a name given to the data column. If ‘None’ than colnames are fiven by default as “Col1”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.add_datacolumns">
+<span class="sig-name descname"><span class="pre">add_datacolumns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.add_datacolumns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.add_datacolumns" title="Link to this definition"></a></dt>
+<dd><p>Adds multiple data columns to available data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – a list of lists with values to be added. It needs to have the same length as data points available. Main list represent lines and inside list represent column values to be added.</p></li>
+<li><p><strong>names</strong> – a list with length = len(dt), with data columns names. Note: if not given, default names will be [“Col1”, “Col2”, …].</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.addpoint">
+<span class="sig-name descname"><span class="pre">addpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pnt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.addpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.addpoint" title="Link to this definition"></a></dt>
+<dd><p>Adds a point with respective classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pnt</strong> – list with coordinate pair</p></li>
+<li><p><strong>cl</strong> – list with classification value for the classes available</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.exclude_nan">
+<span class="sig-name descname"><span class="pre">exclude_nan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.exclude_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.exclude_nan" title="Link to this definition"></a></dt>
+<dd><p>Excludes all points that have <em>any</em> missing data (np.nan) in the data table.</p>
+<p>It excludes, data, coordinates and classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">';'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.from_file" title="Link to this definition"></a></dt>
+<dd><p>Inititates a DataTable instance from a file.</p>
+<p>The file is expected to be structured with Lon;Lat;Class with or without extra columns for further data.
+The class given, if numeric, will be considered as a single class. If the class is a string, then the number of classes added is the number of unique strings in the column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – the path and name for a text file with data.</p></li>
+<li><p><strong>sep</strong> – The separator symbol used in the text file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.getClasses">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getClasses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.getClasses" title="Link to this definition"></a></dt>
+<dd><p>Returns the class vector.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.getData">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getData</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.getData" title="Link to this definition"></a></dt>
+<dd><p>Returns all data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.getDataFromRaster">
+<span class="sig-name descname"><span class="pre">getDataFromRaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.getDataFromRaster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.getDataFromRaster" title="Link to this definition"></a></dt>
+<dd><p>Imports data from a Raster instance at the coordinate point in datatable.</p>
+<p>If there is no data available, it adds as many data columns as bands in raster. If data is available,
+it either overwrites current data or tries to fill missing data only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rst</strong> – a Raster object instance with data to be extracted. Must be in same coordinate system and cover the extent of data points.</p></li>
+<li><p><strong>overwrite</strong> – a bolean indicating if all data is to be overwritten with new raster data or only missing data. Note: it onlys consideres rows where all columns have missing data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.getPoints">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getPoints</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.getPoints" title="Link to this definition"></a></dt>
+<dd><p>Returns the coordinate table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.getRow">
+<span class="sig-name descname"><span class="pre">getRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.getRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.getRow" title="Link to this definition"></a></dt>
+<dd><p>Returns row point, class and data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>row</strong> – an integer referring to row to retrieve (starts at 0)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.has_nan">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_nan</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.has_nan" title="Link to this definition"></a></dt>
+<dd><p>Checks if there is <em>any</em> missing data in the data table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.has_row_nan">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_row_nan</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.has_row_nan" title="Link to this definition"></a></dt>
+<dd><p>Check if there are rows with missing data only.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.is_scaled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_scaled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.is_scaled" title="Link to this definition"></a></dt>
+<dd><p>Checks if data is scaled to Z-scores.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.means">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">means</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.means" title="Link to this definition"></a></dt>
+<dd><p>Returns an array of the current mean of data columns.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.nclasses">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nclasses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.nclasses" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of classes columns available.</p>
+<p>Note: only classes columns (no coordinates or data are considered)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.ndatacols">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndatacols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.ndatacols" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of data columns available.</p>
+<p>Note: only data columns (no coordinates or classes are considered)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.rm_data">
+<span class="sig-name descname"><span class="pre">rm_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.rm_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.rm_data" title="Link to this definition"></a></dt>
+<dd><p>Cleans all data table.
+Note: it does not erase coordinates neither classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.rm_datacolumn">
+<span class="sig-name descname"><span class="pre">rm_datacolumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.rm_datacolumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.rm_datacolumn" title="Link to this definition"></a></dt>
+<dd><p>Removes a column from data table.</p>
+<p>Note: it ignores coordinates and classes. Only data is considered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.rmpoint">
+<span class="sig-name descname"><span class="pre">rmpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.rmpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.rmpoint" title="Link to this definition"></a></dt>
+<dd><p>Removes a points from the data table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> – the line to be removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.scaleData">
+<span class="sig-name descname"><span class="pre">scaleData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.scaleData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.scaleData" title="Link to this definition"></a></dt>
+<dd><p>Scales data to Z-scores if is not scaled.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.scale_means">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_means</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.scale_means" title="Link to this definition"></a></dt>
+<dd><p>If data is scaled, returns the original means vector of the data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.scale_sdevs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_sdevs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.scale_sdevs" title="Link to this definition"></a></dt>
+<dd><p>If data is scaled, returns the original standard deviation vector of the data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.sdevs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sdevs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.datatable.DataTable.sdevs" title="Link to this definition"></a></dt>
+<dd><p>Returns an array of the current standard deviation of data columns.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.setDataRow">
+<span class="sig-name descname"><span class="pre">setDataRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.setDataRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.setDataRow" title="Link to this definition"></a></dt>
+<dd><p>TODO: ADDA DESCRPT</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.where_nan">
+<span class="sig-name descname"><span class="pre">where_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">any</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.where_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.where_nan" title="Link to this definition"></a></dt>
+<dd><p>Get rows indices where missing data is found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>any</strong> – A boolean indicating if rows with <em>any</em> missing data are to be retrieved or only rows with <em>full</em> missing data (all data columns are missing data).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.DataTable.write_to_file">
+<span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.write_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.DataTable.write_to_file" title="Link to this definition"></a></dt>
+<dd><p>Export current data to a file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spartann.datatable.datatable.str2num">
+<span class="sig-prename descclassname"><span class="pre">spartann.datatable.datatable.</span></span><span class="sig-name descname"><span class="pre">str2num</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#str2num"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.datatable.str2num" title="Link to this definition"></a></dt>
+<dd><p>Attempts to convert a string to integer or float.</p>
+<p>“12” is converter to integer while “12.” is converted to float.
+If not possible, returns the original string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – string to convert.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-spartann.datatable">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spartann.datatable" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spartann.datatable.</span></span><span class="sig-name descname"><span class="pre">DataTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>“The DataTable provides interface for a tabular point data for supervised learning.
+It provides methods to read point coodinates, classes and to read/add predictor data.
+Methods provided allow interaction with Raster object to extract data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.add_datacolumn">
+<span class="sig-name descname"><span class="pre">add_datacolumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.add_datacolumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.add_datacolumn" title="Link to this definition"></a></dt>
+<dd><p>Adds a data column to available data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – a list of values to be added. It needs to have the same length as data points available.</p></li>
+<li><p><strong>name</strong> – a name given to the data column. If ‘None’ than colnames are fiven by default as “Col1”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.add_datacolumns">
+<span class="sig-name descname"><span class="pre">add_datacolumns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.add_datacolumns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.add_datacolumns" title="Link to this definition"></a></dt>
+<dd><p>Adds multiple data columns to available data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt</strong> – a list of lists with values to be added. It needs to have the same length as data points available. Main list represent lines and inside list represent column values to be added.</p></li>
+<li><p><strong>names</strong> – a list with length = len(dt), with data columns names. Note: if not given, default names will be [“Col1”, “Col2”, …].</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.addpoint">
+<span class="sig-name descname"><span class="pre">addpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pnt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.addpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.addpoint" title="Link to this definition"></a></dt>
+<dd><p>Adds a point with respective classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pnt</strong> – list with coordinate pair</p></li>
+<li><p><strong>cl</strong> – list with classification value for the classes available</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.exclude_nan">
+<span class="sig-name descname"><span class="pre">exclude_nan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.exclude_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.exclude_nan" title="Link to this definition"></a></dt>
+<dd><p>Excludes all points that have <em>any</em> missing data (np.nan) in the data table.</p>
+<p>It excludes, data, coordinates and classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">';'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.from_file" title="Link to this definition"></a></dt>
+<dd><p>Inititates a DataTable instance from a file.</p>
+<p>The file is expected to be structured with Lon;Lat;Class with or without extra columns for further data.
+The class given, if numeric, will be considered as a single class. If the class is a string, then the number of classes added is the number of unique strings in the column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – the path and name for a text file with data.</p></li>
+<li><p><strong>sep</strong> – The separator symbol used in the text file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.getClasses">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getClasses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.DataTable.getClasses" title="Link to this definition"></a></dt>
+<dd><p>Returns the class vector.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.getData">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getData</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.DataTable.getData" title="Link to this definition"></a></dt>
+<dd><p>Returns all data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.getDataFromRaster">
+<span class="sig-name descname"><span class="pre">getDataFromRaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="spartann.spatial.html#spartann.spatial.raster.Raster" title="spartann.spatial.raster.Raster"><span class="pre">Raster</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.getDataFromRaster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.getDataFromRaster" title="Link to this definition"></a></dt>
+<dd><p>Imports data from a Raster instance at the coordinate point in datatable.</p>
+<p>If there is no data available, it adds as many data columns as bands in raster. If data is available,
+it either overwrites current data or tries to fill missing data only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rst</strong> – a Raster object instance with data to be extracted. Must be in same coordinate system and cover the extent of data points.</p></li>
+<li><p><strong>overwrite</strong> – a bolean indicating if all data is to be overwritten with new raster data or only missing data. Note: it onlys consideres rows where all columns have missing data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.getPoints">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">getPoints</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.DataTable.getPoints" title="Link to this definition"></a></dt>
+<dd><p>Returns the coordinate table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.getRow">
+<span class="sig-name descname"><span class="pre">getRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.getRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.getRow" title="Link to this definition"></a></dt>
+<dd><p>Returns row point, class and data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>row</strong> – an integer referring to row to retrieve (starts at 0)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.has_nan">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_nan</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.datatable.DataTable.has_nan" title="Link to this definition"></a></dt>
+<dd><p>Checks if there is <em>any</em> missing data in the data table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.has_row_nan">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_row_nan</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.datatable.DataTable.has_row_nan" title="Link to this definition"></a></dt>
+<dd><p>Check if there are rows with missing data only.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.is_scaled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_scaled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#spartann.datatable.DataTable.is_scaled" title="Link to this definition"></a></dt>
+<dd><p>Checks if data is scaled to Z-scores.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.means">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">means</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.DataTable.means" title="Link to this definition"></a></dt>
+<dd><p>Returns an array of the current mean of data columns.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.nclasses">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nclasses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#spartann.datatable.DataTable.nclasses" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of classes columns available.</p>
+<p>Note: only classes columns (no coordinates or data are considered)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.ndatacols">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndatacols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#spartann.datatable.DataTable.ndatacols" title="Link to this definition"></a></dt>
+<dd><p>Returns the number of data columns available.</p>
+<p>Note: only data columns (no coordinates or classes are considered)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.rm_data">
+<span class="sig-name descname"><span class="pre">rm_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.rm_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.rm_data" title="Link to this definition"></a></dt>
+<dd><p>Cleans all data table.
+Note: it does not erase coordinates neither classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.rm_datacolumn">
+<span class="sig-name descname"><span class="pre">rm_datacolumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.rm_datacolumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.rm_datacolumn" title="Link to this definition"></a></dt>
+<dd><p>Removes a column from data table.</p>
+<p>Note: it ignores coordinates and classes. Only data is considered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.rmpoint">
+<span class="sig-name descname"><span class="pre">rmpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.rmpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.rmpoint" title="Link to this definition"></a></dt>
+<dd><p>Removes a points from the data table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> – the line to be removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.scaleData">
+<span class="sig-name descname"><span class="pre">scaleData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.scaleData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.scaleData" title="Link to this definition"></a></dt>
+<dd><p>Scales data to Z-scores if is not scaled.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.scale_means">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_means</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spartann.datatable.DataTable.scale_means" title="Link to this definition"></a></dt>
+<dd><p>If data is scaled, returns the original means vector of the data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.scale_sdevs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_sdevs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spartann.datatable.DataTable.scale_sdevs" title="Link to this definition"></a></dt>
+<dd><p>If data is scaled, returns the original standard deviation vector of the data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.sdevs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sdevs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#spartann.datatable.DataTable.sdevs" title="Link to this definition"></a></dt>
+<dd><p>Returns an array of the current standard deviation of data columns.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.setDataRow">
+<span class="sig-name descname"><span class="pre">setDataRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.setDataRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.setDataRow" title="Link to this definition"></a></dt>
+<dd><p>TODO: ADDA DESCRPT</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.where_nan">
+<span class="sig-name descname"><span class="pre">where_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">any</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.where_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.where_nan" title="Link to this definition"></a></dt>
+<dd><p>Get rows indices where missing data is found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>any</strong> – A boolean indicating if rows with <em>any</em> missing data are to be retrieved or only rows with <em>full</em> missing data (all data columns are missing data).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spartann.datatable.DataTable.write_to_file">
+<span class="sig-name descname"><span class="pre">write_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spartann/datatable/datatable.html#DataTable.write_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spartann.datatable.DataTable.write_to_file" title="Link to this definition"></a></dt>
+<dd><p>Export current data to a file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spartann.classifier.html" class="btn btn-neutral float-left" title="spartann.classifier package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spartann.engine.html" class="btn btn-neutral float-right" title="spartann.engine package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Pedro Tarroso &amp; Marco Dinis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
