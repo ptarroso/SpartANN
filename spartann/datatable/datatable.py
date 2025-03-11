@@ -248,7 +248,7 @@ class DataTable(object):
             raise ValueError(
                 "The values provided are not organized in list of lists (lines and columns)"
             )
-        if names and len(names) != len(dt):
+        if names and len(names) != len(dt[0]):
             raise ValueError(
                 "The column names must have same length as data columns provided."
             )
