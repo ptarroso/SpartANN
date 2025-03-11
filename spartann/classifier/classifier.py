@@ -354,7 +354,10 @@ class AnnPredict:
         )
         pred = self.predict(patterns, scale)
         for i in range(len(pred)):
-            predtable.add_datacolumns(pred[i], datatable.colnames[i])
+            model = self.container.models[i]
+            name = f"scheme:{model.scheme}_rep:{model.repetition}"
+            colnames = [f"{x}_{name}" for x in self.container.outputs]
+            predtable.add_datacolumns(pred[i], colnames)
         return predtable
 
     def predictFromRaster(
