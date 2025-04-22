@@ -29,3 +29,9 @@ The `documentation <https://ptarroso.github.io/SpartANN/>`_ provides step-by-ste
     :align: center
 
     Predicted clouds with SpartANN
+
+
+Acknowledgments
+---------------
+
+This work was funded by Fundação para a Ciência e Tecnologia (FCT) through project ReNat (ref. 2022.10702.PTDC).
